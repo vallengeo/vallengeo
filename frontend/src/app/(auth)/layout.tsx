@@ -6,8 +6,6 @@ import '@/styles/globals.css'
 import Logo from "@/components/logo";
 import Brasao from "@/components/prefeitura/brasao";
 import CityBackdrop from "@/components/prefeitura/cityBackdrop";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export const inter = Inter({
   subsets: ['latin'],
