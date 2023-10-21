@@ -1,11 +1,17 @@
 import Image from "next/image";
-import logo from '@/assets/images/logo.svg';
+import logoBlack from '@/assets/images/logo-black.svg';
+import logoWhite from '@/assets/images/logo-white.svg';
 
-export default function Logo() {
+interface LogoProps {
+  useBlackLogo?: boolean;
+}
+
+export default function Logo(props: LogoProps) {
   return (
     <Image
-      src={logo}
+      src={props.useBlackLogo ? logoBlack : logoWhite}
       alt="Logo VallenGeo"
+      priority
     />
   )
 }

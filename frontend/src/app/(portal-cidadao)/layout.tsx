@@ -9,7 +9,7 @@ export const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'VallenGeo',
+  title: 'Portal do Cidadão - VallenGeo',
   description: 'VallenGeo - Sistema de Prefeituras',
 }
 
