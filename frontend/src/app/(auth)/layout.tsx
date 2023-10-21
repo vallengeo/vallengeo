@@ -3,6 +3,12 @@ import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 
+import Logo from "@/components/logo";
+import Brasao from "@/components/prefeitura/brasao";
+import CityBackdrop from "@/components/prefeitura/cityBackdrop";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 export const inter = Inter({
   subsets: ['latin'],
   weight: ['300', '400', '600'],
@@ -20,8 +26,25 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt">
-      <body className={cn("min-h-screen bg-background antialiased", inter.className)}>
-        {children}
+      <body className={cn("min-h-screen bg-white text-secondary-foreground antialiased", inter.className)}>
+        <main>
+            <div className="container">
+              <div className="w-1/2 h-screen flex">
+                <div className="max-w-sm m-auto">
+                  <Logo useBlackLogo />
+
+                  {children}
+
+                  <div className="mt-12">
+                    <Brasao/>
+                  </div>
+                </div>
+              </div>
+              <div className="absolute w-1/2 inset-0 ml-auto">
+                <CityBackdrop/>
+              </div>
+            </div>
+          </main>
       </body>
     </html>
   )
