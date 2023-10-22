@@ -115,4 +115,8 @@
     position: absolute;
     z-index: -1;
   }
+
+  .triangle-to-top {
+    @apply w-0 h-0 border-solid border-t-0 border-x-8 border-b-[16px] border-t-transparent border-x-transparent border-b-white;
+  }
 }

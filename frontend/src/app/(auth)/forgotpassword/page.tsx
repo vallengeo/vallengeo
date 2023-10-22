@@ -1,5 +1,5 @@
+import Support from "@/components/support";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 
 export default function ForgotPasswordPage() {
   return (
@@ -12,11 +12,7 @@ export default function ForgotPasswordPage() {
         {/* todo: Campo de entrada */}
 
         <div className="flex items-center justify-between">
-          <Button variant="link" className="flex-1">
-            <Link href="/suporte">
-              Suporte
-            </Link>
-          </Button>
+          <Support/>
 
           <Button variant="default" className="px-16 h-12">
             Entrar

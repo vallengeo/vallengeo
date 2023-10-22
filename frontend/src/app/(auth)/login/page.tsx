@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import Support from "@/components/support";
 
 export default function LoginPage() {
   return (
@@ -15,11 +16,7 @@ export default function LoginPage() {
         </Button>
 
         <div className="flex items-center justify-between">
-          <Button variant="link" className="flex-1">
-            <Link href="/suporte">
-              Suporte
-            </Link>
-          </Button>
+          <Support/>
 
           <Button variant="default" className="px-16 h-12">
             Entrar
