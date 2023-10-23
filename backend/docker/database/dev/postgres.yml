@@ -14,7 +14,7 @@ services:
       POSTGRES_MULTIPLE_EXTENSIONS: postgis,postgis_tiger_geocoder,postgis_topology,fuzzystrmatch
 
     volumes:
-       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - vallenge
     ports:
