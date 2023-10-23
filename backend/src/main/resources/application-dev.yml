@@ -1,0 +1,38 @@
+# ===============================
+# = PORTA
+# ===============================
+server:
+  port: ${API_PORT}
+
+spring:
+  config:
+    import: optional:file:./docker/database/dev/.env[.properties]
+
+# ===============================
+# = BANCO DE DADOS
+# ===============================
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        type: trace
+    show-sql: true
+  
+# ===============================
+# = FLYWAY
+# ===============================
+  flyway:
+    enabled: true
+    schemas: public
+    url: ${DATABASE_URL}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
