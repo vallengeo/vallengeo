@@ -26,23 +26,23 @@ export default function RootLayout({
     <html lang="pt">
       <body className={cn("min-h-screen bg-white text-secondary-foreground antialiased", inter.className)}>
         <main>
-            <div className="container">
-              <div className="lg:w-1/2 h-screen flex">
-                <div className="max-w-sm m-auto">
-                  <Logo useBlackLogo />
+          <div className="container relative">
+            <div className="lg:w-1/2 h-screen flex">
+              <div className="max-w-sm m-auto">
+                <Logo useBlackLogo />
 
-                  {children}
+                {children}
 
-                  <div className="mt-12">
-                    <Brasao/>
-                  </div>
+                <div className="mt-12">
+                  <Brasao/>
                 </div>
               </div>
-              <div className="absolute w-1/2 inset-0 ml-auto max-lg:hidden">
-                <CityBackdrop/>
-              </div>
             </div>
-          </main>
+            <div className="absolute w-1/2 inset-0 ml-auto max-lg:hidden">
+              <CityBackdrop/>
+            </div>
+          </div>
+        </main>
       </body>
     </html>
   )
