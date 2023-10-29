@@ -15,7 +15,7 @@ export default function Menu() {
 
   return (
     <>
-      {!isLoggedIn
+      {isLoggedIn
         ?
         <div>
           <DropdownMenu>

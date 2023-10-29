@@ -3,7 +3,7 @@ import avatar from "@/assets/images/avatar.png"
 
 export default function Profile() {
   return (
-    <div className="flex items-center justify-center space-x-1 cursor-pointer">
+    <div className="flex items-center space-x-1">
       <Image
         src={avatar}
         alt="Foto do João Silva"
