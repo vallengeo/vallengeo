@@ -1,5 +1,13 @@
+import Header from "@/components/header";
+import Link from "next/link";
+
 export default function ImoveisPage() {
   return (
-    <h1>Imóveis</h1>
+    <>
+      <Header
+        title="Imóveis"
+        description="Visualização imóveis"
+      />
+    </>
   )
 }

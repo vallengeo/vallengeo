@@ -1,5 +1,9 @@
+import Header from "@/components/header";
+
 export default function ProtocolosPage() {
   return (
-    <h1>Protocolos</h1>
+    <>
+      <Header title="Protocolos"/>
+    </>
   )
 }

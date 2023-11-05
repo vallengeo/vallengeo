@@ -1,5 +1,9 @@
+import Header from "@/components/header";
+
 export default function RelatoriosPage() {
   return (
-    <h1>Relatórios</h1>
+    <>
+      <Header title="Relatórios"/>
+    </>
   )
 }

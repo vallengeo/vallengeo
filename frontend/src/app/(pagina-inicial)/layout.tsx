@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 import { Sidebar } from '@/components/sidebar'
+import Copyright from '@/components/footer'
 
 export const inter = Inter({
   subsets: ['latin'],
@@ -25,8 +26,10 @@ export default function RootLayout({
         <div className="container flex gap-6 py-6 h-screen">
           <Sidebar/>
 
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col h-full">
             {children}
+
+            <Copyright/>
           </div>
         </div>
       </body>
