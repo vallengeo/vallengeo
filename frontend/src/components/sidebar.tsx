@@ -16,7 +16,7 @@ export function Sidebar() {
       </div>
 
       <div className="space-y-4">
-        <Profile/>
+        <Profile className="justify-start"/>
         <Link
           href="/logout"
           className="flex items-center gap-1 font-semibold"

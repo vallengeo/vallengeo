@@ -1,9 +1,20 @@
 import Image from "next/image"
 import avatar from "@/assets/images/avatar.png"
 
-export default function Profile() {
+import { cn } from "@/lib/utils"
+
+interface ProfileProps {
+  className?: string;
+}
+
+export default function Profile({
+  className = ''
+}: ProfileProps) {
   return (
-    <div className="flex items-center space-x-1">
+    <div className={cn(
+      "flex justify-center items-center space-x-1",
+      className
+    )}>
       <Image
         src={avatar}
         alt="Foto do João Silva"
