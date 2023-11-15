@@ -1,12 +1,18 @@
 import Image from 'next/image'
 import logo from '@/assets/images/prefeitura/logo_taubate.png'
 
-export default function Brasao() {
+interface BrasaoProps {
+  className?: string;
+}
+
+export default function Brasao({
+  className
+}: BrasaoProps) {
   return (
     <Image
       src={logo}
       alt="Brasão da Prefeitura"
-      className="mx-auto"
+      className={className}
     />
   )
 }

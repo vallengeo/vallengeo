@@ -34,7 +34,7 @@ export default function RootLayout({
                 {children}
 
                 <div className="mt-12">
-                  <Brasao/>
+                  <Brasao className="mx-auto"/>
                 </div>
               </div>
             </div>
