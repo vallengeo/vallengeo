@@ -11,10 +11,6 @@ spring:
 # ===============================
 # = BANCO DE DADOS
 # ===============================
-  datasource:
-    url: ${DATABASE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
   jpa:
     generate-ddl: true
     hibernate:
