@@ -1,8 +1,8 @@
 import Logo from "@/components/logo";
-import Menu from "@/components/menu";
+import Menu from "@/app/(portal-cidadao)/components/menu";
 
 
-export default function PortalCidadao() {
+export default function PortalCidadaoPage() {
 
 
   return (

@@ -4,8 +4,8 @@ import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 
 import Logo from "@/components/logo";
-import Brasao from "@/components/prefeitura/brasao";
-import CityBackdrop from "@/components/prefeitura/cityBackdrop";
+import Brasao from "@/components/brasao";
+import CityBackdrop from "@/components/cityBackdrop";
 
 export const inter = Inter({
   subsets: ['latin'],
@@ -17,13 +17,21 @@ export const metadata: Metadata = {
   description: 'VallenGeo - Sistema de Prefeituras',
 }
 
-export default function RootLayout({
+export default function LoginLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="pt">
+      <head>
+        <link
+          rel="icon"
+          href="/icon?<generated>"
+          type="image/<generated>"
+          sizes="<generated>"
+        />
+      </head>
       <body className={cn("min-h-screen bg-white text-secondary-foreground antialiased", inter.className)}>
         <main>
           <div className="container relative">

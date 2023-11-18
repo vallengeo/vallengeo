@@ -1,4 +1,4 @@
-import Brasao from "./prefeitura/brasao";
+import Brasao from "./brasao";
 
 interface HeaderProps {
   title: string;

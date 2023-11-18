@@ -13,13 +13,21 @@ export const metadata: Metadata = {
   description: 'VallenGeo - Sistema de Prefeituras',
 }
 
-export default function RootLayout({
+export default function PortalCidadaoLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="pt">
+      <head>
+        <link
+          rel="icon"
+          href="/icon?<generated>"
+          type="image/<generated>"
+          sizes="<generated>"
+        />
+      </head>
       <body className={cn("min-h-screen bg-background antialiased", inter.className)}>
         {children}
       </body>

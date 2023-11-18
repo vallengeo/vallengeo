@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
-import { Sidebar } from '@/components/sidebar'
+import { Sidebar } from '@/app/(pagina-inicial)/components/sidebar'
 import Copyright from '@/components/footer'
 
 export const inter = Inter({
@@ -15,13 +15,21 @@ export const metadata: Metadata = {
   description: 'VallenGeo - Sistema de Prefeituras',
 }
 
-export default function RootLayout({
+export default function PaginaInicialLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="pt">
+      <head>
+        <link
+          rel="icon"
+          href="/icon?<generated>"
+          type="image/<generated>"
+          sizes="<generated>"
+        />
+      </head>
       <body className={cn("min-h-screen bg-background antialiased", inter.className)}>
         <div className="container flex gap-6 py-6 h-screen">
           <Sidebar/>

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { LogoSmall } from "./logo-small";
-import Profile from "./profile";
-import Navigation from "@/components/navigation";
+import { LogoSmall } from "../../../components/logo-small";
+import Profile from "../../../components/profile";
+import Navigation from "@/app/(pagina-inicial)/components/menu";
 import { LogOut } from "lucide-react";
 
 export function Sidebar() {
