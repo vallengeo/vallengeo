@@ -31,10 +31,10 @@ export default function PaginaInicialLayout({
         />
       </head>
       <body className={cn("min-h-screen bg-background antialiased", inter.className)}>
-        <div className="container flex gap-6 py-6 h-screen">
+        <div className="container flex gap-6">
           <Sidebar/>
 
-          <div className="flex-1 flex flex-col h-full">
+          <div className="flex-1 flex flex-col py-6">
             {children}
 
             <Copyright/>

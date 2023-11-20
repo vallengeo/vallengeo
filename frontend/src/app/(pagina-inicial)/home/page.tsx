@@ -7,6 +7,8 @@ import UltimosProcessos from "./components/ultimos-processos";
 import HistoricoProcessos from "./components/historico-processos";
 import Notificacoes from "./components/notificacoes";
 import Welcome from "./components/welcome";
+import ResumoImoveis from "./components/resumo-imoveis";
+import MapaCidade from "@/components/mapa-cidade";
 
 export default function HomePage() {
   return (
@@ -29,6 +31,15 @@ export default function HomePage() {
         <div className="grid grid-cols-2 gap-5">
           <UltimosProcessos/>
           <HistoricoProcessos/>
+        </div>
+
+        <div className="bg-white border border-input rounded-3xl p-4">
+          <h2 className="text-xl mb-6">Mapa da Cidade</h2>
+          <MapaCidade/>
+        </div>
+
+        <div>
+          <ResumoImoveis/>
         </div>
       </main>
     </>
