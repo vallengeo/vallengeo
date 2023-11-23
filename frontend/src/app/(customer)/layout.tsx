@@ -15,23 +15,18 @@ export const inter = Inter({
 export const metadata: Metadata = {
   title: 'Login - VallenGeo',
   description: 'VallenGeo - Sistema de Prefeituras',
+  icons: {
+    icon: '/icon.png',
+  },
 }
 
-export default function LoginLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
   return (
     <html lang="pt">
-      <head>
-        <link
-          rel="icon"
-          href="/icon?<generated>"
-          type="image/<generated>"
-          sizes="<generated>"
-        />
-      </head>
       <body className={cn("min-h-screen bg-white text-secondary-foreground antialiased", inter.className)}>
         <main>
           <div className="container relative">

@@ -39,7 +39,7 @@ export default function LoginPage() {
         </Button>
 
         <div className="flex items-center justify-between">
-          <Support/>
+          <Support />
 
           <Button variant="default" className="px-16 h-12">
             Entrar

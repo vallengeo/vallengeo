@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Link from "next/link"
 
 export type Imoveis = {
   id: string
@@ -87,20 +88,36 @@ export const columns: ColumnDef<Imoveis>[] = [
   },
   {
     id: "actions",
-    cell: () => {
+    cell: ({ row }) => {
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
+              <span className="sr-only">Abrir menu</span>
               <MoreHorizontal className="h-6 w-6 text-[#AEACAC]" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="rounded-2xl" align="end">
-            <DropdownMenuItem className="justify-center">Visualizar</DropdownMenuItem>
-            <DropdownMenuItem className="justify-center">Editar</DropdownMenuItem>
-            <DropdownMenuItem className="justify-center">Download</DropdownMenuItem>
-            <DropdownMenuItem className="justify-center">Arquivar</DropdownMenuItem>
+            <DropdownMenuItem className="justify-center">
+              <Link href={`/imoveis/visualizar/${row.original.id}`}>
+                Visualizar
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="justify-center">
+              <Link href={`/imoveis/editar/${row.original.id}`}>
+                Editar
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="justify-center">
+              <Link href={`/imoveis/download/${row.original.id}`} download>
+                Download
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem className="justify-center">
+              <Link href={`/imoveis/arquivar/${row.original.id}`}>
+                Arquivar
+              </Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
