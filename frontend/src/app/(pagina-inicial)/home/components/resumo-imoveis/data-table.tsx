@@ -114,25 +114,27 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex items-center justify-end flex-wrap-reverse gap-2 py-4">
           <Legenda className="flex-1" />
 
-          <Button
-            variant="default"
-            className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft size={16} />
-          </Button>
-          <Button
-            variant="default"
-            className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronRight size={16} />
-          </Button>
+          <div className="space-x-2">
+            <Button
+              variant="default"
+              className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
+              onClick={() => table.previousPage()}
+              disabled={!table.getCanPreviousPage()}
+            >
+              <ChevronLeft size={16} />
+            </Button>
+            <Button
+              variant="default"
+              className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
+              onClick={() => table.nextPage()}
+              disabled={!table.getCanNextPage()}
+            >
+              <ChevronRight size={16} />
+            </Button>
+          </div>
         </div>
       </div>
     </div>

@@ -38,7 +38,7 @@ export default function LoginPage() {
           <Link href="/forgotpassword">Esqueci minha senha</Link>
         </Button>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
           <Support />
 
           <Button variant="default" className="px-16 h-12">

@@ -16,19 +16,19 @@ export default function HomePage() {
       <Header title="Home"/>
 
       <main className="space-y-6 my-6">
-        <div className="flex gap-5">
+        <div className="flex gap-5 max-md:flex-col">
           <Welcome/>
           <Notificacoes/>
         </div>
 
-        <div className="grid grid-cols-4 gap-5">
+        <div className="grid grid-cols-4 gap-5 max-md:grid-cols-2 max-[400px]:grid-cols-1">
           <TotalCadastros/>
           <NovosCadastros/>
           <EmAndamento/>
           <ProcessosFinalizados/>
         </div>
 
-        <div className="grid grid-cols-2 gap-5">
+        <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1 justify-center">
           <UltimosProcessos/>
           <HistoricoProcessos/>
         </div>

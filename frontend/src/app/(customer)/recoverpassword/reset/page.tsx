@@ -32,7 +32,7 @@ export default function ResetPage() {
           />
         </div>
 
-        <div className="flex items-center justify-between mt-6">
+        <div className="flex items-center justify-between mt-6 gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
           <Support/>
 
           <Button variant="default" className="px-16 h-12">

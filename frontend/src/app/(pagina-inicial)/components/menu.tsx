@@ -37,7 +37,7 @@ export const links = [
   },
 ];
 
-export default function Navigation() {
+export default function Menu() {
   const pathname = usePathname();
 
   return (
