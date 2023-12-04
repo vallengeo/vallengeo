@@ -1,8 +1,8 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+
 import {
-  ArrowUpDown,
   MoreHorizontal,
 } from "lucide-react"
 
@@ -13,75 +13,69 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+
 import Link from "next/link"
 
 export type Imoveis = {
-  id: string
-  cadastro: string
-  endereco: string
+  id: string | number
+  imoveis_cadastrados: string
+  logradouro: string
+  numero_e_complemento: string
+  bairro: string
   tipo_imovel: "Comercial" | "Residencial" | "Misto"
+  telefone: string
+  situacao: "Aprovado" | "Reprovado" | "Em análise" | "Cancelado"
 }
 
 export const columns: ColumnDef<Imoveis>[] = [
   {
-    accessorKey: "cadastro",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center"
-        >
-          cadastros
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </button>
-      )
-    },
+    accessorKey: "imoveis_cadastrados",
+    header: () => <div>Imóveis cadastrados</div>,
   },
   {
-    accessorKey: "endereco",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center"
-        >
-          endereço
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </button>
-      )
-    },
+    accessorKey: "logradouro",
+    header: () => <div>Logradouro</div>,
+  },
+  {
+    accessorKey: "numero_e_complemento",
+    header: () => <div>Número e Complemento</div>,
+  },
+  {
+    accessorKey: "bairro",
+    header: () => <div>Bairro</div>,
   },
   {
     accessorKey: "tipo_imovel",
-    header: ({ column }) => {
-      return (
-        <button
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center"
-        >
-          tipo de imóvel
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </button>
-      )
-    },
+    header: () => <div>Tipo de imóvel</div>,
+  },
+  {
+    accessorKey: "telefone",
+    header: () => <div>Telefone</div>,
+  },
+  {
+    accessorKey: "situacao",
+    header: () => <div>Situação</div>,
     cell: ({ row }) => {
       let bgSelo = ''
 
-      switch (row.getValue('tipo_imovel')) {
-        case 'Comercial':
-          bgSelo = 'bg-[#005074]'
+      switch (row.getValue('situacao')) {
+        case 'Aprovado':
+          bgSelo = 'bg-[#70C64D]'
           break;
-        case 'Residencial':
-          bgSelo = 'bg-[#6AC09B]'
+        case 'Reprovado':
+          bgSelo = 'bg-[#DA1C4A]'
           break;
-        case 'Misto':
+        case 'Em análise':
+          bgSelo = 'bg-[#FFBE5B]'
+          break;
+        case 'Cancelado':
           bgSelo = 'bg-[#729397]'
           break;
       }
 
       return (
-        <div className={`text-sm font-light text-white ${bgSelo} w-fit px-2 rounded-3xl`}>
-          {row.getValue('tipo_imovel')}
+        <div className={`text-sm whitespace-nowrap font-light text-white ${bgSelo} w-fit px-2 rounded-3xl`}>
+          {row.getValue('situacao')}
         </div>
       )
     },
@@ -104,13 +98,8 @@ export const columns: ColumnDef<Imoveis>[] = [
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="justify-center">
-              <Link href={`/imoveis/editar/${row.original.id}`}>
-                Editar
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="justify-center">
-              <Link href={`/imoveis/download/${row.original.id}`} download>
-                Download
+              <Link href={`/imoveis/relatorio/${row.original.id}`}>
+                Relatório
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="justify-center">

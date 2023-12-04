@@ -7,7 +7,7 @@ import Copyright from '@/components/footer'
 
 export const inter = Inter({
   subsets: ['latin'],
-  weight: ['300', '400', '600'],
+  weight: ['300', '400', '500', '600'],
 })
 
 export const metadata: Metadata = {
