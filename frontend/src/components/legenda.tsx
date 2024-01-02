@@ -9,7 +9,7 @@ export default function Legenda({
 }: LegendaProps) {
   return (
     <div className={cn(
-      "flex items-center gap-4 text-sm",
+      "flex items-center flex-wrap gap-4 text-sm",
       className
     )}>
       <span>Legenda:</span>

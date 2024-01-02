@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
 
-        <div className="flex items-center justify-end flex-wrap-reverse gap-2 py-4">
+        <div className="flex items-center justify-end max-md:flex-col gap-2 py-4">
           <Legenda className="flex-1" />
 
           <div className="space-x-2">

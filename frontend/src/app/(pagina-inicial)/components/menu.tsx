@@ -23,12 +23,12 @@ export const links = [
     icon: <Map size={18} />,
     href: '/imoveis'
   },
-  {
-    id: 3,
-    titulo: 'Protocolos',
-    icon: <Archive size={18} />,
-    href: '/protocolos'
-  },
+  // {
+  //   id: 3,
+  //   titulo: 'Protocolos',
+  //   icon: <Archive size={18} />,
+  //   href: '/protocolos'
+  // },
   {
     id: 4,
     titulo: 'Relatórios',
@@ -47,7 +47,7 @@ export default function Menu() {
           <li key={link.id}>
             <Link
               href={link.href}
-              className={`group flex items-center gap-1 text-sm p-2 ${link.href === pathname ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : ''} rounded-lg hover:bg-primary hover:text-primary-foreground hover:font-semibold`}
+              className={`group flex items-center gap-1 text-sm p-2 ${pathname.indexOf(link.href) > -1 ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : ''} rounded-lg hover:bg-primary hover:text-primary-foreground hover:font-semibold`}
             >
               {link.icon}
               {link.titulo}
