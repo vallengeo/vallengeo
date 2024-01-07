@@ -1,174 +1,183 @@
--- ************************* USUARIO ************************************************************************************************************
+-- ************************* USUARIO ***********************************
 INSERT INTO portal_seguranca.usuario
-(id, email, senha_hash, data_cadastro, data_atualizacao, ativo, codigo_acesso, validade_codigo)
-VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'email@email.com', 'bb9d3767edcf260dfdd1eaad7cea5b8f', NOW(), NULL,
-        TRUE, '204567', CURRENT_TIMESTAMP + (20 || ' minutes')::interval);
+(id, email, senha_hash, data_cadastro, data_atualizacao, ativo)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'vallengeo.dev@gmail.com',
+        '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
+        TRUE);
 
--- ************************* GRUPO ************************************************************************************************************
+-- ************************* GRUPO ***********************************
 INSERT INTO portal_seguranca.grupo
     (id, nome, codigo)
 VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'Taubaté', 'TAUBATE');
 
--- ************************* PERFIL ************************************************************************************************************
+-- ************************* PERFIL ************************************************************************
 INSERT INTO portal_seguranca.perfil
     (id, nome, codigo)
 VALUES ('d66df945-104d-4412-a1ee-0d0659bf86b5', 'Administrador', 'ADMINISTRADOR');
 
--- ************************* RELACAO USUARIO GRUPO PERFIL ************************************************************************************************************
-INSERT INTO portal_seguranca.usuario_grupo_perfil
-    (id_usuario, id_grupo, id_perfil)
-VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', '4d3c1497-af40-4ddf-8b06-d8f40c8df139',
-        'd66df945-104d-4412-a1ee-0d0659bf86b5');
+-- ************************* RELACAO USUARIO PERFIL ************************************************************************
+INSERT INTO portal_seguranca.usuario_perfil
+    (id_usuario, id_perfil)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5');
 
--- ************************* RELACAO GRUPO PERFIL ************************************************************************************************************
+-- ************************* RELACAO GRUPO PERFIL ************************************************************************
 INSERT INTO portal_seguranca.grupo_perfil
     (id_grupo, id_perfil)
 VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'd66df945-104d-4412-a1ee-0d0659bf86b5');
 
--- ************************* PERMISSAO ************************************************************************************************************
-INSERT INTO portal_seguranca.permissao (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Inserir', 'INSERIR');
-
-INSERT INTO portal_seguranca.permissao (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Editar', 'EDITAR');
-
-INSERT INTO portal_seguranca.permissao (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Remover', 'REMOVER');
-
-INSERT INTO portal_seguranca.permissao (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Visualizar', 'VISUALIZAR');
-
--- ************************* TELA ************************************************************************************************************
-INSERT INTO portal_seguranca.tela (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Home', 'HOME');
-
-INSERT INTO portal_seguranca.tela (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Imóvel', 'IMOVEL');
-
-INSERT INTO portal_seguranca.tela (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Protocolo', 'PROTOCOLO');
-
-INSERT INTO portal_seguranca.tela (id, nome, codigo)
-VALUES (gen_random_uuid(), 'Relatório', 'RELATORIO');
-
--- ************************* MODULO ************************************************************************************************************
+-- ************************* MODULO ************************************************************************
 INSERT INTO portal_seguranca.modulo (id, nome, codigo, url, ativo)
 VALUES (gen_random_uuid(), 'Prefeituras', 'PREFEITURA', 'https://www.vallengeo.com.br/prefeituras', TRUE);
 
--- ************************* RELACAO GRUPO PERFIL TELA PERMISSAO ************************************************************************************************************
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'INSERIR'));
+-- ************************* TELA ************************************************************************
+INSERT INTO portal_seguranca.tela (id, nome, codigo, id_modulo)
+VALUES (gen_random_uuid(), 'Home', 'HOME', (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'));
 
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'EDITAR'));
+INSERT INTO portal_seguranca.tela (id, nome, codigo, id_modulo)
+VALUES (gen_random_uuid(), 'Imóvel', 'IMOVEL', (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'));
 
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'REMOVER'));
+INSERT INTO portal_seguranca.tela (id, nome, codigo, id_modulo)
+VALUES (gen_random_uuid(), 'Protocolo', 'PROTOCOLO',
+        (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'));
 
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'VISUALIZAR'));
+INSERT INTO portal_seguranca.tela (id, nome, codigo, id_modulo)
+VALUES (gen_random_uuid(), 'Relatório', 'RELATORIO',
+        (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'));
 
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'INSERIR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'EDITAR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'REMOVER'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'VISUALIZAR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'INSERIR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'EDITAR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'REMOVER'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'VISUALIZAR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'INSERIR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'EDITAR'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'REMOVER'));
-
-INSERT INTO portal_seguranca.grupo_perfil_tela_permissao (id_grupo, id_perfil, id_tela, id_permissao)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
-        (SELECT id FROM portal_seguranca.perfil WHERE codigo = 'ADMINISTRADOR'),
-        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'),
-        (SELECT id FROM portal_seguranca.permissao WHERE codigo = 'VISUALIZAR'));
-
--- ************************* RELACAO GRUPO MODULO ************************************************************************************************************
+-- ************************* RELACAO GRUPO MODULO ************************************************************************
 INSERT INTO portal_seguranca.grupo_modulo (id_grupo, id_modulo)
 VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
         (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'));
 
-INSERT INTO portal_seguranca.modulo_tela (id_modulo, id_tela)
-VALUES ((SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'),
+-- ************************* RELACAO GRUPO USUARIO ************************************************************************
+INSERT INTO portal_seguranca.grupo_usuario (id_grupo, id_usuario)
+VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'), '99b551f8-f532-40a0-b63f-094661844bd8');
+
+-- ************************* PERMISSAO ************************************************************************
+-- HOME
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('HOME_ULTIMO_PROCESSO_VISUALIZAR', 'Visualizar últimos processos na tela home',
         (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'));
 
-INSERT INTO portal_seguranca.modulo_tela (id_modulo, id_tela)
-VALUES ((SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'),
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('HOME_ATUALIZACAO_PROCESSO_VISUALIZAR', 'Visualizar histórico de atualizações de processos na tela home',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('HOME_RESUMO_IMOVEL_VISUALIZAR', 'Visualizar resumo de imóveis na tela home',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('HOME_RESUMO_IMOVEL_EDITAR', 'Editar resumo de imóveis na tela home',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('HOME_RESUMO_IMOVEL_DOWNLOAD', 'Realizar download do resumo de imóveis na tela home',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('HOME_RESUMO_IMOVEL_ARQUIVAR', 'Arquivar resumo de imóveis na tela home',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'));
+
+-- IMOVEL
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('IMOVEL_CADASTRAR', 'Cadastrar novo imóvel', (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('IMOVEL_LISTA_IMOVEL_VISUALIZAR', 'Visualizar o imóvel na tela imóvel',
         (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'));
 
-INSERT INTO portal_seguranca.modulo_tela (id_modulo, id_tela)
-VALUES ((SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'),
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('IMOVEL_LISTA_IMOVEL_RELATORIO', 'Visualizar o relatório do imóvel na tela imóvel',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('IMOVEL_LISTA_IMOVEL_ARQUIVAR', 'Arquivar o imóvel na tela imóvel',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'));
+
+-- PROTOCOLO
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('PROTOCOLO_LISTA_PROCESSO_VISUALIZAR', 'Visualizar o processo na tela processo',
         (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'));
 
-INSERT INTO portal_seguranca.modulo_tela (id_modulo, id_tela)
-VALUES ((SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'),
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('PROTOCOLO_LISTA_PROCESSO_RELATORIO', 'Visualizar o relatório do processo na tela processo',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('PROTOCOLO_LISTA_PROCESSO_ARQUIVAR', 'Arquivar o processo na tela processo',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'));
+
+-- RELATORIO
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('RELATORIO_GERAR', 'Gerar o relatório na tela relatório',
         (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'));
+
+INSERT INTO portal_seguranca.permissao (codigo, descricao, id_tela)
+VALUES ('RELATORIO_RESUMO_IMOVEL_DOWNLOAD', 'Realizar download do resumo de imóveis na tela relatório',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'));
+
+-- ************************* RELACAO USUARIO PERFIL TELA PERMISSAO **************************************************
+-- HOME
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'), 'HOME_ULTIMO_PROCESSO_VISUALIZAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'), 'HOME_ATUALIZACAO_PROCESSO_VISUALIZAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'), 'HOME_RESUMO_IMOVEL_VISUALIZAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'), 'HOME_RESUMO_IMOVEL_EDITAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'), 'HOME_RESUMO_IMOVEL_DOWNLOAD');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'HOME'), 'HOME_RESUMO_IMOVEL_ARQUIVAR');
+
+-- IMOVEL
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'), 'IMOVEL_CADASTRAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'), 'IMOVEL_LISTA_IMOVEL_VISUALIZAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'), 'IMOVEL_LISTA_IMOVEL_RELATORIO');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'IMOVEL'), 'IMOVEL_LISTA_IMOVEL_ARQUIVAR');
+
+-- PROTOCOLO
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'), 'PROTOCOLO_LISTA_PROCESSO_VISUALIZAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'), 'PROTOCOLO_LISTA_PROCESSO_RELATORIO');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'PROTOCOLO'), 'PROTOCOLO_LISTA_PROCESSO_ARQUIVAR');
+
+-- RELATORIO
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'), 'RELATORIO_GERAR');
+
+INSERT INTO portal_seguranca.usuario_perfil_tela_permissao (id_usuario, id_perfil, id_tela, codigo_permissao)
+VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5',
+        (SELECT id FROM portal_seguranca.tela WHERE codigo = 'RELATORIO'), 'RELATORIO_RESUMO_IMOVEL_DOWNLOAD');

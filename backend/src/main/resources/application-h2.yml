@@ -1,0 +1,32 @@
+# ===============================
+# = PORTA
+# ===============================
+server:
+  port: ${API_PORT}
+
+spring:
+  config:
+    import: optional:file:./docker/database/dev/.env[.properties]
+  #
+  ## ===============================
+  ## = BANCO DE DADOS
+  ## ===============================
+  datasource:
+    driverClassName: org.h2.Driver
+    password: password
+    url: jdbc:h2:mem:vallengeo
+    username: sa
+  h2:
+    console:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect:  org.hibernate.dialect.H2Dialect
+        temp:
+          use_jdbc_metadata_defaults: 'false'
+        format_sql: 'true'
+        type: trace
+    hibernate:
+      ddl-auto: create
+    show-sql: true

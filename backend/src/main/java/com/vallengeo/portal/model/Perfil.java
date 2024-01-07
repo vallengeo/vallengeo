@@ -1,21 +1,22 @@
 package com.vallengeo.portal.model;
 
-import com.vallengeo.core.util.Schema;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.vallengeo.core.util.Schemas;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
+@Builder
 @NoArgsConstructor
-@Table(schema = Schema.PORTAL_SEGURANCA, name = "perfil")
-public class Perfil {
+@AllArgsConstructor
+@Table(schema = Schemas.PORTAL_SEGURANCA, name = "perfil")
+public class Perfil implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")

@@ -13,6 +13,9 @@ backend/*.shp
 backend/*.shx
 tmp/
 backend/*.zip
+backend/TASK.md
+backend/*-h2.yml
+backend/logs
 
 
 ### STS ###

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="pt-br">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}"/>
+    </head>
+    <body>
+        <p>
+            Prezado(a),
+        </p>
+        <p>
+            Sua conta foi criada com sucesso.
+        </p>
+        <p>
+            Para acessar a plataforma, clique no botão abaixo:
+        </p>
+        <button
+            style="padding: 10px 40px; background-color: #00519E; border: none; border-radius: 2px; box-shadow: 5px 6px 8px -2px rgba(0, 0, 0, 0.75); -webkit-box-shadow: 5px 6px 8px -2px rgba(0, 0, 0, 0.75); -moz-box-shadow: 5px 6px 8px -2px rgba(0, 0, 0, 0.75);"
+        >
+            <a
+                style="color: white; font-weight: bold; text-decoration: none;"
+                th:with="url=(@{|${baseUrl}|})" th:href="${url}"
+            >
+                Acessar a plataforma
+            </a>
+        </button>
+        <p>
+            Caso você não seja redirecionado, poderá ter acesso ao sistema a partir do link:
+        </p>
+        <p>
+            <a th:with="url=(@{|${baseUrl}|})" th:href="${url}" th:text="${url}">Acesse a plataforma</a>
+        </p>
+        <p>
+            <span th:text="#{email.creation.regards}">Atenciosamente, </span>
+            <br/>
+            <em th:text="#{email.signature}"></em>
+        </p>
+    </body>
+</html>

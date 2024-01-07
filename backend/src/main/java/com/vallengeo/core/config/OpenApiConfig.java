@@ -1,10 +1,11 @@
 package com.vallengeo.core.config;
 
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
@@ -13,6 +14,13 @@ import org.springframework.context.annotation.Configuration;
 import java.util.List;
 
 @Configuration
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer",
+        description = "Serviço de autorização para a API"
+)
 public class OpenApiConfig {
 
     @Bean
@@ -22,13 +30,13 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("VallenGeo - Documentação da API")
                         .description("VallenGeo - uma plataforma de geoprocessamento da Vallenge Engenharia.")
-            .contact(new Contact().name("Vallenge Engenharia")
+                        .contact(new Contact().name("Vallenge Engenharia")
                                 .url("http://vallenge.com.br/")
                                 .email("contato@vallenge.com.br"))
                         .version("1.0")
                 )
                 .servers(List.of(
-                new Server().url("http://localhost:9000").description(""))
+                        new Server().url("http://localhost:9000").description(""))
                 );
 
     }

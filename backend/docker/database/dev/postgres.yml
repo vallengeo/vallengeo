@@ -12,14 +12,14 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_MULTIPLE_EXTENSIONS: postgis,postgis_tiger_geocoder,postgis_topology,fuzzystrmatch
-
+    
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - vallenge
+    - vallenge
     ports:
-      - ${POSTGRES_DB_DOCKER_PORT}:${POSTGRES_DB_LOCAL_PORT}
-
+    - ${POSTGRES_DB_DOCKER_PORT}:${POSTGRES_DB_LOCAL_PORT}
+  
   pgadmin:
     image: dpage/pgadmin4
     container_name: vallengeo_pgadmin
@@ -27,12 +27,29 @@ services:
       PGADMIN_DEFAULT_EMAIL: pg@admin.com
       PGADMIN_DEFAULT_PASSWORD: 123456
     depends_on:
-      - postgres
+    - postgres
     networks:
-      - vallenge
+    - vallenge
     ports:
-      - '5000:80'
-
+    - '5000:80'
+  
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: vallengeo_portainer
+    depends_on:
+    - postgres
+    networks:
+    - vallenge
+    ports:
+    - '9443:9443'
+    restart: "on-failure"
+    volumes:
+    - data:/data
+    - /var/run/docker.sock:/var/run/docker.sock
+  
+volumes:
+  data:
+  
 networks:
   vallenge:
 

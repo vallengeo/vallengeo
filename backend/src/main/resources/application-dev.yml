@@ -7,25 +7,26 @@ server:
 spring:
   config:
     import: optional:file:./docker/database/dev/.env[.properties]
-
-# ===============================
-# = BANCO DE DADOS
-# ===============================
+  
+  ## ===============================
+  ## = BANCO DE DADOS
+  ## ===============================
   jpa:
     generate-ddl: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         format_sql: true
+        enable_lazy_load_no_trans: true # //TODO ajustar para trazer com o lazy
         temp:
           use_jdbc_metadata_defaults: false
         type: trace
     show-sql: true
-  
-# ===============================
-# = FLYWAY
-# ===============================
+
+  ## ===============================
+  ## = FLYWAY
+  ## ===============================
   flyway:
     enabled: true
     schemas: public

@@ -1,21 +1,23 @@
 package com.vallengeo.portal.model;
 
-import com.vallengeo.core.util.Schema;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.vallengeo.core.util.Schemas;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
+@Builder
 @Entity
 @NoArgsConstructor
-@Table(schema = Schema.PORTAL_SEGURANCA, name = "grupo")
-public class Grupo {
+@AllArgsConstructor
+@Table(schema = Schemas.PORTAL_SEGURANCA, name = "grupo")
+public class Grupo implements Serializable {
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
@@ -26,5 +28,15 @@ public class Grupo {
     @NotEmpty
     @Column(name = "codigo")
     private String codigo;
+    @ManyToMany
+    @JoinTable(schema = Schemas.PORTAL_SEGURANCA, name = "grupo_perfil",
+            joinColumns = @JoinColumn(name = "id_grupo", updatable = false, nullable = false, insertable = false),
+            inverseJoinColumns = @JoinColumn(name = "id_perfil", updatable = false, nullable = false, insertable = false))
+    private List<Perfil> perfis;
 
+    @ManyToMany
+    @JoinTable(schema = Schemas.PORTAL_SEGURANCA, name = "grupo_modulo",
+            joinColumns = @JoinColumn(name = "id_grupo", updatable = false, nullable = false, insertable = false),
+            inverseJoinColumns = @JoinColumn(name = "id_modulo", updatable = false, nullable = false, insertable = false))
+    private List<Modulo> modulos;
 }

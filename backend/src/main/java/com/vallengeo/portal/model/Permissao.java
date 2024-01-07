@@ -1,29 +1,30 @@
 package com.vallengeo.portal.model;
 
-import com.vallengeo.core.util.Schema;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.GenericGenerator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vallengeo.core.util.Schemas;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import java.util.UUID;
+import java.io.Serializable;
 
 @Getter
 @Setter
+@Builder
 @Entity
 @NoArgsConstructor
-@Table(schema = Schema.PORTAL_SEGURANCA, name = "permissao")
-public class Permissao {
+@AllArgsConstructor
+@Table(schema = Schemas.PORTAL_SEGURANCA, name = "permissao")
+public class Permissao implements Serializable {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    private UUID id;
-    @NotEmpty
-    @Column(name = "nome")
-    private String nome;
-    @NotEmpty
     @Column(name = "codigo")
     private String codigo;
+
+    @NotEmpty
+    @Column(name = "descricao")
+    private String descricao;
+    @ManyToOne
+	@JoinColumn(name = "id_tela", referencedColumnName = "id", insertable=false, updatable=false)
+	@JsonIgnore
+    private Tela tela;
 }
