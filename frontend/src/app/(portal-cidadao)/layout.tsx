@@ -11,6 +11,9 @@ export const inter = Inter({
 export const metadata: Metadata = {
   title: 'Portal do Cidadão - VallenGeo',
   description: 'VallenGeo - Sistema de Prefeituras',
+  icons: {
+    icon: '/icon.png',
+  },
 }
 
 export default function RootLayout({

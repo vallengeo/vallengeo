@@ -5,15 +5,18 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:bg-[#DBDBDB] disabled:text-[#BABABA]",
+  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:bg-[#DBDBDB] disabled:text-[#BABABA]",
   {
     variants: {
       variant: {
         default: "text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground-hover hover:shadow-[0_4px_4px_0_rgba(0,0,0,0.10)]",
         secondary:
-          "text-lg font-semibold bg-secondary text-secondary-foreground border border-secondary-foreground hover:bg-primary-hover hover:text-primary-foreground-hover hover:border-transparent",
+          "text-lg font-semibold text-secondary-foreground border border-secondary-foreground hover:bg-primary-hover hover:text-primary-foreground-hover hover:border-transparent",
         tertiary:
           "text-lg font-semibold bg-transparent text-secondary-foreground hover:text-primary-hover underline",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         link: "text-primary-foreground hover:text-primary-hover underline-offset-4 underline",
       },
       size: {

@@ -15,29 +15,29 @@ export const links = [
     id: 1,
     titulo: 'Home',
     icon: <Home size={18} />,
-    link: '/home'
+    href: '/home'
   },
   {
     id: 2,
     titulo: 'Imóveis',
     icon: <Map size={18} />,
-    link: '/imoveis'
+    href: '/imoveis'
   },
-  {
-    id: 3,
-    titulo: 'Protocolos',
-    icon: <Archive size={18} />,
-    link: '/protocolos'
-  },
+  // {
+  //   id: 3,
+  //   titulo: 'Protocolos',
+  //   icon: <Archive size={18} />,
+  //   href: '/protocolos'
+  // },
   {
     id: 4,
     titulo: 'Relatórios',
     icon: <ClipboardList size={18} />,
-    link: '/relatorios'
+    href: '/relatorios'
   },
 ];
 
-export default function Navigation() {
+export default function Menu() {
   const pathname = usePathname();
 
   return (
@@ -46,8 +46,8 @@ export default function Navigation() {
         {links.map((link) => (
           <li key={link.id}>
             <Link
-              href={link.link}
-              className={`group flex items-center gap-1 text-sm p-2 ${link.link === pathname ? 'bg-primary text-primary-foreground font-semibold' : ''} rounded-lg hover:bg-primary hover:text-primary-foreground hover:font-semibold`}
+              href={link.href}
+              className={`group flex items-center gap-1 text-sm p-2 ${pathname.indexOf(link.href) > -1 ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : ''} rounded-lg hover:bg-primary hover:text-primary-foreground hover:font-semibold`}
             >
               {link.icon}
               {link.titulo}
