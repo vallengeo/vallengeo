@@ -1,6 +1,5 @@
 package com.vallengeo.portal.service;
 
-import com.vallengeo.portal.model.Perfil;
 import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.repository.UsuarioRepository;
 import org.springframework.security.core.Authentication;
@@ -9,9 +8,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.security.Principal;
-import java.util.Optional;
 
 @Service("authorizationService")
 public class AuthorizationService implements UserDetailsService {
