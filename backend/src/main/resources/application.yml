@@ -1,8 +1,11 @@
 spring:
-# ===============================
-# = BANCO DE DADOS
-# ===============================
+  # ===============================
+  # = BANCO DE DADOS
+  # ===============================
   datasource:
+    url: ${DATABASE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
     url: ${DATABASE_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
@@ -19,12 +22,36 @@ spring:
       ddl-auto: none
     show-sql: 'false'
     open-in-view: false
+    open-in-view: false
   
   # ===============================
-# = FLYWAY
-# ===============================
+  # = FLYWAY
+  # ===============================
   flyway:
     enabled: false
+  
+  # ===============================
+  # = EMAIL
+  # ===============================
+  mail:
+    default-encoding: UTF-8
+    host: ${EMAIL_HOST}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    port: ${EMAIL_PORT}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+    protocol: smtp
+    test-connection: false
+  # ===============================
+  # = MENSAGENS
+  # ===============================
+  messages:
+    basename: i18n/messages
 
 # ===============================
 # SWAGGER
@@ -42,3 +69,27 @@ springdoc:
   api-docs:
     path: /docs
 
+# ===============================
+# SEGURANÇA
+# ===============================
+api:
+  security:
+    token:
+      algorithm: HS256
+      secret: ${JWT_SECRET}
+      expiration: ${JWT_EXPIRATION}
+      refresh: ${JWT_REFRESH}
+
+# ===============================
+# USUARIO
+# ===============================
+usuario:
+  codigoAcesso:
+    validade:
+      minutos: 10
+ 
+# ===============================
+# LOGBACK
+# ===============================
+logging:
+  config: classpath:logback-spring.xml

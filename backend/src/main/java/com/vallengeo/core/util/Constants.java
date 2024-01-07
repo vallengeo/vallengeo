@@ -17,6 +17,11 @@ public class Constants {
     public static final String NOT_FOUND = " não encontrado!";
     public static final String PARAMETER_NOT_FOUND = "Parâmetro não encontrado!";
     public static final String GENERAL_ERROR = "Ocorreu um erro no sistema, tente novamente mais tarde.";
+     public static final String INVALID_PASSWORD = "A senha não atende os requisitos do sistema.";
+
+    public static final String UNAUTHORIZED_ERROR = "Acesso não autorizado. Faça login para continuar.";
+    public static final String FORBIDDEN_ERROR = "Permissões necessárias insuficentes para acessar o recurso.";
+    public static final String FALHA_AUTENTICACAO = "Falha na autenticação!";
 
     public static final String REQUEST_ERROR = "Erro ao processar requisição ";
     public static final String FILE_INVALID_ERROR = "Arquivo inválido.";
@@ -38,4 +43,8 @@ public class Constants {
     public static final String PROBLEM_BASE_URL = "problem";
     public static final URI DEFAULT_TYPE = URI.create(PROBLEM_BASE_URL + "/problem-with-message");
     public static final URI CONSTRAINT_VIOLATION_TYPE = URI.create(PROBLEM_BASE_URL + "/constraint-violation");
+
+    // VALIDACAO
+    public static final String CAMPO_OBRIGATORIO = "O campo é obrigatório.";
+    public static final String EMAIL_INVALIDO = "Favor informar email válido.";
 }
