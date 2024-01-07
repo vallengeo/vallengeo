@@ -6,6 +6,7 @@ import com.vallengeo.portal.service.AuthorizationService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,7 @@ import java.util.function.Function;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class JwtService {
     @Value("${api.security.token.secret}")
     private String jwtSecret;
@@ -33,8 +35,7 @@ public class JwtService {
 
     private final Set<String> revokedTokens = ConcurrentHashMap.newKeySet();
 
-    @Autowired
-    private AuthorizationService authorizationService;
+    private final AuthorizationService authorizationService;
 
     public LoginResponse generateLogin(UserDetails userDetails) {
         String token = generateToken(userDetails);
