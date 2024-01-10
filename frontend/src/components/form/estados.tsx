@@ -9,8 +9,8 @@ import {
 export default function Estados() {
   return (
     <Select name="uf">
-      <SelectTrigger className="w-[180px]">
-        <SelectValue placeholder="Selecione o estado" />
+      <SelectTrigger>
+        <SelectValue />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="AC">Acre</SelectItem>

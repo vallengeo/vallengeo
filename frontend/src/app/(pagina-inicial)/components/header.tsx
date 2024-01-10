@@ -1,7 +1,7 @@
 'use client'
 
 import { Menu, ChevronLeft, X } from "lucide-react";
-import Brasao from "./brasao";
+import Brasao from "../../../components/brasao";
 import Link from "next/link";
 import { useMenuState } from "@/contexts/MenuContext";
 import { Sidebar } from "@/app/(pagina-inicial)/components/sidebar";

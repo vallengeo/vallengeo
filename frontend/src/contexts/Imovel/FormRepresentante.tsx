@@ -9,18 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Check } from "lucide-react";
 import Estados from "@/components/form/estados";
 
+import { getCep, cnpjMask } from "@/lib/utils";
+
 interface FormRepresentanteProps {
   isPJ?: boolean
-}
-
-async function getCep(cep: string) {
-  const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`)
-
-  if (!res.ok) {
-    throw new Error('Failed to fetch data')
-  }
-
-  return res.json();
 }
 
 export function FormRepresentante({ isPJ }: FormRepresentanteProps) {
@@ -30,10 +22,12 @@ export function FormRepresentante({ isPJ }: FormRepresentanteProps) {
     onHandleNext()
   }
 
-  const [endereco, setEndereco] = useState<string>('')
-  const [complemento, setComplemento] = useState<string>('')
-  const [bairro, setBairro] = useState<string>('')
-  const [cidade, setCidade] = useState<string>('')
+  const [dataEndereco, setDataEndereco] = useState({
+    logradouro: '',
+    complemento: '',
+    bairro: '',
+    localidade: '',
+  })
 
   const handleCepChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const newCep = event.target.value
@@ -42,13 +36,23 @@ export function FormRepresentante({ isPJ }: FormRepresentanteProps) {
 
     const data = await getCep(newCep)
 
-    setEndereco(data.logradouro)
-    setComplemento(data.complemento)
-    setBairro(data.bairro)
-    setCidade(data.localidade)
-
-    console.log(data)
+    setDataEndereco({
+      logradouro: data.logradouro,
+      complemento: data.complemento,
+      bairro: data.bairro,
+      localidade: data.localidade,
+    })
   };
+
+  const [cpnj, setCnpj] = useState({ cnpj: '' })
+
+  const cpnjChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setCnpj({
+      ...cpnj,
+      [name]: value
+    })
+  }
 
   return (
     <form onSubmit={onHandleSubmit}>
@@ -83,7 +87,14 @@ export function FormRepresentante({ isPJ }: FormRepresentanteProps) {
                 {isPJ ? (
                   <div className="w-1/4">
                     <Label htmlFor="cnpj">CNPJ*</Label>
-                    <Input type="text" name="cnpj" id="cnpj" maxLength={14} />
+                    <Input
+                      type="text"
+                      name="cnpj"
+                      id="cnpj"
+                      maxLength={18}
+                      value={cnpjMask(cpnj.cnpj)}
+                      onChange={cpnjChange}
+                    />
                   </div>
                 ) : (
                   <>
@@ -128,34 +139,34 @@ export function FormRepresentante({ isPJ }: FormRepresentanteProps) {
                     type="text"
                     name="endereco"
                     id="endereco"
-                    value={endereco}
+                    value={dataEndereco.logradouro}
                     className="max-w-none"
                   />
                 </div>
               </div>
 
               <div className="flex items-start gap-6">
-                <div className="1/5">
+                <div className="w-1/5">
                   <Label htmlFor="numero">Número*</Label>
                   <Input type="number" name="numero" id="numero" />
                 </div>
 
-                <div className="1/5">
+                <div className="w-1/5">
                   <Label htmlFor="complemento">Complemento*</Label>
-                  <Input type="text" name="complemento" id="complemento" value={complemento} />
+                  <Input type="text" name="complemento" id="complemento" value={dataEndereco.complemento} />
                 </div>
 
-                <div className="1/5">
+                <div className="w-1/5">
                   <Label htmlFor="bairro">Bairro*</Label>
-                  <Input type="text" name="bairro" id="bairro" value={bairro} />
+                  <Input type="text" name="bairro" id="bairro" value={dataEndereco.bairro} />
                 </div>
 
-                <div className="1/5">
+                <div className="w-1/5">
                   <Label htmlFor="cidade">Cidade*</Label>
-                  <Input type="text" name="cidade" id="cidade" value={cidade} />
+                  <Input type="text" name="cidade" id="cidade" value={dataEndereco.localidade} />
                 </div>
 
-                <div className="1/5">
+                <div className="w-1/5">
                   <Label htmlFor="uf">UF*</Label>
                   <Estados />
                 </div>
@@ -203,6 +214,7 @@ export function FormRepresentante({ isPJ }: FormRepresentanteProps) {
                       name="cep_pj"
                       id="cep-pj"
                       maxLength={8}
+                      onChange={handleCepChange}
                     />
                   </div>
 

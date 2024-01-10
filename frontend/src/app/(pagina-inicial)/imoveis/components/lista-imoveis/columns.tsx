@@ -74,9 +74,9 @@ export const columns: ColumnDef<Imoveis>[] = [
       }
 
       return (
-        <div className={`text-sm whitespace-nowrap font-light text-white ${bgSelo} w-fit px-2 rounded-3xl`}>
+        <span className={`inline-flex text-sm whitespace-nowrap font-light text-white ${bgSelo} px-2 rounded-3xl`}>
           {row.getValue('situacao')}
-        </div>
+        </span>
       )
     },
   },
@@ -93,7 +93,7 @@ export const columns: ColumnDef<Imoveis>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent className="rounded-2xl" align="end">
             <DropdownMenuItem className="justify-center">
-              <Link href={`/imoveis/visualizar/${row.original.id}`}>
+              <Link href={`/imoveis/ficha/${row.original.id}`}>
                 Visualizar
               </Link>
             </DropdownMenuItem>

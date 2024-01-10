@@ -1,4 +1,4 @@
-import Header from "@/components/header";
+import Header from "../components/header";
 import ListaImoveis from "./components/lista-imoveis";
 
 import { Button } from "@/components/ui/button";

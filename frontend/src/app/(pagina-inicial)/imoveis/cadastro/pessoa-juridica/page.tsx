@@ -3,7 +3,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import Header from "@/components/header";
+import Header from "@/app/(pagina-inicial)/components/header";
 import Steps from "../../components/cadastro/steps";
 
 import { FormRepresentante } from "@/contexts/Imovel/FormRepresentante";

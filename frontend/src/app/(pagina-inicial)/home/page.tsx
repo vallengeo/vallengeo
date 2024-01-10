@@ -1,4 +1,4 @@
-import Header from "@/components/header";
+import Header from "../components/header";
 import TotalCadastros from "./components/total-cadastros";
 import NovosCadastros from "./components/novos-cadastros";
 import EmAndamento from "./components/em-andamento";

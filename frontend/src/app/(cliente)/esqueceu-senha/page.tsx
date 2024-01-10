@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
       <p className="py-6">Informe seu e-mail de cadastro para enviarmos o código de validação.</p>
 
       <form onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="flex flex-col gap-2 mb-6">
+        <div className="flex flex-col mb-6">
           <Label htmlFor="email">E-mail</Label>
           <Input
             id="email"

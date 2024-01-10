@@ -36,7 +36,7 @@ export default function RecoverPasswordPage() {
       </p>
 
       <form onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <Label htmlFor="code">Código</Label>
           <Input
             type="text"

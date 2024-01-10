@@ -38,7 +38,7 @@ export default function ResetPage() {
       <p className="my-6">Informe uma senha válida para prosseguir com o a redefinição de senha.</p>
 
       <form onSubmit={handleSubmit(onHandleSubmit)} className="flex flex-col">
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col mb-2">
           <Label htmlFor="password">Nova senha</Label>
           <Input
             type="password"
@@ -49,7 +49,7 @@ export default function ResetPage() {
           {errors.password && <MessageError>{errors.password.message}</MessageError>}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <Label htmlFor="confirm_password">Repetir Senha</Label>
           <Input
             type="password"

@@ -37,7 +37,7 @@ export default function LoginPage() {
       <p className="mt-8 mb-6">Acesse a plataforma de regularização de imóveis através dos campos abaixo.</p>
 
       <form onSubmit={handleSubmit(onHandleSubmit)} className="flex flex-col">
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col mb-2">
           <Label htmlFor="email">E-mail</Label>
           <Input
             id="email"
@@ -48,7 +48,7 @@ export default function LoginPage() {
           {errors.email && <MessageError>{errors.email.message}</MessageError>}
         </div>
 
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <Label htmlFor="password">Senha</Label>
           <Input
             id="password"
@@ -60,7 +60,7 @@ export default function LoginPage() {
         </div>
 
         <Button variant="link" className="w-fit ml-auto mt-4 mb-6 justify-end px-0">
-          <Link href="/forgotpassword">Esqueci minha senha</Link>
+          <Link href="/esqueceu-senha">Esqueci minha senha</Link>
         </Button>
 
         <div className="flex items-center justify-between gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">

@@ -10,7 +10,7 @@ export default function MessageError({
   className = ''
 }: MessageErrorProps) {
   return (
-    <span className={cn(className, 'text-xs text-red-600 font-medium')}>
+    <span className={cn(className, 'text-xs text-red-600 font-medium mt-2')}>
       {children}
     </span>
   )
