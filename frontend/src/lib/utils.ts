@@ -25,6 +25,8 @@ export const formatarCampo = (value: string, formato: string) => {
 
 const getPattern = (formato: string) => {
   switch (formato) {
+    case 'CNPJ':
+      return [/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, '$1.$2.$3/$4-$5'];
     case 'CPF':
       return [/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4'];
     case 'RG':

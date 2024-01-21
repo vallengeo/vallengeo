@@ -99,10 +99,6 @@ export function CadastroRepresentantePF() {
 
   return (
     <Form {...form}>
-      <pre>
-        {JSON.stringify(formData, null, 2)}
-      </pre>
-
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
           <header className="flex items-center justify-between mb-1">
@@ -233,6 +229,7 @@ export function CadastroRepresentantePF() {
                             <Input
                               id="cep"
                               type="text"
+                              maxLength={9}
                               {...field}
                               onChange={handleChangeCEP}
                             />

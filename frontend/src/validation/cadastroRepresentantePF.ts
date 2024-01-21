@@ -11,7 +11,7 @@ export const representanteFormSchema = z.object({
     telefone: z
       .string({ required_error: "Telefone é obrigatório" }),
     email: z
-      .string({ required_error: "RG é obrigatório" })
+      .string({ required_error: "Email é obrigatório" })
       .email({ message: "E-mail inválido, tente: example@example.com" }),
     cep: z
       .string({ required_error: "CEP é obrigatório" }),

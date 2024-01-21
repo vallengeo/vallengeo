@@ -99,10 +99,6 @@ export function CadastroImovel() {
 
   return (
     <Form {...form}>
-      <pre>
-        {JSON.stringify(formData, null, 2)}
-      </pre>
-
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
           <legend className="sr-only">Informações do imóvel</legend>
