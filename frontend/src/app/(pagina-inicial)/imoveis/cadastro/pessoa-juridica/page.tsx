@@ -4,11 +4,11 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 import Header from "@/app/(pagina-inicial)/components/header";
-import Steps from "../../components/cadastro/steps";
+import Steps from "../components/steps";
 
-import { FormRepresentante } from "@/contexts/Imovel/FormRepresentante";
-import { FormDocumentos } from "@/contexts/Imovel/FormDocumentos";
-import { FormImovel } from "@/contexts/Imovel/FormImovel";
+import { CadastroRepresentantePJ } from "@/app/(pagina-inicial)/imoveis/cadastro/components/representante-pf";
+import { CadastroDocumentos } from "@/app/(pagina-inicial)/imoveis/cadastro/components/documentos";
+import { CadastroImovel } from "@/app/(pagina-inicial)/imoveis/cadastro/components/imovel";
 import { useFormState } from "@/contexts/Imovel/FormContext";
 
 export const metada: Metadata = {
@@ -20,11 +20,11 @@ function ActiveStepFormComponent() {
 
   switch (step) {
     case 1:
-      return <FormRepresentante isPJ />;
+      return <CadastroRepresentantePJ />;
     case 2:
-      return <FormDocumentos />;
+      return <CadastroDocumentos />;
     case 3:
-      return <FormImovel />;
+      return <CadastroImovel />;
     default:
       return null;
   }

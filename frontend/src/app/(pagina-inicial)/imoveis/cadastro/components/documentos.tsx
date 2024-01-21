@@ -1,12 +1,10 @@
-'use client'
-
 import { Button } from "@/components/ui/button";
-import { useFormState } from "./FormContext";
+import { useFormState } from "@/contexts/Imovel/FormContext";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Download } from "lucide-react";
 
-export function FormDocumentos() {
+export function CadastroDocumentos() {
   const { onHandleBack, onHandleNext } = useFormState();
 
   const onHandleSubmit = () => {

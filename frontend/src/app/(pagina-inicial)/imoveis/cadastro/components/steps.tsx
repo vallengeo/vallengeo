@@ -8,7 +8,7 @@ interface CurrentStepProps {
   currentStep: number;
 }
 
-export default function Steps({ currentStep }: CurrentStepProps) {
+export function Steps({ currentStep }: CurrentStepProps) {
   return (
     <div className="bg-white border border-[#E8E1E1] rounded-2xl px-16">
       <div className="flex items-center justify-center max-w-[450px] h-[145px] mx-auto">
