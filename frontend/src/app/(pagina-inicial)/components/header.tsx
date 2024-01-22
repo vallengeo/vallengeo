@@ -1,13 +1,13 @@
 'use client'
 
 import Link from "next/link";
-import { useMenuState } from "@/contexts/MenuContext";
+import { useState } from "react"
 
 import { Menu, ChevronLeft, X } from "lucide-react";
 import { Sidebar } from "@/app/(pagina-inicial)/components/sidebar";
 import Brasao from "../../../components/brasao";
 
-interface HeaderProps {
+interface IHeader {
   title: string;
   children?: React.ReactNode;
   linkBack?: string;
@@ -17,8 +17,18 @@ export default function Header({
   title,
   children,
   linkBack
-}: HeaderProps) {
-  const { open, onHandleOpen, onHandleClosed } = useMenuState();
+}: IHeader) {
+  const [openMenu, setOpenMenu] = useState(false);
+
+  function handleOpenMenu() {
+    setOpenMenu(!openMenu)
+
+    if (openMenu) {
+      document.querySelector('body')?.classList.remove('overflow-hidden')
+    } else {
+      document.querySelector('body')?.classList.add('overflow-hidden')
+    }
+  }
 
   return (
     <header className="flex items-center justify-between gap-y-4 max-md:flex-col-reverse max-md:items-start">
@@ -37,15 +47,15 @@ export default function Header({
 
       <div className="flex items-center justify-between max-md:w-full">
         <Brasao/>
-        <Menu onClick={onHandleOpen} size={32} className="md:hidden" />
+        <Menu onClick={handleOpenMenu} size={32} className="md:hidden" />
 
-        {open && (
+        {openMenu && (
           <>
             <div className="fixed inset-0 max-w-[225px] z-50">
-              <X className="absolute text-white right-4 top-9" onClick={onHandleClosed} />
+              <X className="absolute text-white right-4 top-9" onClick={handleOpenMenu} />
               <Sidebar/>
             </div>
-            <div className="fixed bg-black/50 inset-0 z-40 transition-colors" onClick={onHandleClosed} />
+            <div className="fixed bg-black/50 inset-0 z-40 transition-colors" onClick={handleOpenMenu} />
           </>
         )}
       </div>
