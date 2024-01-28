@@ -76,8 +76,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl mb-6">Lista de imóveis</h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-xl">Lista de imóveis</h2>
 
         <div className="flex items-center gap-3">
           <DropdownMenu>

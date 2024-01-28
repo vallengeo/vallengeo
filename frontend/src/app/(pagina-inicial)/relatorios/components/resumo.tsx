@@ -23,27 +23,27 @@ import { Download } from "lucide-react"
 const relatorios = [
   {
     id: 1,
-    name: "elatorio1212210.pdf",
+    name: "relatorio1212210.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 2,
-    name: "elatorio1212210.pdf",
+    name: "relatorio1212210.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 3,
-    name: "elatorio1212210.pdf",
+    name: "relatorio1212210.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 4,
-    name: "elatorio1212210.pdf",
+    name: "relatorio1212210.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 5,
-    name: "elatorio1212210.pdf",
+    name: "relatorio1212210.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   }
 ]

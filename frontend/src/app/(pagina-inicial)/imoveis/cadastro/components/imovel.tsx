@@ -105,14 +105,14 @@ export function CadastroImovel() {
 
           <header className="flex items-center justify-between mb-1">
             <h2 className="text-xl">Informações do imóvel</h2>
-            <span>*itens obrigatórios</span>
+            <span className="max-md:hidden">*itens obrigatórios</span>
           </header>
 
           <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
 
           <div className="space-y-6 mt-6">
-            <div className="flex items-start gap-6">
-              <div className="w-[35%]">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-[35%]">
                 <FormField
                   control={form.control}
                   name="grupo"
@@ -135,7 +135,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-[35%]">
+              <div className="w-full md:w-[35%]">
                 <FormField
                   control={form.control}
                   name="divisao"
@@ -158,7 +158,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-[30%]">
+              <div className="w-full md:w-[30%]">
                 <FormField
                   control={form.control}
                   name="imovel_cep"
@@ -181,8 +181,8 @@ export function CadastroImovel() {
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
-              <div className="w-2/5">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-2/5">
                 <FormField
                   control={form.control}
                   name="imovel_endereco"
@@ -203,7 +203,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-[30%]">
+              <div className="w-full md:w-[30%]">
                 <FormField
                   control={form.control}
                   name="imovel_numero"
@@ -223,7 +223,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-[30%]">
+              <div className="w-full md:w-[30%]">
                 <FormField
                   control={form.control}
                   name="imovel_complemento"
@@ -243,8 +243,8 @@ export function CadastroImovel() {
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
-              <div className="w-2/5">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-2/5">
                 <FormField
                   control={form.control}
                   name="imovel_bairro"
@@ -264,7 +264,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-3/5">
+              <div className="w-full md:w-3/5">
                 <FormField
                   control={form.control}
                   name="imovel_cidade"
@@ -285,7 +285,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-2/5">
+              <div className="w-full md:w-2/5">
                 <FormField
                   control={form.control}
                   name="imovel_uf"
@@ -316,14 +316,14 @@ export function CadastroImovel() {
 
           <header className="flex items-center justify-between mb-1">
             <h2 className="text-xl">Caracterização do imóvel</h2>
-            <span>*itens obrigatórios</span>
+            <span className="max-md:hidden">*itens obrigatórios</span>
           </header>
 
           <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
 
           <div className="space-y-6 mt-6">
-            <div className="flex items-start gap-6">
-              <div className="w-1/3">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-1/3">
                 <FormField
                   control={form.control}
                   name="setor"
@@ -344,7 +344,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-1/3">
+              <div className="w-full md:w-1/3">
                 <FormField
                   control={form.control}
                   name="quadra"
@@ -365,7 +365,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-1/3">
+              <div className="w-full md:w-1/3">
                 <FormField
                   control={form.control}
                   name="lote"
@@ -387,8 +387,8 @@ export function CadastroImovel() {
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
-              <div className="w-1/2">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-1/2">
                 <FormField
                   control={form.control}
                   name="unidade"
@@ -409,7 +409,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-1/4">
+              <div className="w-full md:w-1/4">
                 <FormField
                   control={form.control}
                   name="area_terreno"
@@ -430,7 +430,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-1/4">
+              <div className="w-full md:w-1/4">
                 <FormField
                   control={form.control}
                   name="testada"
@@ -452,8 +452,8 @@ export function CadastroImovel() {
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
-              <div className="w-1/2">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-1/2">
                 <FormField
                   control={form.control}
                   name="fracao"
@@ -474,7 +474,7 @@ export function CadastroImovel() {
                 />
               </div>
 
-              <div className="w-2/5">
+              <div className="w-full md:w-2/5">
                 <FormField
                   control={form.control}
                   name="data_inclusao"

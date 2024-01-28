@@ -16,7 +16,7 @@ export function CadastroDocumentos() {
       <div className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
         <header className="flex items-center justify-between mb-1">
           <h2 className="text-xl">Enviar documentos</h2>
-          <span>*itens obrigatórios</span>
+          <span className="max-md:hidden">*itens obrigatórios</span>
         </header>
 
         <p>Anexe os documentos no campo abaixo. Os arquivos aceitos são  shape, dwg, kml e PDF.</p>
@@ -53,7 +53,7 @@ export function CadastroDocumentos() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-y-4">
               <span className="font-bold">Outros documentos</span>
 
               <Label className="inline-flex items-center justify-center text-lg font-semibold text-secondary-foreground border border-secondary-foreground hover:bg-primary-hover hover:text-primary-foreground-hover hover:border-transparent cursor-pointer h-10 rounded-3xl px-10 py-2">
@@ -61,8 +61,6 @@ export function CadastroDocumentos() {
                 anexar arquivo
               </Label>
             </div>
-
-
           </div>
         </div>
       </div>

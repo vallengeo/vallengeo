@@ -1,8 +1,9 @@
+import Link from "next/link";
 
 import Header from "@/app/(pagina-inicial)/components/header";
+
 import { Button } from "@/components/ui/button";
 import { Building, Download, PenSquare } from "lucide-react";
-import Link from "next/link";
 
 export default function FichaImovelPage({ params }: { params: { id: string } }) {
   return (
@@ -21,7 +22,7 @@ export default function FichaImovelPage({ params }: { params: { id: string } }) 
       </Header>
 
       <main className="space-y-6 mt-6 mb-4">
-        <div className="flex items-center justify-between flex-wrap bg-white border border-input rounded-3xl px-8 py-4">
+        <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl px-8 py-4">
           <div className="flex items-center gap-5">
             <Building size={32} />
 
@@ -51,7 +52,7 @@ export default function FichaImovelPage({ params }: { params: { id: string } }) 
             </Link>
           </header>
 
-          <div className="grid grid-cols-4 gap-4 mt-5">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5">
             <div className="flex flex-col gap-1">
               <span className="font-medium">Número de protocolo</span>
               <span>50203</span>
@@ -77,7 +78,7 @@ export default function FichaImovelPage({ params }: { params: { id: string } }) 
         <div className="bg-white border border-input rounded-3xl px-8 py-6">
           <h2 className="text-xl">Representante do imóvel</h2>
 
-          <div className="grid grid-cols-4 gap-6 mt-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-6">
             <div className="flex flex-col">
               <span className="font-medium">Nome Completo</span>
               <span>Davi Luan Manuel da Cruz</span>
@@ -143,7 +144,7 @@ export default function FichaImovelPage({ params }: { params: { id: string } }) 
         <div className="bg-white border border-input rounded-3xl px-8 py-6">
           <h2 className="text-xl">Caracterização do imóvel</h2>
 
-          <div className="flex justify-between flex-wrap gap-4 mt-6">
+          <div className="md:flex md:justify-between md:flex-wrap grid grid-cols-2 gap-4 mt-6">
             <div className="flex flex-col gap-y-4">
               <span className="font-medium">Setor</span>
               <span>Zona A</span>

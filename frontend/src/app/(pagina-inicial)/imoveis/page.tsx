@@ -28,8 +28,8 @@ export default function ImoveisPage() {
       </Header>
 
       <main className="space-y-6 my-6">
-        <div className="flex items-center justify-between bg-white border border-input rounded-3xl p-7">
-          <h2 className="text-xl">Cadastrar um<br/> novo imóvel</h2>
+        <div className="flex items-center justify-between flex-wrap gap-4 bg-white border border-input rounded-3xl p-7">
+          <h2 className="text-xl md:max-w-[180px]">Cadastrar um novo imóvel</h2>
 
           <Dialog>
             <DialogTrigger asChild>

@@ -149,8 +149,8 @@ export function CadastroRepresentantePJ() {
               <legend className="sr-only">Dados pessoais</legend>
 
               <div className="space-y-6">
-                <div className="flex items-start gap-6">
-                  <div className="w-1/2">
+                <div className="flex items-start gap-6 max-md:flex-col">
+                  <div className="w-full md:w-1/2">
                     <FormField
                       control={form.control}
                       name="razao_social"
@@ -170,7 +170,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/4">
+                  <div className="w-full md:w-1/4">
                     <FormField
                       control={form.control}
                       name="cnpj"
@@ -192,7 +192,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/4">
+                  <div className="w-full md:w-1/4">
                     <FormField
                       control={form.control}
                       name="telefone"
@@ -215,8 +215,8 @@ export function CadastroRepresentantePJ() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-6">
-                  <div className="w-1/4">
+                <div className="flex items-start gap-6 max-md:flex-col">
+                  <div className="w-full md:w-1/4">
                     <FormField
                       control={form.control}
                       name="email"
@@ -236,7 +236,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/5">
+                  <div className="w-full md:w-1/5">
                     <FormField
                       control={form.control}
                       name="cep"
@@ -258,7 +258,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="flex-1">
+                  <div className="w-full md:flex-1">
                     <FormField
                       control={form.control}
                       name="endereco"
@@ -280,8 +280,8 @@ export function CadastroRepresentantePJ() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-6">
-                  <div className="w-1/5">
+                <div className="flex items-start gap-6 max-md:flex-col">
+                  <div className="w-full md:w-1/5">
                     <FormField
                       control={form.control}
                       name="numero"
@@ -301,7 +301,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/5">
+                  <div className="w-full md:w-1/5">
                     <FormField
                       control={form.control}
                       name="complemento"
@@ -320,7 +320,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/5">
+                  <div className="w-full md:w-1/5">
                     <FormField
                       control={form.control}
                       name="bairro"
@@ -340,7 +340,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/5">
+                  <div className="w-full md:w-1/5">
                     <FormField
                       control={form.control}
                       name="cidade"
@@ -360,7 +360,7 @@ export function CadastroRepresentantePJ() {
                     />
                   </div>
 
-                  <div className="w-1/5">
+                  <div className="w-full md:w-1/5">
                     <FormField
                       control={form.control}
                       name="uf"
@@ -391,8 +391,8 @@ export function CadastroRepresentantePJ() {
             <legend className="sr-only m-0">Dados representante</legend>
 
             <div className="space-y-6">
-              <div className="flex items-start gap-6">
-                <div className="flex-1">
+              <div className="flex items-start gap-6 max-md:flex-col">
+                <div className="w-full md:flex-1">
                   <FormField
                     control={form.control}
                     name="nome_representante"
@@ -413,7 +413,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="cpf_representante"
@@ -435,7 +435,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="rg_representante"
@@ -457,7 +457,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="telefone_representante"
@@ -480,8 +480,8 @@ export function CadastroRepresentantePJ() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-6">
-                <div className="w-1/4">
+              <div className="flex items-start gap-6 max-md:flex-col">
+                <div className="w-full md:w-1/4">
                   <FormField
                     control={form.control}
                     name="email_representante"
@@ -501,7 +501,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="cep_representante"
@@ -523,7 +523,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="flex-1">
+                <div className="w-full md:flex-1">
                   <FormField
                     control={form.control}
                     name="endereco_representante"
@@ -545,8 +545,8 @@ export function CadastroRepresentantePJ() {
                 </div>
               </div>
 
-              <div className="flex items-start gap-6">
-                <div className="w-1/5">
+              <div className="flex items-start gap-6 max-md:flex-col">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="numero_representante"
@@ -566,7 +566,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="complemento_representante"
@@ -585,7 +585,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="bairro_representante"
@@ -605,7 +605,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="cidade_representante"
@@ -625,7 +625,7 @@ export function CadastroRepresentantePJ() {
                   />
                 </div>
 
-                <div className="w-1/5">
+                <div className="w-full md:w-1/5">
                   <FormField
                     control={form.control}
                     name="uf_representante"
@@ -654,7 +654,7 @@ export function CadastroRepresentantePJ() {
           <fieldset className="space-y-6">
             <legend className="sr-only">Informação de contato</legend>
 
-            <header className="flex items-center gap-4">
+            <header className="flex items-center flex-wrap gap-4">
               <h2 className="text-xl">Informação de contato:</h2>
 
               <FormField
@@ -666,7 +666,7 @@ export function CadastroRepresentantePJ() {
                       <RadioGroup
                         defaultValue="outro"
                         onValueChange={field.onChange}
-                        className="flex items-center gap-4"
+                        className="flex items-center flex-wrap gap-4"
                         {...field}
                       >
                         <FormItem className="flex items-center space-x-3 space-y-0">
@@ -692,8 +692,8 @@ export function CadastroRepresentantePJ() {
               />
             </header>
 
-            <div className="flex items-start gap-6">
-              <div className="w-[35%]">
+            <div className="flex items-start gap-6 max-md:flex-col">
+              <div className="w-full md:w-[35%]">
                 <FormField
                   control={form.control}
                   name="nome_contato"
@@ -713,7 +713,7 @@ export function CadastroRepresentantePJ() {
                 />
               </div>
 
-              <div className="w-1/4">
+              <div className="w-full md:w-1/4">
                 <FormField
                   control={form.control}
                   name="telefone_contato"
