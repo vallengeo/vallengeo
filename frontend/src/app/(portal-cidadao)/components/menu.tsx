@@ -38,7 +38,7 @@ export default function Menu() {
           </DropdownMenu>
         </div>
         :
-        <Link href="/acessar">
+        <Link href="/autenticacao/login">
           <Button variant="default">
             Entrar
           </Button>

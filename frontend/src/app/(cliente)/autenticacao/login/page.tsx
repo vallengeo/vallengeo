@@ -60,7 +60,7 @@ export default function LoginPage() {
         </div>
 
         <Button variant="link" className="w-fit ml-auto mt-4 mb-6 justify-end px-0">
-          <Link href="/esqueceu-senha">Esqueci minha senha</Link>
+          <Link href="/usuario/publico/esqueci-minha-senha">Esqueci minha senha</Link>
         </Button>
 
         <div className="flex items-center justify-between gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
