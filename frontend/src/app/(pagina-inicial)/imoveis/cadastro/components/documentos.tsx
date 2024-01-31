@@ -43,10 +43,10 @@ export function CadastroDocumentos() {
           </div>
 
           <div className="flex flex-col gap-3">
-            <span className="font-bold">Documento do proprietário (comprima em um arquivo .ZIP ou .RAR)</span>
+            <span className="font-bold">Documento do proprietário (comprima em um arquivo .ZIP)</span>
 
             <Label className="flex items-center justify-between rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors">
-              <Input type="file" accept=".zip,.rar" className="sr-only" />
+              <Input type="file" accept=".zip" className="sr-only" />
               <span className="text-[#70C64D] font-bold underline">documentos.rar</span>
               <Download />
             </Label>

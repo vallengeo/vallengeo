@@ -50,10 +50,7 @@ const relatorios = [
 
 export function ResumoRelatorios() {
   const form = useForm<relatoriosData>({
-    resolver: zodResolver(relatoriosSchema),
-    defaultValues: {
-      items: ['imoveis'],
-    }
+    resolver: zodResolver(relatoriosSchema)
   })
 
   const onSubmit: SubmitHandler<relatoriosData> = (data) => {
@@ -89,13 +86,20 @@ export function ResumoRelatorios() {
                               <Checkbox
                                 checked={field.value?.includes(item.id)}
                                 onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.id])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.id
-                                        )
-                                      )
+                                  const isChecked = checked
+                                  const updatedValue = field.value ?? []
+
+                                  if (isChecked) {
+                                    updatedValue.push(item.id)
+                                  } else {
+                                    const index = updatedValue.indexOf(item.id)
+
+                                    if (index !== -1) {
+                                      updatedValue.splice(index, 1)
+                                    }
+                                  }
+
+                                  field.onChange(updatedValue)
                                 }}
                               />
                             </FormControl>
