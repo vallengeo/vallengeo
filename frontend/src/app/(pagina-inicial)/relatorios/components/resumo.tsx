@@ -1,7 +1,5 @@
 "use client"
 
-import Link from "next/link"
-
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form"
 
@@ -19,36 +17,72 @@ import {
 } from "@/components/ui/form"
 
 import { Download } from "lucide-react"
+import { useState } from "react"
+import { Pagination } from "./pagination"
 
-const relatorios = [
+type Relatorio = {
+  id: number;
+  name: string;
+  link: string;
+}
+
+const relatorios: Relatorio[] = [
   {
     id: 1,
-    name: "relatorio1212210.pdf",
+    name: "relatorio01.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 2,
-    name: "relatorio1212210.pdf",
+    name: "relatorio02.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 3,
-    name: "relatorio1212210.pdf",
+    name: "relatorio03.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 4,
-    name: "relatorio1212210.pdf",
+    name: "relatorio04.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   },
   {
     id: 5,
-    name: "relatorio1212210.pdf",
+    name: "relatorio05.pdf",
+    link: "/relatorios/relatorio1212210.pdf",
+  },
+  {
+    id: 6,
+    name: "relatorio06.pdf",
+    link: "/relatorios/relatorio1212210.pdf",
+  },
+  {
+    id: 7,
+    name: "relatorio07.pdf",
+    link: "/relatorios/relatorio1212210.pdf",
+  },
+  {
+    id: 8,
+    name: "relatorio08.pdf",
     link: "/relatorios/relatorio1212210.pdf",
   }
 ]
 
 export function ResumoRelatorios() {
+  const itemsPerPage = 7;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = relatorios.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(relatorios.length / itemsPerPage);
+
+  const paginate = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
+  };
+
   const form = useForm<relatoriosData>({
     resolver: zodResolver(relatoriosSchema)
   })
@@ -128,8 +162,8 @@ export function ResumoRelatorios() {
           <h2 className="text-xl">Resumo de imóveis</h2>
 
           <div className="space-y-2 mt-4">
-            {relatorios.map(relatorio => (
-              <Link
+            {currentItems.map(relatorio => (
+              <a
                 key={relatorio.id}
                 href={relatorio.link}
                 download
@@ -137,9 +171,15 @@ export function ResumoRelatorios() {
               >
                 <span>{relatorio.name}</span>
                 <Download size={24} />
-              </Link>
+              </a>
             ))}
           </div>
+
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            paginate={paginate}
+          />
         </div>
       )}
     </>

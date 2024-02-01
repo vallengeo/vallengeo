@@ -37,7 +37,7 @@ PaginationItem.displayName = "PaginationItem"
 type PaginationLinkProps = {
   isActive?: boolean
 } & Pick<ButtonProps, "size"> &
-  React.ComponentProps<"a">
+  React.ComponentProps<"button">
 
 const PaginationLink = ({
   className,
@@ -45,7 +45,7 @@ const PaginationLink = ({
   size = "icon",
   ...props
 }: PaginationLinkProps) => (
-  <a
+  <button
     aria-current={isActive ? "page" : undefined}
     className={cn(
       buttonVariants({
@@ -66,7 +66,7 @@ const PaginationPrevious = ({
   <PaginationLink
     aria-label="Go to previous page"
     size="default"
-    className={cn("w-6 h-6 text-white bg-primary disabled:bg-[#DBDBDB] disabled:text-[#BABABA] hover:bg-primary-hover hover:text-primary-foreground-hover hover:shadow-[0_4px_4px_0_rgba(0,0,0,0.10)] rounded-full gap-1 p-0", className)}
+    className={cn("w-6 h-6 text-white bg-[#70C64D] disabled:bg-[#DBDBDB] disabled:text-[#BABABA] hover:bg-primary-hover hover:text-primary-foreground-hover hover:shadow-[0_4px_4px_0_rgba(0,0,0,0.10)] rounded-full gap-1 p-0", className)}
     {...props}
   >
     <ChevronLeft className="h-4 w-4" />
@@ -82,7 +82,7 @@ const PaginationNext = ({
   <PaginationLink
     aria-label="Go to next page"
     size="default"
-    className={cn("w-6 h-6 text-white bg-primary disabled:bg-[#DBDBDB] disabled:text-[#BABABA] hover:bg-primary-hover hover:text-primary-foreground-hover hover:shadow-[0_4px_4px_0_rgba(0,0,0,0.10)] rounded-full gap-1 p-0", className)}
+    className={cn("w-6 h-6 text-white bg-[#70C64D] disabled:bg-[#DBDBDB] disabled:text-[#BABABA] hover:bg-primary-hover hover:text-primary-foreground-hover hover:shadow-[0_4px_4px_0_rgba(0,0,0,0.10)] rounded-full gap-1 p-0", className)}
     {...props}
   >
     <span className="sr-only">Next</span>
