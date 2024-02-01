@@ -18,18 +18,18 @@ import Link from "next/link"
 
 export type Imoveis = {
   id: string | number
-  imoveis_cadastrados: string
+  imoveis: string
   logradouro: string
-  numero_e_complemento: string
+  numero: string
   bairro: string
-  tipo_imovel: "Comercial" | "Residencial" | "Misto"
+  tipo: "Comercial" | "Residencial" | "Misto"
   telefone: string
   situacao: "Aprovado" | "Reprovado" | "Em análise" | "Cancelado"
 }
 
 export const columns: ColumnDef<Imoveis>[] = [
   {
-    accessorKey: "imoveis_cadastrados",
+    accessorKey: "imoveis",
     header: () => <div>Imóveis cadastrados</div>,
   },
   {
@@ -37,7 +37,7 @@ export const columns: ColumnDef<Imoveis>[] = [
     header: () => <div>Logradouro</div>,
   },
   {
-    accessorKey: "numero_e_complemento",
+    accessorKey: "numero",
     header: () => <div>Número e Complemento</div>,
   },
   {
@@ -45,7 +45,7 @@ export const columns: ColumnDef<Imoveis>[] = [
     header: () => <div>Bairro</div>,
   },
   {
-    accessorKey: "tipo_imovel",
+    accessorKey: "tipo",
     header: () => <div>Tipo de imóvel</div>,
   },
   {
@@ -81,7 +81,7 @@ export const columns: ColumnDef<Imoveis>[] = [
     },
   },
   {
-    id: "actions",
+    id: "acoes",
     cell: ({ row }) => {
       return (
         <DropdownMenu>
