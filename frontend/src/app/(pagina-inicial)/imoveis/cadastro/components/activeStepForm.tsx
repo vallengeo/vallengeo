@@ -18,7 +18,7 @@ export function ActiveStepFormComponent({ isPJ = false }: IActiveStepFormCompone
 
   switch (step) {
     case 1:
-      let formRepresentante = isPJ ? <CadastroRepresentantePJ /> : <CadastroRepresentantePF />;
+      let formRepresentante = isPJ ? <CadastroRepresentantePJ/> : <CadastroRepresentantePF/>;
       currentForm = formRepresentante;
       break;
     case 2:
