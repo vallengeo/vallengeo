@@ -4,11 +4,24 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form";
+
+import Support from "@/components/support";
+
 const resetPasswordSchema = z.object({
-  password: z.string()
+  password: z.string({ required_error: "Senha é obrigatório" })
     .nonempty("Senha é obrigatório")
     .min(6, "Mínimo 6 dígitos"),
-  confirm_password: z.string()
+  confirm_password: z.string({ required_error: "Senha é obrigatório" })
     .nonempty("Senha é obrigatório")
     .min(6, "Mínimo 6 dígitos")
 })
@@ -19,55 +32,73 @@ const resetPasswordSchema = z.object({
 
 type resetPasswordData = z.infer<typeof resetPasswordSchema>
 
-import Support from "@/components/support";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import MessageError from "@/components/message-error";
-
 export default function ResetPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm<resetPasswordData>({
+  const form = useForm<resetPasswordData>({
     resolver: zodResolver(resetPasswordSchema)
   });
 
-  const onHandleSubmit: SubmitHandler<resetPasswordData> = data => console.log(data);
+  const onSubmit: SubmitHandler<resetPasswordData> = (data) => {
+    console.log(data);
+  }
 
   return (
     <div>
       <h1 className="text-[2rem]/10 font-bold mt-6">Redefinir sua senha</h1>
       <p className="my-6">Informe uma senha válida para prosseguir com o a redefinição de senha.</p>
 
-      <form onSubmit={handleSubmit(onHandleSubmit)} className="flex flex-col">
-        <div className="flex flex-col mb-2">
-          <Label htmlFor="password">Nova senha</Label>
-          <Input
-            type="password"
-            id="password"
-            placeholder="********"
-            {...register('password')}
-          />
-          {errors.password && <MessageError>{errors.password.message}</MessageError>}
-        </div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+          <div className="flex flex-col mb-2">
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="password">Nova senha</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="password"
+                      type="password"
+                      placeholder="********"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        <div className="flex flex-col">
-          <Label htmlFor="confirm_password">Repetir Senha</Label>
-          <Input
-            type="password"
-            id="confirm_password"
-            placeholder="********"
-            {...register('confirm_password')}
-          />
-          {errors.confirm_password && <MessageError>{errors.confirm_password.message}</MessageError>}
-        </div>
+          <div className="flex flex-col">
+            <FormField
+              control={form.control}
+              name="confirm_password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="confirm_password">Repetir senha</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="confirm_password"
+                      type="password"
+                      placeholder="********"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
-        <div className="flex items-center justify-between mt-6 gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
-          <Support/>
+          <div className="flex items-center justify-between mt-6 gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
+            <Support/>
 
-          <Button type="submit" variant="default" className="px-16 h-12">
-            Cadastrar
-          </Button>
-        </div>
-      </form>
+            <Button type="submit" variant="default" className="px-16 h-12">
+              Cadastrar
+            </Button>
+          </div>
+        </form>
+      </Form>
     </div>
   )
 }

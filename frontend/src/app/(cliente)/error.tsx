@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
+import Support from "@/components/support"
 
 // import { useEffect } from 'react'
 
@@ -30,11 +31,7 @@ export default function Error({
           Tente novamente
         </Button>
 
-        <Button variant="default" className="flex-1 h-12">
-          <a href="#">
-            Suporte
-          </a>
-        </Button>
+        <Support variant="default" />
       </div>
     </div>
   )

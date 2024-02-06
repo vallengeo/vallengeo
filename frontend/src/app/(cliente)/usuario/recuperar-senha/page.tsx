@@ -4,8 +4,18 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
 
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from "@/components/ui/form"
+
 const recoveryPasswordUserFormSchema = z.object({
-  code: z.string()
+  code: z.string({ required_error: "Código não pode ser vazio" })
     .length(6, {
       message: 'O código deve ter 6 dígitos.'
     })
@@ -16,16 +26,14 @@ const recoveryPasswordUserFormSchema = z.object({
 
 type recoveryPasswordUserFormData = z.infer<typeof recoveryPasswordUserFormSchema>
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import MessageError from "@/components/message-error";
-
 export default function RecoverPasswordPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm<recoveryPasswordUserFormData>({
+  const form = useForm<recoveryPasswordUserFormData>({
     resolver: zodResolver(recoveryPasswordUserFormSchema)
   });
 
-  const onHandleSubmit: SubmitHandler<recoveryPasswordUserFormData> = data => console.log(data);
+  const onSubmit: SubmitHandler<recoveryPasswordUserFormData> = (data) => {
+    console.log(data);
+  }
 
   return (
     <div>
@@ -35,18 +43,30 @@ export default function RecoverPasswordPage() {
         Por favor, forneça-o no campo abaixo para proceder com a redefinição da sua senha de usuário.
       </p>
 
-      <form onSubmit={handleSubmit(onHandleSubmit)}>
-        <div className="flex flex-col">
-          <Label htmlFor="code">Código</Label>
-          <Input
-            type="text"
-            id="code"
-            {...register('code')}
-            maxLength={6}
-          />
-          {errors.code && <MessageError>{errors.code.message}</MessageError>}
-        </div>
-      </form>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex flex-col">
+            <FormField
+              control={form.control}
+              name="code"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="email">Código</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="code"
+                      type="text"
+                      maxLength={6}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </form>
+      </Form>
     </div>
   )
 }
