@@ -1,6 +1,5 @@
-import Header from "../components/header";
-
 import { Metadata } from "next";
+import { Header } from "../components/header";
 import { ResumoRelatorios } from "../relatorios/components/resumo";
 
 export const metadata: Metadata = {

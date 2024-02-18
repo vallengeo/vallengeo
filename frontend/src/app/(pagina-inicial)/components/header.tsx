@@ -5,19 +5,19 @@ import { useState } from "react"
 
 import { Menu, ChevronLeft, X } from "lucide-react";
 import { Sidebar } from "@/app/(pagina-inicial)/components/sidebar";
-import Brasao from "../../../components/brasao";
+import { Brasao } from "../../../components/brasao";
 
-interface IHeader {
+interface HeaderProps {
   title: string;
   children?: React.ReactNode;
   linkBack?: string;
 }
 
-export default function Header({
+export function Header({
   title,
   children,
   linkBack
-}: IHeader) {
+}: HeaderProps) {
   const [openMenu, setOpenMenu] = useState(false);
 
   function handleOpenMenu() {

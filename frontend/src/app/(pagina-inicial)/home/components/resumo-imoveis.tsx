@@ -49,7 +49,7 @@ async function getData(): Promise<Imoveis[]> {
   ]
 }
 
-export default async function ResumoImoveis() {
+export async function ResumoImoveis() {
   const data = await getData()
 
   return (

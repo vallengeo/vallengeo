@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { Metadata } from "next";
-import Header from "@/app/(pagina-inicial)/components/header";
+import { Header } from "@/app/(pagina-inicial)/components/header";
 import { ActiveStepFormComponent } from "../components/activeStepForm";
 
 export const metadata: Metadata = {

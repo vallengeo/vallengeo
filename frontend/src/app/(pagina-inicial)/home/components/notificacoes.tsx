@@ -1,4 +1,4 @@
-import { Bell, ChevronRight } from "lucide-react";
+import { NotificacoesRecentes } from "./notificacoes/recentes";
 
 import {
   Dialog,
@@ -7,10 +7,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Bell, ChevronRight } from "lucide-react";
 
-import NotificacoesRecentes from "./notificacoes/recentes";
-
-export default function Notificacoes() {
+export function Notificacoes() {
   return (
     <Dialog>
       <DialogTrigger asChild>

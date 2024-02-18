@@ -7,7 +7,7 @@ interface ProfileProps {
   className?: string;
 }
 
-export default function Profile({
+export function Profile({
   className = ''
 }: ProfileProps) {
   return (

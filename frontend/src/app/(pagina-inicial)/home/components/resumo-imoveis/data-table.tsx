@@ -28,7 +28,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import Legenda from "@/components/legenda"
+import { Legenda } from "./legenda"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]

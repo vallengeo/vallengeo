@@ -1,4 +1,4 @@
-export default function MapaCidade() {
+export function MapaCidade() {
   return (
     <div>Mapa</div>
   )

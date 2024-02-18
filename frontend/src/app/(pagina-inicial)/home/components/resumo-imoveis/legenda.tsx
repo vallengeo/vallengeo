@@ -4,7 +4,7 @@ interface LegendaProps {
   className?: string;
 }
 
-export default function Legenda({
+export function Legenda({
   className
 }: LegendaProps) {
   return (

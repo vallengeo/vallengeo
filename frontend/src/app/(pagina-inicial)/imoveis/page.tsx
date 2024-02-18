@@ -1,8 +1,10 @@
-import Header from "../components/header";
-import ListaImoveis from "./components/lista-imoveis";
+import { Metadata } from "next";
+
+import { Header } from "../components/header";
+import { ListaImoveis } from "./components/lista-imoveis";
+import { CadastroTipoPessoa } from "./components/cadastro/tipo-pessoa";
 
 import { Button } from "@/components/ui/button";
-
 import {
   Dialog,
   DialogContent,
@@ -10,9 +12,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import CadastroTipoPessoa from "./components/cadastro/tipo-pessoa";
-
-import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: 'Imóveis - VallenGeo',

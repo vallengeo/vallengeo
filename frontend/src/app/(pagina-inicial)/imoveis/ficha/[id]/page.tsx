@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import Header from "@/app/(pagina-inicial)/components/header";
-
+import { Header } from "@/app/(pagina-inicial)/components/header";
 import { Button } from "@/components/ui/button";
 import { Building, Download, PenSquare } from "lucide-react";
 

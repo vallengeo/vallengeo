@@ -4,7 +4,7 @@ interface SupportProps {
   variant?: "default" | "secondary" | "tertiary" | "ghost" | "outline" | "link" | null | undefined;
 }
 
-export default function Support({ variant = 'link' }: SupportProps) {
+export function Support({ variant = 'link' }: SupportProps) {
   return (
     <Button variant={variant} className="flex-1">
       <a href="#">

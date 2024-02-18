@@ -87,7 +87,7 @@ async function getData(): Promise<Imoveis[]> {
   ]
 }
 
-export default async function ListaImoveis() {
+export async function ListaImoveis() {
   const data = await getData()
 
   return (

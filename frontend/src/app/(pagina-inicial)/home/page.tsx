@@ -1,14 +1,14 @@
-import Header from "../components/header";
-import TotalCadastros from "./components/total-cadastros";
-import NovosCadastros from "./components/novos-cadastros";
-import EmAndamento from "./components/em-andamento";
-import ProcessosFinalizados from "./components/processos-finalizados";
-import UltimosProcessos from "./components/ultimos-processos";
-import HistoricoProcessos from "./components/historico-processos";
-import Notificacoes from "./components/notificacoes";
-import Welcome from "./components/welcome";
-import ResumoImoveis from "./components/resumo-imoveis";
-import MapaCidade from "@/components/mapa-cidade";
+import { Header } from "../components/header";
+import { TotalCadastros } from "./components/total-cadastros";
+import { NovosCadastros } from "./components/novos-cadastros";
+import { EmAndamento } from "./components/em-andamento";
+import { ProcessosFinalizados } from "./components/processos-finalizados";
+import { UltimosProcessos } from "./components/ultimos-processos";
+import { HistoricoProcessos } from "./components/historico-processos";
+import { Notificacoes } from "./components/notificacoes";
+import { Welcome } from "./components/welcome";
+import { ResumoImoveis } from "./components/resumo-imoveis";
+import { MapaCidade } from "@/components/mapa-cidade";
 
 export default function HomePage() {
   return (

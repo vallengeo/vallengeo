@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import Profile from "@/components/profile";
+import { Profile } from "@/components/profile";
 
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export default function Menu() {
+export function Menu() {
 
   const isLoggedIn = false;
 

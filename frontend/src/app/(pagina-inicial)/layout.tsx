@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
-import '@/styles/globals.css'
 import { Sidebar } from '@/app/(pagina-inicial)/components/sidebar'
-import Copyright from '@/app/(pagina-inicial)/components/copyright'
+import { Copyright } from '@/app/(pagina-inicial)/components/copyright'
+import { Inter } from 'next/font/google'
+import '@/styles/globals.css'
 
 export const inter = Inter({
   subsets: ['latin'],

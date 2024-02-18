@@ -99,7 +99,7 @@ export const columns: ColumnDef<Imoveis>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent className="rounded-2xl" align="end">
             <DropdownMenuItem className="justify-center">
-              <Link href={`/imoveis/visualizar/${row.original.id}`}>
+              <Link href={`/imoveis/ficha/${row.original.id}`}>
                 Visualizar
               </Link>
             </DropdownMenuItem>

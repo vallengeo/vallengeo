@@ -2,17 +2,17 @@
 
 import { useFormState } from "@/contexts/Imovel/FormContext";
 
-import { CadastroRepresentantePJ } from "@/app/(pagina-inicial)/imoveis/cadastro/components/representante-pj";
-import { CadastroRepresentantePF } from "@/app/(pagina-inicial)/imoveis/cadastro/components/representante-pf";
-import { CadastroDocumentos } from "@/app/(pagina-inicial)/imoveis/cadastro/components/documentos";
-import { CadastroImovel } from "@/app/(pagina-inicial)/imoveis/cadastro/components/imovel";
+import { CadastroRepresentantePJ } from "./representante-pj";
+import { CadastroRepresentantePF } from "./representante-pf";
+import { CadastroDocumentos } from "./documentos";
+import { CadastroImovel } from "./imovel";
 import { Steps } from "./steps";
 
-interface IActiveStepFormComponent {
+interface ActiveStepFormComponentProps {
   isPJ?: boolean
 }
 
-export function ActiveStepFormComponent({ isPJ = false }: IActiveStepFormComponent) {
+export function ActiveStepFormComponent({ isPJ = false }: ActiveStepFormComponentProps) {
   const { step } = useFormState();
   let currentForm;
 

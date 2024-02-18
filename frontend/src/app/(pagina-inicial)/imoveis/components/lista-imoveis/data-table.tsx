@@ -90,9 +90,9 @@ export function DataTable<TData, TValue>({
               <Input
                 type="search"
                 placeholder="Pesquisar imóvel"
-                value={(table.getColumn("imoveis_cadastrados")?.getFilterValue() as string) ?? ""}
+                value={(table.getColumn("imoveis")?.getFilterValue() as string) ?? ""}
                 onChange={(event) =>
-                  table.getColumn("imoveis_cadastrados")?.setFilterValue(event.target.value)
+                  table.getColumn("imoveis")?.setFilterValue(event.target.value)
                 }
                 className="max-w-sm"
               />

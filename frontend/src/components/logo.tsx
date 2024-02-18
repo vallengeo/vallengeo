@@ -6,7 +6,7 @@ interface LogoProps {
   useBlackLogo?: boolean;
 }
 
-export default function Logo(props: LogoProps) {
+export function Logo(props: LogoProps) {
   return (
     <Image
       src={props.useBlackLogo ? logoBlack : logoWhite}

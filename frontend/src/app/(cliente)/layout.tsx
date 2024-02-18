@@ -3,9 +3,9 @@ import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 
-import Logo from "@/components/logo";
-import Brasao from "@/components/brasao";
-import CityBackdrop from "@/components/cityBackdrop";
+import { Logo } from "@/components/logo";
+import { Brasao } from "@/components/brasao";
+import { CityBackdrop } from "@/components/cityBackdrop";
 
 export const inter = Inter({
   subsets: ['latin'],
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: 'Login - VallenGeo',
   description: 'VallenGeo - Sistema de Prefeituras',
   icons: {
-    icon: '/icon.png',
+    icon: '../assets/icon.png',
   },
 }
 

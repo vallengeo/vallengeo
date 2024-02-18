@@ -1,10 +1,8 @@
-// 'use client'
-
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
-import Link from "next/link";
 
-export default function HistoricoProcessos() {
+export function HistoricoProcessos() {
   return (
     <div className="flex flex-col gap-2 bg-white border border-input rounded-3xl p-6">
       <h2 className="text-xl font-semibold">Histórico de atualizações de processos</h2>
