@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: 'Login - VallenGeo',
   description: 'VallenGeo - Sistema de Prefeituras',
   icons: {
-    icon: '../assets/icon.png',
+    icon: '/icon.png',
   },
 }
 
