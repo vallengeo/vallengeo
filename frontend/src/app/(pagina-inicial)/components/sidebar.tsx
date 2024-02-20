@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { LogoSmall } from "../../../components/logo-small";
-import { Profile } from "../../../components/profile";
+import { Profile } from "@/components/profile";
 import { Menu } from "@/app/(pagina-inicial)/components/menu";
 import { LogOut } from "lucide-react";
 
@@ -17,7 +17,8 @@ export function Sidebar() {
         </div>
 
         <div className="space-y-4">
-          <Profile className="justify-start"/>
+          <Profile />
+
           <Link
             href="/logout"
             className="flex items-center gap-1 font-semibold"

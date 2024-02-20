@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Profile } from "@/components/profile";
+import { ProfileTrigger } from "@/components/profile-trigger";
 
 import {
   DropdownMenu,
@@ -20,7 +20,7 @@ export function Menu() {
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Profile/>
+              <ProfileTrigger />
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
