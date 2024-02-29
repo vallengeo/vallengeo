@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+import { useSearchParams } from 'next/navigation'
+
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -32,6 +34,10 @@ const loginUserFormSchema = z.object({
 type loginUserFormData = z.infer<typeof loginUserFormSchema>
 
 export function FormLogin() {
+  const searchParams = useSearchParams()
+
+  const linkPreviousPage = searchParams.get('linkPreviousPage')
+
   const form = useForm<loginUserFormData>({
     resolver: zodResolver(loginUserFormSchema)
   });
@@ -90,7 +96,17 @@ export function FormLogin() {
         </Button>
 
         <div className="flex items-center justify-between gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
-          <Support />
+          {linkPreviousPage ? (
+            <Button
+              asChild
+              variant="link"
+              className="flex-shrink-0"
+            >
+              <Link href="/">Acessar sem login</Link>
+            </Button>
+          ) : (
+            <Support />
+          )}
 
           <Button type="submit" variant="default" className="px-16 h-12">
             Entrar

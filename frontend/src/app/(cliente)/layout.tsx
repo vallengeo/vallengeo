@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google'
 import { cn } from '@/lib/utils'
 import '@/styles/globals.css'
 
-import { Logo } from "@/components/logo";
 import { Brasao } from "@/components/brasao";
 import { CityBackdrop } from "@/components/cityBackdrop";
 
@@ -32,8 +31,6 @@ export default function RootLayout({
           <div className="container relative">
             <div className="lg:w-1/2 h-screen flex">
               <div className="max-w-sm m-auto">
-                <Logo useBlackLogo />
-
                 {children}
 
                 <div className="mt-12">

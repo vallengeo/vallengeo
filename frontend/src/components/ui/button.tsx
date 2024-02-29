@@ -10,13 +10,17 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "text-lg font-semibold bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground-hover hover:shadow-[0_4px_4px_0_rgba(0,0,0,0.10)]",
-        secondary:
-          "text-lg font-semibold text-secondary-foreground border border-secondary-foreground hover:bg-primary-hover hover:text-primary-foreground-hover hover:border-transparent",
-        tertiary:
-          "text-lg font-semibold bg-transparent text-secondary-foreground hover:text-primary-hover underline",
+
+        secondary: "text-lg bg-transparent text-primary-foreground font-semibold hover:bg-primary-foreground hover:text-white border border-primary-foreground",
+
+        tertiary: "text-lg text-white bg-primary-foreground font-medium hover:bg-transparent hover:text-primary-foreground border border-primary-foreground",
+
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+
+        "gov-br": "text-lg text-gov-br-foreground bg-gov-br hover:bg-gov-br-hover",
+
+        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+
         link: "text-primary-foreground hover:text-primary-hover underline-offset-4 underline",
       },
       size: {

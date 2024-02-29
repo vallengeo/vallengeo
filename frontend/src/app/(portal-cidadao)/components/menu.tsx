@@ -38,7 +38,7 @@ export function Menu() {
           </DropdownMenu>
         </div>
         :
-        <Link href="/autenticacao/login">
+        <Link href="/autenticacao">
           <Button variant="default">
             Entrar
           </Button>
