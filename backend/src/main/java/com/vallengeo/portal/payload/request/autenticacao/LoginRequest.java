@@ -7,5 +7,6 @@ import static com.vallengeo.core.util.Constants.CAMPO_OBRIGATORIO;
 import static com.vallengeo.core.util.Constants.EMAIL_INVALIDO;
 
 public record LoginRequest(@NotEmpty(message = CAMPO_OBRIGATORIO) @Email(message = EMAIL_INVALIDO) String email,
-                           @NotEmpty(message = CAMPO_OBRIGATORIO) String senha) {
+                           @NotEmpty(message = CAMPO_OBRIGATORIO) String senha,
+                           @NotEmpty(message = CAMPO_OBRIGATORIO) String idGrupo) {
 }

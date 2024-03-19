@@ -78,5 +78,4 @@ docker-compose.yml
 *.hprof
 
 # Docker
-backend/docker/database/dev/init.sql
-backend/docker/database/dev/.env
+backend/docker/vallengeo/.env

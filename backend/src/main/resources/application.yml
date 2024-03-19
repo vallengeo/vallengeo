@@ -1,4 +1,6 @@
 spring:
+  main:
+    allow-bean-definition-overriding: true
   # ===============================
   # = BANCO DE DADOS
   # ===============================
@@ -83,9 +85,25 @@ usuario:
   codigoAcesso:
     validade:
       minutos: 10
- 
+
 # ===============================
 # LOGBACK
 # ===============================
 logging:
   config: classpath:logback-spring.xml
+
+# ===============================
+# VIA CEP
+# ===============================
+via-cep-url: https://viacep.com.br/ws
+
+# ===============================
+# OPEN FEIGN
+# ===============================
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 6000
+        logger-level: full
+        read-timeout: 6000

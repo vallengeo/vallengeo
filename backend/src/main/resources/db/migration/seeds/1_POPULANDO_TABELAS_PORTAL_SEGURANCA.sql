@@ -1,6 +1,6 @@
 -- ************************* USUARIO ***********************************
 INSERT INTO portal_seguranca.usuario
-(id, email, senha_hash, data_cadastro, data_atualizacao, ativo)
+    (id, email, senha_hash, data_cadastro, data_atualizacao, ativo)
 VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'vallengeo.dev@gmail.com',
         '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
         TRUE);
@@ -8,12 +8,20 @@ VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'vallengeo.dev@gmail.com',
 -- ************************* GRUPO ***********************************
 INSERT INTO portal_seguranca.grupo
     (id, nome, codigo)
-VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'Taubaté', 'TAUBATE');
+VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'Cruzeiro', 'CRUZEIRO');
 
 -- ************************* PERFIL ************************************************************************
 INSERT INTO portal_seguranca.perfil
     (id, nome, codigo)
 VALUES ('d66df945-104d-4412-a1ee-0d0659bf86b5', 'Administrador', 'ADMINISTRADOR');
+
+INSERT INTO portal_seguranca.perfil
+    (id, nome, codigo)
+VALUES ('aae3d727-2f2c-4539-a2a0-0ce34ecf5529', 'Analista', 'ANALISTA');
+
+INSERT INTO portal_seguranca.perfil
+    (id, nome, codigo)
+VALUES ('8abc3181-d4d9-40ab-8477-5202074afae3', 'Cidadão', 'CIDADAO');
 
 -- ************************* RELACAO USUARIO PERFIL ************************************************************************
 INSERT INTO portal_seguranca.usuario_perfil
@@ -28,6 +36,9 @@ VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'd66df945-104d-4412-a1ee-0d0659b
 -- ************************* MODULO ************************************************************************
 INSERT INTO portal_seguranca.modulo (id, nome, codigo, url, ativo)
 VALUES (gen_random_uuid(), 'Prefeituras', 'PREFEITURA', 'https://www.vallengeo.com.br/prefeituras', TRUE);
+
+INSERT INTO portal_seguranca.modulo (id, nome, codigo, url, ativo)
+VALUES (gen_random_uuid(), 'Cidadão', 'CIDADAO', 'https://www.vallengeo.com.br/cidadao', TRUE);
 
 -- ************************* TELA ************************************************************************
 INSERT INTO portal_seguranca.tela (id, nome, codigo, id_modulo)
@@ -46,12 +57,16 @@ VALUES (gen_random_uuid(), 'Relatório', 'RELATORIO',
 
 -- ************************* RELACAO GRUPO MODULO ************************************************************************
 INSERT INTO portal_seguranca.grupo_modulo (id_grupo, id_modulo)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'),
+VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'CRUZEIRO'),
         (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'PREFEITURA'));
+
+INSERT INTO portal_seguranca.grupo_modulo (id_grupo, id_modulo)
+VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'CRUZEIRO'),
+        (SELECT id FROM portal_seguranca.modulo WHERE codigo = 'CIDADAO'));
 
 -- ************************* RELACAO GRUPO USUARIO ************************************************************************
 INSERT INTO portal_seguranca.grupo_usuario (id_grupo, id_usuario)
-VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'TAUBATE'), '99b551f8-f532-40a0-b63f-094661844bd8');
+VALUES ((SELECT id FROM portal_seguranca.grupo WHERE codigo = 'CRUZEIRO'), '99b551f8-f532-40a0-b63f-094661844bd8');
 
 -- ************************* PERMISSAO ************************************************************************
 -- HOME

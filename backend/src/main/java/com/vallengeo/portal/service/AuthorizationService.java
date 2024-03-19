@@ -1,7 +1,10 @@
 package com.vallengeo.portal.service;
 
+import com.vallengeo.core.exceptions.custom.ForbiddenException;
+import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,12 +26,23 @@ public class AuthorizationService implements UserDetailsService {
     }
 
     public boolean hasPerfil(String perfil) {
-       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-       Usuario userDetails = (Usuario) authentication.getPrincipal();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false; // Não autenticado
+        }
 
-      return authentication.isAuthenticated() && userDetails.getPerfis().stream().anyMatch(p -> p.getCodigo().contains(perfil));
+        Usuario userDetails = (Usuario) authentication.getPrincipal();
 
+        if (userDetails.getPerfis() == null || userDetails.getPerfis().isEmpty()) {
+            return false; // Sem perfis atribuídos ao usuário
+        }
 
+        if (userDetails.getPerfis().stream().noneMatch(p -> p.getCodigo().equalsIgnoreCase(perfil))) {
+             throw new ForbiddenException();
+        }
+
+        return true;
     }
+
 }

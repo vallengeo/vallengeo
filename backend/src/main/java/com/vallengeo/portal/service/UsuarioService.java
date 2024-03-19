@@ -1,7 +1,7 @@
 package com.vallengeo.portal.service;
 
-import com.sun.xml.bind.v2.TODO;
 import com.vallengeo.core.exceptions.InvalidPasswordException;
+import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.portal.model.*;
 import com.vallengeo.portal.model.embeddable.RelUsuarioPerfilTelaPermissao;
@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -95,7 +96,7 @@ public class UsuarioService {
 
     @Transactional
     public void esqueciMinhaSenha(EsqueciMinhaSenhaRequest request) {
-        Usuario usuario = usuarioRepository.findByEmail(request.email()).orElseThrow(() -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND));
+        Usuario usuario = usuarioRepository.findByEmail(request.email()).orElseThrow(() -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND, HttpStatus.NOT_FOUND));
         usuarioRepository.save(this.sendEmailRedefinirSenha(usuario, request.modulo()));
     }
 
@@ -113,11 +114,11 @@ public class UsuarioService {
                             usuario.setAtivo(Boolean.TRUE);
                             usuario.setDataAtualizacao(convertDateToLocalDateTime(new Date()));
                         } else {
-                            throw new ValidatorException("Código de acesso expirado.");
+                            throw new UnauthorizedException("Código de acesso expirado.");
                         }
                     },
                     () -> {
-                        throw new ValidatorException("Usuário com o código de acesso " + request.codigoAcesso() + NOT_FOUND);
+                        throw new ValidatorException("Usuário com o código de acesso " + request.codigoAcesso() + NOT_FOUND, HttpStatus.NOT_FOUND);
                     }
             );
 

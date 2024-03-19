@@ -15,7 +15,7 @@ Desenvolvimento da Plataforma de Serviços da VallenGeo
 
 ### Banco de dados
 
-Dentro do diretório `./docker/database/dev`, executar: 
+Dentro do diretório `./docker/vallengeo`, executar: 
 ```sh
 filename=.env
 cat > $filename << EOF

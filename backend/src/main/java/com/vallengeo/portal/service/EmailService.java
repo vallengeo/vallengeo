@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -66,20 +67,20 @@ public class EmailService {
 
             emailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new ValidatorException(e.getMessage());
         }
     }
 
     private void sendEmailFromTemplate(Usuario user, String templateName, String titleKey, String modulo) {
         if (user.getEmail() == null) {
-            log.debug("Email doesn't exist for user '{}'", user.getId());
-            throw new ValidatorException("Email " + NOT_FOUND + " para o usuário " + user.getId());
+            log.debug("Email não existe para o usuário '{}'", user.getId());
+            throw new ValidatorException("Email " + NOT_FOUND + " para o usuário " + user.getId(), HttpStatus.NOT_FOUND);
         } else {
             Locale locale = Locale.forLanguageTag("pt-BR");
             Context context = new Context(locale);
             context.setVariable(USER, user);
 
-            var moduloEntity = moduloRepository.findByCodigo(modulo).orElseThrow(() -> new ValidatorException("Módulo " + modulo + NOT_FOUND));
+            var moduloEntity = moduloRepository.findByCodigo(modulo).orElseThrow(() -> new ValidatorException("Módulo " + modulo + NOT_FOUND, HttpStatus.NOT_FOUND));
             Map<String, Object> properties = new HashMap<>();
             properties.put(BASE_URL, moduloEntity.getUrl());
             properties.put(USER, user);

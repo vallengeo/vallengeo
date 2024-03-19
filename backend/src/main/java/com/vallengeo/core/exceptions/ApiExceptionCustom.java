@@ -32,6 +32,7 @@ public class ApiExceptionCustom {
         this.erros = null;
 
     }
+
     public ApiExceptionCustom(HttpStatus status, String message, String messageTitle, Exception exception, List<String> erros) {
 
         this.status = status.value();

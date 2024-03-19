@@ -1,3 +1,68 @@
+CREATE TABLE portal_seguranca.pessoa
+(
+    id               UUID         NOT NULL,
+    email            VARCHAR(100) NOT NULL,
+    telefone         VARCHAR(20)  NOT NULL,
+    data_cadastro    TIMESTAMP DEFAULT NOW(),
+    data_atualizacao TIMESTAMP,
+    id_endereco      int8         NOT NULL,
+    CONSTRAINT pessoa_pk PRIMARY KEY (id),
+    CONSTRAINT fk_pessoa_endereco FOREIGN KEY (id_endereco) REFERENCES dado_global.endereco (id)
+
+);
+COMMENT ON TABLE portal_seguranca.pessoa IS 'Tabela que armazena informações sobre pessoas';
+
+COMMENT ON COLUMN portal_seguranca.pessoa.id IS 'Identificador único da pessoa';
+COMMENT ON COLUMN portal_seguranca.pessoa.email IS 'Endereço de e-mail da pessoa';
+COMMENT ON COLUMN portal_seguranca.pessoa.telefone IS 'Número de telefone da pessoa';
+COMMENT ON COLUMN portal_seguranca.pessoa.data_cadastro IS 'Data de cadastro da pessoa';
+COMMENT ON COLUMN portal_seguranca.pessoa.data_atualizacao IS 'Data da última atualização dos dados da pessoa';
+
+COMMENT ON CONSTRAINT fk_pessoa_endereco ON portal_seguranca.pessoa IS 'Chave estrangeira que referencia a tabela endereço';
+
+CREATE TABLE portal_seguranca.pessoa_fisica
+(
+    id_pessoa UUID         NOT NULL,
+    nome      VARCHAR(255) NOT NULL,
+    cpf       VARCHAR(255) NOT NULL,
+    rg        VARCHAR(255),
+    CONSTRAINT pessoa_fisica_pk PRIMARY KEY (id_pessoa),
+    CONSTRAINT cpf_un UNIQUE (cpf),
+    CONSTRAINT fk_pessoa_fisica_pessoa FOREIGN KEY (id_pessoa) REFERENCES portal_seguranca.pessoa (id)
+);
+
+COMMENT ON TABLE portal_seguranca.pessoa_fisica IS 'Tabela que armazena informações sobre pessoas físicas';
+
+COMMENT ON COLUMN portal_seguranca.pessoa_fisica.id_pessoa IS 'Chave estrangeira referenciando a tabela pessoa';
+COMMENT ON COLUMN portal_seguranca.pessoa_fisica.nome IS 'Nome da pessoa física';
+COMMENT ON COLUMN portal_seguranca.pessoa_fisica.cpf IS 'CPF da pessoa física';
+COMMENT ON COLUMN portal_seguranca.pessoa_fisica.rg IS 'RG da pessoa física';
+
+COMMENT ON CONSTRAINT pessoa_fisica_pk ON portal_seguranca.pessoa_fisica IS 'Chave primária da tabela pessoa_fisica';
+COMMENT ON CONSTRAINT fk_pessoa_fisica_pessoa ON portal_seguranca.pessoa_fisica IS 'Chave estrangeira que referencia a tabela pessoa';
+
+CREATE TABLE portal_seguranca.pessoa_juridica
+(
+    id_pessoa      UUID         NOT NULL,
+    razao_social   VARCHAR(255) NOT NULL,
+    cnpj           VARCHAR(255) NOT NULL,
+    id_responsavel UUID,
+    CONSTRAINT pessoa_juridica_pk PRIMARY KEY (id_pessoa),
+    CONSTRAINT cnpj_un UNIQUE (cnpj),
+    CONSTRAINT fk_pessoa_juridica_pessoa FOREIGN KEY (id_pessoa) REFERENCES portal_seguranca.pessoa (id),
+    CONSTRAINT fk_pessoa_juridica_responsavel FOREIGN KEY (id_responsavel) REFERENCES portal_seguranca.pessoa (id)
+);
+
+COMMENT ON TABLE portal_seguranca.pessoa_juridica IS 'Tabela que armazena informações sobre pessoas jurídicas';
+
+COMMENT ON COLUMN portal_seguranca.pessoa_juridica.id_pessoa IS 'Chave estrangeira referenciando a tabela pessoa';
+COMMENT ON COLUMN portal_seguranca.pessoa_juridica.cnpj IS 'CNPJ da pessoa jurídica';
+COMMENT ON COLUMN portal_seguranca.pessoa_juridica.razao_social IS 'Razão social da pessoa jurídica';
+
+COMMENT ON CONSTRAINT pessoa_juridica_pk ON portal_seguranca.pessoa_juridica IS 'Chave primária da tabela pessoa_juridica';
+COMMENT ON CONSTRAINT fk_pessoa_juridica_pessoa ON portal_seguranca.pessoa_juridica IS 'Chave estrangeira que referencia a tabela pessoa';
+COMMENT ON CONSTRAINT fk_pessoa_juridica_responsavel ON portal_seguranca.pessoa_juridica IS 'Chave estrangeira que referencia a tabela pessoa com responsável';
+
 CREATE TABLE portal_seguranca.usuario
 (
     id                  UUID         NOT NULL,
@@ -10,9 +75,11 @@ CREATE TABLE portal_seguranca.usuario
     validade_codigo     TIMESTAMP,
     data_exclusao       TIMESTAMP,
     id_usuario_exclusao UUID,
+    id_pessoa           UUID,
     CONSTRAINT usuario_pk PRIMARY KEY (id),
     CONSTRAINT usuario_email_un UNIQUE (email),
-    CONSTRAINT usuario_fk FOREIGN KEY (id_usuario_exclusao) REFERENCES portal_seguranca.usuario (id)
+    CONSTRAINT usuario_fk FOREIGN KEY (id_usuario_exclusao) REFERENCES portal_seguranca.usuario (id),
+    CONSTRAINT pessoa_fk FOREIGN KEY (id_pessoa) REFERENCES portal_seguranca.pessoa (id)
 );
 
 -- Comentário para a tabela usuario
@@ -32,6 +99,9 @@ COMMENT ON COLUMN portal_seguranca.usuario.id_usuario_exclusao IS 'Identificador
 
 -- Comentário para a restrição de chave estrangeira usuario_fk
 COMMENT ON CONSTRAINT usuario_fk ON portal_seguranca.usuario IS 'Chave estrangeira que referencia o usuário que realizou a exclusão';
+
+-- Comentário para a restrição de chave estrangeira pessoa_fk
+COMMENT ON CONSTRAINT pessoa_fk ON portal_seguranca.usuario IS 'Chave estrangeira que referencia a pessoa que o usuário pertence';
 
 
 CREATE TABLE portal_seguranca.perfil
@@ -72,9 +142,10 @@ COMMENT ON COLUMN portal_seguranca.modulo.ativo IS 'Indica se o módulo está at
 
 CREATE TABLE portal_seguranca.grupo
 (
-    id     UUID         NOT NULL,
-    nome   VARCHAR(255) NOT NULL,
-    codigo VARCHAR(50)  NOT NULL,
+    id             UUID         NOT NULL,
+    nome           VARCHAR(255) NOT NULL,
+    codigo         VARCHAR(50)  NOT NULL,
+    gera_protocolo BOOLEAN      NOT NULL DEFAULT FALSE,
     CONSTRAINT grupo_pk PRIMARY KEY (id),
     CONSTRAINT grupo_codigo_un UNIQUE (codigo)
 );
@@ -85,6 +156,7 @@ COMMENT ON TABLE portal_seguranca.grupo IS 'Tabela que armazena informações so
 COMMENT ON COLUMN portal_seguranca.grupo.id IS 'Identificador único do grupo (UUID)';
 COMMENT ON COLUMN portal_seguranca.grupo.nome IS 'Nome do grupo';
 COMMENT ON COLUMN portal_seguranca.grupo.codigo IS 'Código único associado ao grupo';
+COMMENT ON COLUMN portal_seguranca.grupo.gera_protocolo IS 'Flag indicativa se o grupo gera protocolo via webservice';
 
 CREATE TABLE portal_seguranca.tela
 (
