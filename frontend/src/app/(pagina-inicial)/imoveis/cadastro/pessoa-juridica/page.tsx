@@ -3,36 +3,14 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import Header from "@/components/header";
-import Steps from "../../components/cadastro/steps";
-
-import { FormRepresentante } from "@/contexts/Imovel/FormRepresentante";
-import { FormDocumentos } from "@/contexts/Imovel/FormDocumentos";
-import { FormImovel } from "@/contexts/Imovel/FormImovel";
-import { useFormState } from "@/contexts/Imovel/FormContext";
+import { Header } from "@/app/(pagina-inicial)/components/header";
+import { ActiveStepFormComponent } from "../components/activeStepForm";
 
 export const metada: Metadata = {
   title: 'Cadastro de imóvel',
 }
 
-function ActiveStepFormComponent() {
-  const { step } = useFormState();
-
-  switch (step) {
-    case 1:
-      return <FormRepresentante isPJ />;
-    case 2:
-      return <FormDocumentos />;
-    case 3:
-      return <FormImovel />;
-    default:
-      return null;
-  }
-}
-
 export default function CadastroImoveisPJ() {
-  const { step } = useFormState();
-
   return (
     <>
       <Header
@@ -47,8 +25,7 @@ export default function CadastroImoveisPJ() {
       </Header>
 
       <main className="space-y-6 mt-6 mb-4">
-        <Steps currentStep={step} />
-        <ActiveStepFormComponent />
+        <ActiveStepFormComponent isPJ />
       </main>
     </>
   )

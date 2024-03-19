@@ -5,7 +5,7 @@ interface BrasaoProps {
   className?: string;
 }
 
-export default function Brasao({
+export function Brasao({
   className
 }: BrasaoProps) {
   return (

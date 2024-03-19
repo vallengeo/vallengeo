@@ -76,8 +76,8 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl mb-6">Lista de imóveis</h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-xl">Lista de imóveis</h2>
 
         <div className="flex items-center gap-3">
           <DropdownMenu>
@@ -86,13 +86,13 @@ export function DataTable<TData, TValue>({
                 <Search size={18} />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="border-none bg-transparent shadow-none">
+            <DropdownMenuContent side="left" align="center" className="border-none bg-transparent shadow-none">
               <Input
                 type="search"
                 placeholder="Pesquisar imóvel"
-                value={(table.getColumn("imoveis_cadastrados")?.getFilterValue() as string) ?? ""}
+                value={(table.getColumn("imoveis")?.getFilterValue() as string) ?? ""}
                 onChange={(event) =>
-                  table.getColumn("imoveis_cadastrados")?.setFilterValue(event.target.value)
+                  table.getColumn("imoveis")?.setFilterValue(event.target.value)
                 }
                 className="max-w-sm"
               />
@@ -105,7 +105,7 @@ export function DataTable<TData, TValue>({
                 <Filter size={18} />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent className="w-48" align="end">
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -119,7 +119,7 @@ export function DataTable<TData, TValue>({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id.replaceAll('_', ' ')}
+                      {column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}

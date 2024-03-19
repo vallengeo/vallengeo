@@ -1,8 +1,12 @@
 import { Button } from "./ui/button";
 
-export default function Support() {
+interface SupportProps {
+  variant?: "default" | "secondary" | "tertiary" | "ghost" | "outline" | "link" | null | undefined;
+}
+
+export function Support({ variant = 'link' }: SupportProps) {
   return (
-    <Button variant="link" className="flex-1">
+    <Button variant={variant} className="flex-1">
       <a href="#">
         Suporte
       </a>

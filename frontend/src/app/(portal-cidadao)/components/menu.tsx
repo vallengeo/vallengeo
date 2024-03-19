@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import Profile from "@/components/profile";
+import { ProfileTrigger } from "@/components/profile-trigger";
 
 import {
   DropdownMenu,
@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export default function Menu() {
+export function Menu() {
 
   const isLoggedIn = false;
 
@@ -20,7 +20,7 @@ export default function Menu() {
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger>
-              <Profile/>
+              <ProfileTrigger />
             </DropdownMenuTrigger>
             <DropdownMenuContent
               align="end"
@@ -38,7 +38,7 @@ export default function Menu() {
           </DropdownMenu>
         </div>
         :
-        <Link href="/login">
+        <Link href="/autenticacao">
           <Button variant="default">
             Entrar
           </Button>

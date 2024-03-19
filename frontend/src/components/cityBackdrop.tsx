@@ -1,7 +1,7 @@
 import Image from "next/image";
 import cityBackdrop from '@/assets/images/prefeitura/city-backdrop.jpg';
 
-export default function CityBackdrop() {
+export function CityBackdrop() {
   return (
     <Image
       src={cityBackdrop}

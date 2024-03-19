@@ -1,10 +1,8 @@
-// 'use client'
-
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-export default function UltimosProcessos() {
+export function UltimosProcessos() {
   return (
     <div className="flex flex-col gap-2 bg-white border border-input rounded-3xl p-6">
       <h2 className="text-xl font-semibold">Últimos processos adicionados</h2>

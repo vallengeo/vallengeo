@@ -40,6 +40,12 @@ const config: Config = {
           foreground: "hsl(var(--destructive-foreground))",
         },
 
+        "gov-br": {
+          DEFAULT: "rgb(var(--gov-br))",
+          hover: "rgb(var(--gov-br-hover))",
+          foreground: "rgb(var(--gov-br-foreground))"
+        },
+
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "var(--muted-foreground)",

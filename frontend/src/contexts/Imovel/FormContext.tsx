@@ -6,7 +6,7 @@ import {
   useState,
 } from "react";
 
-interface IFormContext {
+interface FormContextProps {
   formData: any;
   setFormData: Dispatch<SetStateAction<any>>;
   onHandleBack: () => void;
@@ -14,7 +14,7 @@ interface IFormContext {
   step: number;
 }
 
-const FormContext = createContext<IFormContext>({
+const FormContext = createContext<FormContextProps>({
   formData: {},
   onHandleBack: () => {},
   onHandleNext: () => {},
@@ -22,11 +22,11 @@ const FormContext = createContext<IFormContext>({
   step: 0,
 });
 
-interface IProps {
+interface FormProviderProps {
   children: React.ReactNode;
 }
 
-export function FormProvider({ children }: IProps) {
+export function FormProvider({ children }: FormProviderProps) {
   const [formData, setFormData] = useState();
   const [step, setStep] = useState(1);
 

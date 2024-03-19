@@ -1,5 +1,5 @@
-import Logo from "@/components/logo";
-import Menu from "@/app/(portal-cidadao)/components/menu";
+import { Logo } from "@/components/logo";
+import { Menu } from "./components/menu";
 
 export default function PortalCidadaoPage() {
   return (

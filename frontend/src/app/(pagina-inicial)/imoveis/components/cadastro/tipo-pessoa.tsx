@@ -7,7 +7,7 @@ import {
   User
 } from "lucide-react";
 
-export default function CadastroTipoPessoa() {
+export function CadastroTipoPessoa() {
   return (
     <div className="flex gap-6 h-fit max-md:flex-col md:px-10">
       <div className="flex-1 flex items-start gap-6 border border-[#E8E1E1] rounded-2xl py-9 px-7">
