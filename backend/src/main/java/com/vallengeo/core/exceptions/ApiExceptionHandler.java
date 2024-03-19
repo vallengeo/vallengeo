@@ -106,7 +106,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         logger.error(Throwables.getStackTraceAsString(ex));
 
-        return new ResponseEntity<>(new ApiExceptionCustom(HttpStatus.UNPROCESSABLE_ENTITY, ex.getUserMessage(), ex.getMessageTitle(), ex), HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(new ApiExceptionCustom(ex.getStatus(), ex.getUserMessage(), ex.getMessageTitle(), ex), ex.getStatus());
     }
 
     @ExceptionHandler(value = {UnauthorizedException.class})
@@ -167,7 +167,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         logger.error(Throwables.getStackTraceAsString(ex));
 
-        return new ResponseEntity<>(new ApiExceptionCustom(HttpStatus.CONFLICT, RECORD_ALREADY_EXISTS_ERROR, RECORD_ALREADY_EXISTS_ERROR, ex), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(new ApiExceptionCustom(HttpStatus.CONFLICT,  REQUEST_ERROR, REQUEST_ERROR, ex), HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(value = {HttpClientErrorException.BadRequest.class})

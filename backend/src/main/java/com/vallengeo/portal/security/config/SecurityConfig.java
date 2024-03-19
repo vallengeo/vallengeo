@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,14 +33,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(
-                        "/",
-                        "/api/v1/publico/**",
-                        "/api/v1/*/publico/**/*",
-                        "/api/v1/autenticacao/login",
-                        "/api/v1/autenticacao/register",
-                        "/api/v1/autenticacao/logout/**"
-                )
+                .antMatchers(this.urlPermitted())
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -71,15 +63,23 @@ public class SecurityConfig {
         return new CustomAuthenticationEntryPoint();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return web -> web.ignoring().antMatchers(
-                "/",
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
+        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    private String[] urlPermitted() {
+        return new String[]{
                 "/#/**",
                 "/swagger-ui/**",
                 "/configuration/**",
                 "/swagger-resources/**",
                 "/docs/**",
+                "/actuator",
+                "/actuator/**",
                 "/docs/api",
                 "/v2/api-docs",
                 "/webjars/**",
@@ -90,21 +90,13 @@ public class SecurityConfig {
                 "/js/**",
                 "/css/**",
                 "/error",
-                "/publico/**/*",
-                "/*/publico/**/*",
-                "/autenticacao/login",
-                "/autenticacao/logout/**",
+                "/api/v1/autenticacao/login",
+                "/api/v1/autenticacao/register",
+                "/api/v1/autenticacao/logout/**",
                 "/api/v1/usuario/esqueci-minha-senha",
-                "/api/v1/usuario/recuperar-senha"
-        );
+                "/api/v1/usuario/recuperar-senha",
+                "/api/v1/localidade/**"
+        };
     }
 
-
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }

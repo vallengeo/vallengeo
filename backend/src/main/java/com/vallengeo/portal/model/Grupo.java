@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,9 @@ public class Grupo implements Serializable {
     @NotEmpty
     @Column(name = "codigo")
     private String codigo;
+    @NotNull
+    @Column(name = "gera_protocolo")
+    private Boolean geraProtocolo;
     @ManyToMany
     @JoinTable(schema = Schemas.PORTAL_SEGURANCA, name = "grupo_perfil",
             joinColumns = @JoinColumn(name = "id_grupo", updatable = false, nullable = false, insertable = false),

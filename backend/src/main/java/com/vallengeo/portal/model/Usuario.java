@@ -14,6 +14,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,10 @@ public class Usuario implements UserDetails, Serializable {
     private String codigoAcesso;
     @Column(name = "validade_codigo")
     private LocalDateTime validadeCodigo;
+
+    @ManyToOne
+    @JoinColumn(name = "id_pessoa", referencedColumnName = "id", updatable = false, insertable = false)
+    private Pessoa pessoa;
     @ManyToMany
     @JoinTable(schema = Schemas.PORTAL_SEGURANCA, name = "usuario_perfil",
             joinColumns = @JoinColumn(name = "id_usuario", referencedColumnName = "id"),
@@ -69,7 +74,11 @@ public class Usuario implements UserDetails, Serializable {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.permissoes.stream().map(p -> new SimpleGrantedAuthority(p.getCodigo())).toList();
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+        for (Permissao permissao : this.permissoes) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_" + permissao.getCodigo()));
+        }
+        return authorities;
     }
 
     @Override

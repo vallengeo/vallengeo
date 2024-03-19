@@ -1,0 +1,5 @@
+CREATE SCHEMA IF NOT EXISTS cidadao;
+GRANT USAGE ON SCHEMA cidadao TO vallengeo;
+GRANT ALL ON SCHEMA cidadao TO vallengeo;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA cidadao TO vallengeo;
+GRANT ALL PRIVILEGES ON DATABASE vallengeo TO vallengeo;

@@ -17,7 +17,8 @@ public class Constants {
     public static final String NOT_FOUND = " não encontrado!";
     public static final String PARAMETER_NOT_FOUND = "Parâmetro não encontrado!";
     public static final String GENERAL_ERROR = "Ocorreu um erro no sistema, tente novamente mais tarde.";
-     public static final String INVALID_PASSWORD = "A senha não atende os requisitos do sistema.";
+    public static final String INVALID_PASSWORD = "A senha não atende os requisitos do sistema.";
+    public static final String PARAMETER_DIVERGENT = "Parâmetros divergentes";
 
     public static final String UNAUTHORIZED_ERROR = "Acesso não autorizado. Faça login para continuar.";
     public static final String FORBIDDEN_ERROR = "Permissões necessárias insuficentes para acessar o recurso.";
@@ -47,4 +48,6 @@ public class Constants {
     // VALIDACAO
     public static final String CAMPO_OBRIGATORIO = "O campo é obrigatório.";
     public static final String EMAIL_INVALIDO = "Favor informar email válido.";
+    public static final String DOCUMENTO_INVALIDO = "Favor informar documento válido.";
+    public static final String MAX_CARACTERES = "O Tamanho máximo de caracteres atingido.";
 }

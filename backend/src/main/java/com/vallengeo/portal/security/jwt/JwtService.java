@@ -1,6 +1,9 @@
 package com.vallengeo.portal.security.jwt;
 
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
+import com.vallengeo.core.util.SecurityUtils;
+import com.vallengeo.portal.model.Grupo;
+import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.payload.response.LoginResponse;
 import com.vallengeo.portal.service.AuthorizationService;
 import io.jsonwebtoken.*;
@@ -36,8 +39,8 @@ public class JwtService {
 
     private final AuthorizationService authorizationService;
 
-    public LoginResponse generateLogin(UserDetails userDetails) {
-        String token = generateToken(userDetails);
+    public LoginResponse generateLogin(UserDetails userDetails, String idGrupo) {
+        String token = generateToken(userDetails, idGrupo);
         return new LoginResponse(token, generateRefreshToken(token), getExpirationTime());
     }
 
@@ -47,18 +50,15 @@ public class JwtService {
         return new LoginResponse(token, requestRefreshToken, getExpirationTime());
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(userDetails, new HashMap<>());
-    }
-
-    public String generateToken(UserDetails userDetails, Map<String, Object> extraClaims) {
-        return buildToken(userDetails, extraClaims);
+    public String generateToken(UserDetails userDetails, String idGrupo) {
+        return buildToken(userDetails, generateClaims(userDetails, idGrupo));
     }
 
     private String reniewToken(UserDetails userDetails, String requestRefreshToken, HttpServletRequest http) {
         if (!isTokenExpired(requestRefreshToken)) {
-            revokeToken(recoverToken(http));
-            return generateToken(userDetails, new HashMap<>());
+            String tokenFull = recoverToken(http);
+            revokeToken(tokenFull);
+            return buildToken(userDetails, generateClaimsByHttpRequest(userDetails, http));
         } else {
             throw new UnauthorizedException();
         }
@@ -125,6 +125,18 @@ public class JwtService {
         return revokedTokens.contains(token);
     }
 
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public Map<String, Object> generateClaimsByHttpRequest(UserDetails userDetails, HttpServletRequest request) {
+        return generateClaims(userDetails, SecurityUtils.getUserJwt(request).getIdGrupo());
+    }
 
     private boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
@@ -134,15 +146,6 @@ public class JwtService {
         return extractClaim(token, Claims::getExpiration);
     }
 
-
-    private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignInKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
 
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
@@ -154,5 +157,15 @@ public class JwtService {
         var authHeader = request.getHeader("Authorization");
         if (Objects.isNull(authHeader)) return null;
         return authHeader.replace("Bearer ", "");
+    }
+
+    private Map<String, Object> generateClaims(UserDetails userDetails, String idGrupo) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("user", generateJwtUserResponse(userDetails, idGrupo));
+        return claims;
+    }
+
+    private JwtUserResponse generateJwtUserResponse(UserDetails userDetails, String idGrupo) {
+        return new JwtUserResponse(userDetails, idGrupo);
     }
 }
