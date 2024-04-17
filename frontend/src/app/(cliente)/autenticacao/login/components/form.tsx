@@ -47,7 +47,6 @@ export function FormLogin() {
   });
 
   const onSubmit: SubmitHandler<loginUserFormData> = async (data) => {
-    console.log(data)
     const user: IUserLogin = {
       email: data.email,
       senha: data.password,

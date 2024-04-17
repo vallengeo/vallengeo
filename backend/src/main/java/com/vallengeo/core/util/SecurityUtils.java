@@ -66,6 +66,34 @@ public final class SecurityUtils {
         return Objects.nonNull(response.getIdGrupo()) ? UUID.fromString(response.getIdGrupo()) : null;
     }
 
+     public String[] urlPermitted() {
+        return new String[]{
+                "/#/**",
+                "/swagger-ui/**",
+                "/configuration/**",
+                "/swagger-resources/**",
+                "/docs/**",
+                "/actuator",
+                "/actuator/**",
+                "/docs/api",
+                "/v2/api-docs",
+                "/webjars/**",
+                "/csrf/**",
+                "/favicon.ico",
+                "/img/**",
+                "/images/**",
+                "/js/**",
+                "/css/**",
+                "/error",
+                "/api/v1/autenticacao/login",
+                "/api/v1/autenticacao/register",
+                "/api/v1/autenticacao/logout/**",
+                "/api/v1/usuario/esqueci-minha-senha",
+                "/api/v1/usuario/recuperar-senha",
+                "/api/v1/localidade/**"
+        };
+    }
+
     private static String extractPrincipal(Authentication authentication) {
         if (authentication == null) {
             return null;
@@ -77,7 +105,7 @@ public final class SecurityUtils {
         return null;
     }
 
-    private static Claims extractAllClaims(String token) {
+    public static Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignInKey())
@@ -90,4 +118,6 @@ public final class SecurityUtils {
         byte[] keyBytes = Decoders.BASE64.decode(jwtSecret);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }

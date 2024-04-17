@@ -116,6 +116,10 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && !isTokenRevoked(token);
     }
+     public void revokeToken(HttpServletRequest http) {
+      String tokenFull = recoverToken(http);
+      revokeToken(tokenFull);
+    }
 
     public void revokeToken(String token) {
         revokedTokens.add(token);
