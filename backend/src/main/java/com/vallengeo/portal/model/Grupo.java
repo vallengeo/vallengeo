@@ -1,6 +1,7 @@
 package com.vallengeo.portal.model;
 
 import com.vallengeo.core.util.Schemas;
+import com.vallengeo.global.model.Camada;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -43,4 +44,10 @@ public class Grupo implements Serializable {
             joinColumns = @JoinColumn(name = "id_grupo", updatable = false, nullable = false, insertable = false),
             inverseJoinColumns = @JoinColumn(name = "id_modulo", updatable = false, nullable = false, insertable = false))
     private List<Modulo> modulos;
+
+    @ManyToMany
+    @JoinTable(schema = Schemas.DADO_GLOBAL, name = "camada_grupo",
+            joinColumns = @JoinColumn(name = "id_grupo", updatable = false, nullable = false, insertable = false),
+            inverseJoinColumns = @JoinColumn(name = "id_camada", updatable = false, nullable = false, insertable = false))
+    private List<Camada> camadas;
 }
