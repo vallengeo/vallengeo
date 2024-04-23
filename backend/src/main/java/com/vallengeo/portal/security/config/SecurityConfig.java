@@ -1,5 +1,6 @@
 package com.vallengeo.portal.security.config;
 
+import com.vallengeo.core.util.SecurityUtils;
 import com.vallengeo.portal.security.SecurityFilter;
 import com.vallengeo.portal.security.handlers.CustomAuthenticationEntryPoint;
 import org.springframework.context.annotation.Bean;
@@ -24,16 +25,18 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
     private final SecurityFilter securityFilter;
+    private final SecurityUtils securityUtils;
 
-    public SecurityConfig(SecurityFilter securityFilter) {
+    public SecurityConfig(SecurityFilter securityFilter, SecurityUtils securityUtils) {
         this.securityFilter = securityFilter;
+        this.securityUtils = securityUtils;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers(this.urlPermitted())
+                .antMatchers(securityUtils.urlPermitted())
                 .permitAll()
                 .anyRequest()
                 .authenticated()
@@ -69,34 +72,6 @@ public class SecurityConfig {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    private String[] urlPermitted() {
-        return new String[]{
-                "/#/**",
-                "/swagger-ui/**",
-                "/configuration/**",
-                "/swagger-resources/**",
-                "/docs/**",
-                "/actuator",
-                "/actuator/**",
-                "/docs/api",
-                "/v2/api-docs",
-                "/webjars/**",
-                "/csrf/**",
-                "/favicon.ico",
-                "/img/**",
-                "/images/**",
-                "/js/**",
-                "/css/**",
-                "/error",
-                "/api/v1/autenticacao/login",
-                "/api/v1/autenticacao/register",
-                "/api/v1/autenticacao/logout/**",
-                "/api/v1/usuario/esqueci-minha-senha",
-                "/api/v1/usuario/recuperar-senha",
-                "/api/v1/localidade/**"
-        };
     }
 
 }

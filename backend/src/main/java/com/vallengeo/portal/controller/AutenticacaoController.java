@@ -1,7 +1,6 @@
 package com.vallengeo.portal.controller;
 
 import com.vallengeo.portal.payload.request.autenticacao.LoginRequest;
-import com.vallengeo.portal.payload.request.autenticacao.LogoutRequest;
 import com.vallengeo.portal.payload.request.autenticacao.TokenRefreshRequest;
 import com.vallengeo.portal.payload.response.LoginResponse;
 import com.vallengeo.portal.security.jwt.JwtService;
@@ -18,10 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -70,8 +66,8 @@ public class AutenticacaoController {
             @ApiResponse(responseCode = "200", description = "Ok", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
     })
-    @PostMapping("/logout")
-    public void logout(@RequestBody @Validated LogoutRequest request) {
-        jwtService.revokeToken(request.token().replace("Bearer ", ""));
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest http) {
+        jwtService.revokeToken(http);
     }
 }

@@ -79,3 +79,4 @@ docker-compose.yml
 
 # Docker
 backend/docker/vallengeo/.env
+frontend/package-lock.json

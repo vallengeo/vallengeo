@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, useRouter } from 'next/navigation'
 
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -20,6 +20,9 @@ import {
   FormMessage
 } from "@/components/ui/form";
 
+import { actionLogout, login } from '@/service/authService'
+import IUserLogin from "@/interfaces/IUserLogin";
+
 const loginUserFormSchema = z.object({
   email: z.string({ required_error: "Email é obrigatório" })
     .nonempty("E-mail é obrigatório")
@@ -35,6 +38,7 @@ type loginUserFormData = z.infer<typeof loginUserFormSchema>
 
 export function FormLogin() {
   const searchParams = useSearchParams()
+  const router = useRouter();
 
   const linkPreviousPage = searchParams.get('linkPreviousPage')
 
@@ -42,8 +46,22 @@ export function FormLogin() {
     resolver: zodResolver(loginUserFormSchema)
   });
 
-  const onSubmit: SubmitHandler<loginUserFormData> = (data) => {
-    console.log(data)
+  const onSubmit: SubmitHandler<loginUserFormData> = async (data) => {
+    const user: IUserLogin = {
+      email: data.email,
+      senha: data.password,
+      idGrupo: "4d3c1497-af40-4ddf-8b06-d8f40c8df139" // TODO: Ajustar para informar o grupo de forma dinamica
+    };
+
+    await login(user)
+      .then(() => {
+        router.push('/home');
+      })
+      .catch(() => {
+        actionLogout();
+      })
+
+
   }
 
   return (
