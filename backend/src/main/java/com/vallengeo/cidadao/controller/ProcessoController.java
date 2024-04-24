@@ -2,9 +2,6 @@ package com.vallengeo.cidadao.controller;
 
 import com.vallengeo.cidadao.payload.request.ProcessoDocumentoRequest;
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
-import com.vallengeo.cidadao.payload.request.ProcessoRepresentanteRequest;
-import com.vallengeo.cidadao.payload.request.imovel.ImovelRequest;
-import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.ImovelResponse;
 import com.vallengeo.cidadao.service.ImovelService;
 import com.vallengeo.cidadao.service.ProcessoService;
@@ -53,7 +50,7 @@ public class ProcessoController {
 //        return ResponseEntity.status(201).body(processoService.cadastrar(input));
 //    }
 
-@Operation(summary = "Serviço de cadastro do imóvel")
+    @Operation(summary = "Serviço de cadastro do imóvel")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = SALVO_SUCESSO, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),

@@ -1,7 +1,7 @@
 package com.vallengeo.cidadao.service.mapper;
 
-import com.vallengeo.portal.payload.response.PessoaResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.RepresentanteResponse;
+import com.vallengeo.portal.payload.response.PessoaResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

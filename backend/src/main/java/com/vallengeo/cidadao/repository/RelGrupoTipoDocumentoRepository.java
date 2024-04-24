@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface RelGrupoTipoDocumentoRepository extends JpaRepository<RelGrupoTipoDocumento, GrupoTipoDocumentoId> {
     List<RelGrupoTipoDocumento> findAllByGrupoId(UUID grupoId);
 
-    Optional<RelGrupoTipoDocumento> findByGrupoIdAndTipoDocumentoId(UUID grupoId, Long TipoDocumentoId);
+    Optional<RelGrupoTipoDocumento> findByGrupoIdAndTipoDocumentoId(UUID grupoId, Long tipoDocumentoId);
 
 }

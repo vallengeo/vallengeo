@@ -40,18 +40,18 @@ public class ResponsavelTecnico implements Serializable {
     @Column(name = "data_cadastro")
     private LocalDateTime dataCadastro;
     @Column(name = "id_pessoa")
-    private UUID PessoaId;
+    private UUID pessoaId;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof ResponsavelTecnico that)) return false;
-        return Objects.equals(id, that.id) && Objects.equals(cpf, that.cpf) && Objects.equals(email, that.email) && Objects.equals(dataCadastro, that.dataCadastro) && Objects.equals(PessoaId, that.PessoaId);
+        return Objects.equals(id, that.id) && Objects.equals(cpf, that.cpf) && Objects.equals(email, that.email) && Objects.equals(dataCadastro, that.dataCadastro) && Objects.equals(pessoaId, that.pessoaId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, cpf, email, dataCadastro, PessoaId);
+        return Objects.hash(id, cpf, email, dataCadastro, pessoaId);
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ResponsavelTecnico implements Serializable {
                ", cpf='" + cpf + '\'' +
                ", email='" + email + '\'' +
                ", dataCadastro=" + dataCadastro +
-               ", PessoaId=" + PessoaId +
+               ", PessoaId=" + pessoaId +
                '}';
     }
 }

@@ -9,4 +9,5 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface ImovelMapper extends EntityMapper<ImovelResponse, Imovel> {
     ImovelMapper INSTANCE = Mappers.getMapper(ImovelMapper.class);
+
 }

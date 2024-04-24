@@ -1,6 +1,5 @@
 package com.vallengeo.cidadao.payload.request;
 
-import com.vallengeo.cidadao.payload.request.imovel.RepresentanteRequest;
 import lombok.Data;
 
 import javax.validation.Valid;

@@ -2,7 +2,6 @@ package com.vallengeo.cidadao.payload.response;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 
 import java.io.Serializable;
 
@@ -13,12 +12,12 @@ public class GeorreferenciamentoInformacoesImovelResponse implements Serializabl
 
     @Data
     @Builder
-    public static class InformacaoImovel {
+    public static class InformacaoImovel implements Serializable{
         private Endereco endereco;
 
         @Data
         @Builder
-        public static class Endereco {
+        public static class Endereco implements Serializable{
             private String cep;
             private String logradouro;
             private String bairro;

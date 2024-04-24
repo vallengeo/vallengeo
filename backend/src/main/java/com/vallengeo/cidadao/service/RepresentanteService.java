@@ -2,9 +2,8 @@ package com.vallengeo.cidadao.service;
 
 import com.vallengeo.cidadao.model.Representante;
 import com.vallengeo.cidadao.payload.request.imovel.RepresentanteRequest;
-import com.vallengeo.cidadao.payload.response.cadastro.imovel.RepresentanteResponse;
 import com.vallengeo.cidadao.repository.RepresentanteRepository;
-import com.vallengeo.cidadao.service.mapper.RepresentanteMapper;
+import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.DocumentoUtil;
 import com.vallengeo.portal.model.Pessoa;
 import com.vallengeo.portal.model.PessoaFisica;
@@ -17,12 +16,11 @@ import com.vallengeo.portal.service.PessoaService;
 import com.vallengeo.portal.service.mapper.PessoaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -35,6 +33,8 @@ public class RepresentanteService {
 
     @Transactional
     public Representante cadastrar(RepresentanteRequest request) {
+        this.validar(request);
+
         Optional<Pessoa> pessoaOptional = verificaExistenciaPessoa(request);
 
         if (pessoaOptional.isPresent()) {
@@ -53,7 +53,29 @@ public class RepresentanteService {
 
     @Transactional
     public List<Representante> cadastrar(List<RepresentanteRequest> requests) {
-        return requests.stream().map(request -> cadastrar(request)).toList();
+        List<Representante> representantes = new ArrayList<>();
+        requests.forEach(request -> representantes.add(this.cadastrar(request)));
+        return representantes;
+    }
+
+    private void validar(RepresentanteRequest request) {
+        if (Objects.isNull(request.getContato())) {
+            log.error("Não foi possível encontrar informações de contato do representante");
+            throw new ValidatorException("Não foi possível encontrar informações de contato do representante", HttpStatus.NOT_ACCEPTABLE);
+        }
+
+        boolean isResponsavelTecnicoTrue = Boolean.TRUE.equals(request.getContato().getResponsavelTecnico());
+        boolean isRepresentanteLegalTrue = Boolean.TRUE.equals(request.getContato().getRepresentanteLegal());
+        boolean isOutroTrue = Boolean.TRUE.equals(request.getContato().getOutro());
+
+        int trueCount = (isResponsavelTecnicoTrue ? 1 : 0) +
+                        (isRepresentanteLegalTrue ? 1 : 0) +
+                        (isOutroTrue ? 1 : 0);
+
+        if (trueCount != 1) {
+            log.error("O tipo informações de contato do representante é obrigatório.");
+            throw new ValidatorException("O tipo informações de contato do representante é obrigatório.", HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     private Optional<Pessoa> verificaExistenciaPessoa(RepresentanteRequest request) {
@@ -70,6 +92,10 @@ public class RepresentanteService {
                 .contatoNome(request.getContato().getNome())
                 .contatoTelefone(request.getContato().getTelefone())
                 .contatoEmail(request.getContato().getEmail())
+                .contatoDocumento(DocumentoUtil.removeMascara(request.getContato().getDocumento()))
+                .responsavelTecnico(request.getContato().getResponsavelTecnico())
+                .representanteLegal(request.getContato().getRepresentanteLegal())
+                .outro(request.getContato().getOutro())
                 .build();
 
         return representanteRepository.save(representante);

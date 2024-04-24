@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 
 import static com.vallengeo.core.util.Constants.CAMPO_OBRIGATORIO;
 import static com.vallengeo.core.util.Constants.MAX_CARACTERES;
@@ -20,5 +20,5 @@ public record CaracterizacaoImovelRequest(
         @NotNull(message = CAMPO_OBRIGATORIO) Float areaTerreno,
         @NotNull(message = CAMPO_OBRIGATORIO) Float testadaPrincipal,
         Float fracaoIdeal,
-        @NotNull(message = CAMPO_OBRIGATORIO) Date dataInclusao) implements Serializable {
+        @NotNull(message = CAMPO_OBRIGATORIO) LocalDate dataInclusao) implements Serializable {
 }

@@ -1,6 +1,5 @@
 package com.vallengeo.cidadao.payload.request.imovel;
 
-import com.vallengeo.cidadao.model.CaracterizacaoImovel;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -23,5 +22,8 @@ public class ImovelRequest implements Serializable {
     @Valid
     @NotNull(message = CAMPO_OBRIGATORIO)
     private CaracterizacaoImovelRequest caracterizacaoImovel;
+    @Valid
+    @NotNull(message = CAMPO_OBRIGATORIO)
+    private GeorreferenciamentoRequest georreferenciamento;
 
 }

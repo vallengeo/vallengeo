@@ -92,6 +92,17 @@
             <version>1.1.1</version>
         </dependency>
 
+         <dependency>
+            <groupId>de.grundid.opendatalab</groupId>
+            <artifactId>geojson-jackson</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wololo</groupId>
+            <artifactId>jts2geojson</artifactId>
+            <version>0.16.1</version>
+        </dependency>
+
 
         <!-- Desenvolvimento -->
         <dependency>

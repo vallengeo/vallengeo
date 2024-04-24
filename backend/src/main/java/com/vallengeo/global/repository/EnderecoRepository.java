@@ -1,7 +1,6 @@
 package com.vallengeo.global.repository;
 
 import com.vallengeo.global.model.Endereco;
-import com.vallengeo.global.model.Municipio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,6 +28,8 @@ public class RelProcessoSituacaoProcessoService {
     private final SituacaoProcessoRepository situacaoProcessoRepository;
     public static final String LOG_PREFIX = "[PROCESSO SITUACAO PROCESSO] - ";
 
+
+    @Transactional
     public void cadastrar(@NotNull UUID processoId, SituacaoProcessoEnum situacaoProcessoId) {
         log.info(LOG_PREFIX + "Iniciando cadastro do processo com situação");
 
@@ -51,7 +54,7 @@ public class RelProcessoSituacaoProcessoService {
     public void alterar(@NotNull UUID processoId, List<SituacaoProcessoEnum> idsSituacaoProcesso) {
         log.info(LOG_PREFIX + "Iniciando alteração do processo com situação");
 
-// inativa
+        // inativa
         List<RelProcessoSituacaoProcesso> list = new ArrayList<>(
                 repository.findAllByProcessoIdAndAtivoIsTrue(processoId).stream().map(rel ->
                         RelProcessoSituacaoProcesso.builder()
@@ -60,7 +63,7 @@ public class RelProcessoSituacaoProcessoService {
                                 .ativo(Boolean.FALSE)
                                 .build()).toList());
 
-// insere nova
+        // insere nova
         list.addAll(idsSituacaoProcesso.stream().map(sp ->
                 RelProcessoSituacaoProcesso.builder()
                         .processoSituacao(

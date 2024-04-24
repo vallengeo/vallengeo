@@ -2,8 +2,6 @@ package com.vallengeo.portal.security.jwt;
 
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.core.util.SecurityUtils;
-import com.vallengeo.portal.model.Grupo;
-import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.payload.response.LoginResponse;
 import com.vallengeo.portal.service.AuthorizationService;
 import io.jsonwebtoken.*;

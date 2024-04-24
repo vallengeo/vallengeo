@@ -29,18 +29,16 @@ public class TipoDocumentoService {
 
     public List<TipoDocumentoResponse> buscarTipoDocumento(HttpServletRequest request) {
         List<TipoDocumentoResponse> output = new ArrayList<>();
-        relGrupoTipoDocumentoRepository.findAllByGrupoId(UUID.fromString(SecurityUtils.getUserJwt(request).getIdGrupo())).forEach(relGrupoTipoDocumento -> {
-            output.add(
-                    new TipoDocumentoResponse(
-                            relGrupoTipoDocumento.getTipoDocumento().getId(),
-                            relGrupoTipoDocumento.getTipoDocumento().getTitulo(),
-                            relGrupoTipoDocumento.getObrigatorio(),
-                            Objects.nonNull(relGrupoTipoDocumento.getTipoDocumento().getFormato())
-                                    ? List.of(relGrupoTipoDocumento.getTipoDocumento().getFormato().split(","))
-                                    : new ArrayList<>()
-                    )
-            );
-        });
+        relGrupoTipoDocumentoRepository.findAllByGrupoId(UUID.fromString(SecurityUtils.getUserJwt(request).getIdGrupo())).forEach(relGrupoTipoDocumento -> output.add(
+                new TipoDocumentoResponse(
+                        relGrupoTipoDocumento.getTipoDocumento().getId(),
+                        relGrupoTipoDocumento.getTipoDocumento().getTitulo(),
+                        relGrupoTipoDocumento.getObrigatorio(),
+                        Objects.nonNull(relGrupoTipoDocumento.getTipoDocumento().getFormato())
+                                ? List.of(relGrupoTipoDocumento.getTipoDocumento().getFormato().split(","))
+                                : new ArrayList<>()
+                )
+        ));
 
         return ordenar(output);
     }
