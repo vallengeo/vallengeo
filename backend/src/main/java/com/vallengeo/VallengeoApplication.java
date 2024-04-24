@@ -1,5 +1,6 @@
 package com.vallengeo;
 
+import com.vallengeo.core.exceptions.custom.ValidatorException;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -29,7 +30,7 @@ public class VallengeoApplication {
                 Files.createDirectory(dir);
             }
         } catch (IOException e) {
-            throw new RuntimeException("Não foi possível criar a pasta para upload de arquivos!");
+            throw new ValidatorException("Não foi possível criar a pasta para upload de arquivos!");
         }
     }
 

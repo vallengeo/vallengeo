@@ -32,13 +32,21 @@ public class ImovelService {
         CaracterizacaoImovel caracterizacaoImovel = caracterizacaoImovelService.cadastrar(input.imovel().getCaracterizacaoImovel());
 
         Imovel imovel = repository.save(Imovel.builder()
+                .geometria(input.imovel().getGeorreferenciamento().getGeometria())
                 .processo(processo)
                 .representantes(representantes)
                 .informacaoImovel(informacaoImovel)
                 .caracterizacaoImovel(caracterizacaoImovel)
-                .inscricaoImobiliaria("1234567890")
+                .inscricaoImobiliaria(montaInscricaoImobiliaria(caracterizacaoImovel))
                 .build());
 
         return ImovelMapper.INSTANCE.toResponse(imovel);
+    }
+
+    private String montaInscricaoImobiliaria(CaracterizacaoImovel caracterizacaoImovel) {
+        return caracterizacaoImovel.getSetor()
+               + "." + caracterizacaoImovel.getQuadra() +
+               "." + caracterizacaoImovel.getLote() +
+               "." + caracterizacaoImovel.getUnidade();
     }
 }

@@ -1,5 +1,6 @@
 package com.vallengeo.cidadao.service;
 
+import com.google.common.base.Throwables;
 import com.vallengeo.cidadao.enumeration.TipoDocumentoEnum;
 import com.vallengeo.cidadao.model.Documento;
 import com.vallengeo.cidadao.model.Processo;
@@ -98,8 +99,9 @@ public class DocumentoService {
             }
 
             return documentos;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            log.error("Erro ao ler o arquivo." + " " + Throwables.getStackTraceAsString(e));
+            throw new ValidatorException("Erro ao ler o arquivo.");
         }
     }
 

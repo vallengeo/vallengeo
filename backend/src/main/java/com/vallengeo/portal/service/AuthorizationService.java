@@ -1,10 +1,8 @@
 package com.vallengeo.portal.service;
 
 import com.vallengeo.core.exceptions.custom.ForbiddenException;
-import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.repository.UsuarioRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;

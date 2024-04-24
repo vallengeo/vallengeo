@@ -26,10 +26,9 @@ public class AuthenticationService {
         );
 
         UserDetails userDetails = authorizationService.loadUserByUsername(input.email());
-        if (userDetails instanceof Usuario usuario) {
-            if (usuario.getGrupos().stream().anyMatch(grupo -> grupo.getId().equals(UUID.fromString(input.idGrupo())))) {
+        if (userDetails instanceof Usuario usuario && (usuario.getGrupos().stream().anyMatch(grupo -> grupo.getId().equals(UUID.fromString(input.idGrupo()))))) {
                 return userDetails;
-            }
+
         }
 
         throw new UnauthorizedException("Usuário não vinculado a prefeitura informada!");

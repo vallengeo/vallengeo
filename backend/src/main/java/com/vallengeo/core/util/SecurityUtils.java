@@ -44,12 +44,11 @@ public final class SecurityUtils {
 
 
     public static String getJwtToken(HttpServletRequest request) {
-        if (isAuthenticated()) {
+        isAuthenticated();
             String authHeader = request.getHeader("Authorization");
             if (Objects.isNull(authHeader)) return null;
             return authHeader.replace("Bearer ", "");
-        }
-        throw new UnauthorizedException();
+
     }
 
     public static boolean isAuthenticated() {

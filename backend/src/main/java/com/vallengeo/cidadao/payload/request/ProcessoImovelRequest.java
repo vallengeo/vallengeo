@@ -5,7 +5,6 @@ import com.vallengeo.cidadao.payload.request.imovel.ImovelRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 
 import static com.vallengeo.core.util.Constants.CAMPO_OBRIGATORIO;

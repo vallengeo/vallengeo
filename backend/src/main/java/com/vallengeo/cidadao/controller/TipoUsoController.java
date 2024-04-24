@@ -1,6 +1,5 @@
 package com.vallengeo.cidadao.controller;
 
-import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.payload.response.TipoUsoResponse;
 import com.vallengeo.cidadao.service.TipoUsoService;
 import com.vallengeo.core.util.Constants;

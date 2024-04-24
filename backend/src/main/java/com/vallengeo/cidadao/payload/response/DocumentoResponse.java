@@ -32,6 +32,6 @@ public class DocumentoResponse implements Serializable {
         return "-";
     }
 
-    public record TipoDocumentoResponse(Long id, String titulo) {
+    public record TipoDocumentoResponse(Long id, String titulo)  implements Serializable {
     }
 }

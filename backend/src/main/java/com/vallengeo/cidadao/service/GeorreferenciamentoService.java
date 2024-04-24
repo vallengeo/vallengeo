@@ -76,12 +76,12 @@ public class GeorreferenciamentoService {
             contidoNoGrupo(request, geometry);
 
             return GeometriaPorAquivoResponse.builder()
-                    .geometria(FeatureJsonUtil.convertGeometryJsonToFeatureJson(geometry))
+                    .geometria(geometry)
                     .informacoesImovel(montaGeorreferenciamentoInformacoesImovel(request, geometry))
                     .build();
         } catch (IOException | FactoryException ex) {
             throw new InvalidFileException(Constants.FILE_INVALID_ERROR);
-        } catch (ParseException | org.json.simple.parser.ParseException ex) {
+        } catch (ParseException ex) {
             throw new InvalidFileException("Falha ao analisar a geometria do arquivo.");
         }
     }
@@ -235,5 +235,4 @@ public class GeorreferenciamentoService {
             throw new ValidatorException(GEOMETRY_WHITHOUT_INTERSECTS, HttpStatus.NOT_ACCEPTABLE);
         }
     }
-
 }
