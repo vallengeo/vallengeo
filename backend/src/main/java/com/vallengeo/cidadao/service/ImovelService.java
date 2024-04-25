@@ -49,4 +49,11 @@ public class ImovelService {
                "." + caracterizacaoImovel.getLote() +
                "." + caracterizacaoImovel.getUnidade();
     }
+
+    private String montaInscricaoImobiliaria(CaracterizacaoImovel caracterizacaoImovel) {
+        return caracterizacaoImovel.getSetor()
+               + "." + caracterizacaoImovel.getQuadra() +
+               "." + caracterizacaoImovel.getLote() +
+               "." + caracterizacaoImovel.getUnidade();
+    }
 }

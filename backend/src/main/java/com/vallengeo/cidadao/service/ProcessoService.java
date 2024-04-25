@@ -84,6 +84,8 @@ public class ProcessoService {
         LocalDateTime dateTime = convertDateToLocalDateTime(new Date());
         Random random;
         random = new Random();
+        Random random;
+        random = new Random();
         StringBuilder codigo = new StringBuilder();
         codigo.append(dateTime.format(DateTimeFormatter.ofPattern("yyyy")));
 
