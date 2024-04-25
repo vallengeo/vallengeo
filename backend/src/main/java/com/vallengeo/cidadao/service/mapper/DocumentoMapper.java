@@ -22,15 +22,9 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
             return null;
         }
 
-        Arquivo documento = Arquivo.builder()
-                .id(dto.getId())
-                .nome(dto.getNome())
-                .extensao(dto.getExtensao())
-                .tamanho(dto.getTamanho())
-                .dataEnvio(dto.getDataEnvio())
-                .build();
+        Arquivo.ArquivoBuilder documento = Arquivo.builder();
 
-        return new Documento(documento);
+        return (Documento) documento.build();
     }
 
     @Override
@@ -41,11 +35,6 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
 
         DocumentoResponse.DocumentoResponseBuilder documentoResponse = DocumentoResponse.builder();
 
-        documentoResponse.id(entity.getId());
-        documentoResponse.nome(entity.getNome());
-        documentoResponse.extensao(entity.getExtensao());
-        documentoResponse.tamanho(entity.getTamanho());
-        documentoResponse.dataEnvio(entity.getDataEnvio());
         documentoResponse.tipoDocumento(tipoDocumentoToTipoDocumentoResponse(entity.getTipoDocumento()));
 
         return documentoResponse.build();
@@ -84,12 +73,11 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
             return null;
         }
 
-        Long id = null;
-        String titulo = null;
+        DocumentoResponse.TipoDocumentoResponse.TipoDocumentoResponseBuilder tipoDocumentoResponse = DocumentoResponse.TipoDocumentoResponse.builder();
 
-        id = tipoDocumento.getId();
-        titulo = tipoDocumento.getTitulo();
+        tipoDocumentoResponse.id(tipoDocumento.getId());
+        tipoDocumentoResponse.titulo(tipoDocumento.getTitulo());
 
-        return new DocumentoResponse.TipoDocumentoResponse(id, titulo);
+        return tipoDocumentoResponse.build();
     }
 }
