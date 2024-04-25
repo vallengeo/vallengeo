@@ -25,16 +25,4 @@ import java.util.List;
 @Tag(name = "Tipo de Uso", description = "Operação referente ao tipo de uso")
 @SecurityRequirement(name = "bearerAuth")
 public class TipoUsoController {
-private final TipoUsoService tipoUsoService;
-
-   @Operation(summary = "Listar os tipo de usos ativos")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Ok"),
-            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
-    })
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<TipoUsoResponse>> buscarTipoUso() {
-        return ResponseEntity.ok(tipoUsoService.buscarTodosAtivos());
-    }
-
 }

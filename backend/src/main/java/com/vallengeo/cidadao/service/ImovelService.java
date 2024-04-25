@@ -2,6 +2,7 @@ package com.vallengeo.cidadao.service;
 
 import com.vallengeo.cidadao.model.*;
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
+import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.ImovelResponse;
 import com.vallengeo.cidadao.repository.ImovelRepository;
 import com.vallengeo.cidadao.service.mapper.ImovelMapper;
@@ -23,7 +24,7 @@ public class ImovelService {
     private final CaracterizacaoImovelService caracterizacaoImovelService;
 
     @Transactional
-    public ImovelResponse cadastrar(ProcessoImovelRequest input) {
+    public ProcessoResponse cadastrar(ProcessoImovelRequest input) {
 
         Processo processo = processoService.cadastrar(input.idGrupo());
 
@@ -39,8 +40,7 @@ public class ImovelService {
                 .caracterizacaoImovel(caracterizacaoImovel)
                 .inscricaoImobiliaria(montaInscricaoImobiliaria(caracterizacaoImovel))
                 .build());
-
-        return ImovelMapper.INSTANCE.toResponse(imovel);
+      return new ProcessoResponse(processo.getId(), processo.getProtocolo(), ImovelMapper.INSTANCE.toResponse(imovel));
     }
 
     private String montaInscricaoImobiliaria(CaracterizacaoImovel caracterizacaoImovel) {

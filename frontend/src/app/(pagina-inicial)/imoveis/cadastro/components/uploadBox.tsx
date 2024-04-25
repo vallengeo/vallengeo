@@ -3,7 +3,7 @@ import { GeoJsonObject } from 'geojson'
 import React, { useCallback, useState } from 'react'
 import { FileError, FileWithPath, useDropzone } from 'react-dropzone'
 import IErrorUpload from '@/interfaces/IErrorUpload'
-import { uploadShapeFile } from '@/service/georreferenciamentoService'
+import { uploadShapeFile } from '@/service/imovelService'
 import IIntersectGeo from '@/interfaces/IIntersectGeo'
 
 type IProps = {

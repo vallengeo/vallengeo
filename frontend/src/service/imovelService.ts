@@ -7,7 +7,7 @@ export const uploadShapeFile = async (file: File[]) => {
       formData.append('file', blob, f.name)
     })
   
-    return api.post('/georreferenciamento/obter-geometria', formData, {
+    return api.post('/imovel/georreferenciamento/obter-geometria-por-arquivo', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

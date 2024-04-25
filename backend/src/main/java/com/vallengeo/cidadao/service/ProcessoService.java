@@ -3,7 +3,7 @@ package com.vallengeo.cidadao.service;
 import com.vallengeo.cidadao.enumeration.SituacaoProcessoEnum;
 import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.payload.request.ProcessoDocumentoRequest;
-import com.vallengeo.cidadao.payload.request.ProcessoRepresentanteRequest;
+import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.service.mapper.ProcessoMapper;
@@ -19,6 +19,7 @@ import javax.transaction.Transactional;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 import java.util.UUID;
@@ -33,34 +34,9 @@ import static com.vallengeo.core.util.Constants.NOT_FOUND;
 public class ProcessoService {
     private final ProcessoRepository repository;
     private final GrupoRepository grupoRepository;
-    private final RelProcessoResponsavelTecnicoService relProcessoResponsavelTecnicoService;
     private final RelProcessoSituacaoProcessoService relProcessoSituacaoProcessoService;
-    private final DocumentoService documentoService;
+    private final TipoDocumentoService tipoDocumentoService;
     public static final String LOG_PREFIX = "[PROCESSO] - ";
-
-    @Transactional
-    public ProcessoResponse cadastrar(ProcessoRepresentanteRequest input) {
-        log.info(LOG_PREFIX + "Iniciando cadastro do processo");
-
-        Processo processo = repository.save(
-                Processo.builder()
-                        .grupo(grupoRepository.findById(UUID.fromString(input.getIdGrupo())).orElseThrow(() -> new ValidatorException("Grupo " + input.getIdGrupo() + NOT_FOUND, HttpStatus.NOT_FOUND)))
-                        .protocolo(gerarCodigoProtocolo())
-                        .dataCadastro(convertDateToLocalDateTime(new Date()))
-                        .usuario(SecurityUtils.getUserSession())
-                        .build()
-        );
-
-        log.info(LOG_PREFIX + "cadastro do processo realizado em memória");
-
-        // cadastrar relação processo com RT
-        relProcessoResponsavelTecnicoService.cadastrar(processo.getId(), input.getResponsaveisTecnicos());
-
-        // cadastrar relação processo com situação do processo
-        relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.EM_CADASTRAMENTO);
-
-        return montarOutput(processo);
-    }
 
     public Processo cadastrar(@NotBlank(message = CAMPO_OBRIGATORIO) String idGrupo) {
         log.info(LOG_PREFIX + "Iniciando cadastro do processo");
@@ -74,23 +50,34 @@ public class ProcessoService {
                         .build()
         );
 
-         // cadastrar relação processo com situação do processo
-        relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.EM_CADASTRAMENTO);
+        // cadastrar relação processo com situação do processo
+        relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.PENDENTE_UPLOAD_ARQUIVO);
 
         log.info(LOG_PREFIX + "cadastro do processo realizado em memória");
         return processo;
     }
 
     @Transactional
-    public void cadastrarDocumento(ProcessoDocumentoRequest request) {
+    public void validacaoPosCadastrarDocumento(ProcessoDocumentoRequest request) {
         UUID processoId = UUID.fromString(request.getIdProcesso());
 
         log.info(LOG_PREFIX + "Cadastro de documentos para o processo {}", processoId);
         Processo processo = repository.findById(processoId).orElseThrow(
                 () -> new ValidatorException("Processo " + request.getIdProcesso() + NOT_FOUND, HttpStatus.NOT_FOUND));
 
-        documentoService.cadastrar(request, processo);
         processo.setDataAlteracao(convertDateToLocalDateTime(new Date()));
+        validarEnvioDocumentosObrigatorios(processoId);
+    }
+
+    private void validarEnvioDocumentosObrigatorios(UUID processoId) {
+        Long qtdeNaoEnviados = tipoDocumentoService.buscarTipoDocumentoNaoEnviadoPeloProcesso(processoId).stream()
+                .filter(TipoDocumentoResponse::obrigatorio)
+                .count();
+
+        if (qtdeNaoEnviados.equals(0L)) {
+            relProcessoSituacaoProcessoService.alterar(processoId, Collections.singletonList(SituacaoProcessoEnum.AGUARDANDO_APROVACAO));
+        }
+
     }
 
     private static String gerarCodigoProtocolo() {

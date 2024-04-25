@@ -32,6 +32,10 @@ public class DocumentoResponse implements Serializable {
         return "-";
     }
 
-    public record TipoDocumentoResponse(Long id, String titulo)  implements Serializable {
+    @Data
+    @Builder
+    public static class TipoDocumentoResponse implements Serializable {
+        private Long id;
+        private String titulo;
     }
 }

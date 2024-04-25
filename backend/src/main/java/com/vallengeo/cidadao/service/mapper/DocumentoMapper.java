@@ -9,7 +9,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Mapper
@@ -22,15 +21,9 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
             return null;
         }
 
-        Arquivo documento = Arquivo.builder()
-                .id(dto.getId())
-                .nome(dto.getNome())
-                .extensao(dto.getExtensao())
-                .tamanho(dto.getTamanho())
-                .dataEnvio(dto.getDataEnvio())
-                .build();
+        Arquivo.ArquivoBuilder documento = Arquivo.builder();
 
-        return new Documento(documento);
+        return (Documento) documento.build();
     }
 
     @Override
@@ -41,11 +34,6 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
 
         DocumentoResponse.DocumentoResponseBuilder documentoResponse = DocumentoResponse.builder();
 
-        documentoResponse.id(entity.getId());
-        documentoResponse.nome(entity.getNome());
-        documentoResponse.extensao(entity.getExtensao());
-        documentoResponse.tamanho(entity.getTamanho());
-        documentoResponse.dataEnvio(entity.getDataEnvio());
         documentoResponse.tipoDocumento(tipoDocumentoToTipoDocumentoResponse(entity.getTipoDocumento()));
 
         return documentoResponse.build();
@@ -54,10 +42,10 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
     @Override
     default List<Documento> toEntity(List<DocumentoResponse> dtoList) {
         if (dtoList == null) {
-            return Collections.emptyList();
+            return null;
         }
 
-        List<Documento> list = new ArrayList<>(dtoList.size());
+        List<Documento> list = new ArrayList<Documento>(dtoList.size());
         for (DocumentoResponse documentoResponse : dtoList) {
             list.add(toEntity(documentoResponse));
         }
@@ -68,10 +56,10 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
     @Override
     default List<DocumentoResponse> toResponse(List<Documento> entityList) {
         if (entityList == null) {
-            return Collections.emptyList();
+            return null;
         }
 
-        List<DocumentoResponse> list = new ArrayList<>(entityList.size());
+        List<DocumentoResponse> list = new ArrayList<DocumentoResponse>(entityList.size());
         for (Documento documento : entityList) {
             list.add(toResponse(documento));
         }
@@ -84,12 +72,11 @@ public interface DocumentoMapper extends EntityMapper<DocumentoResponse, Documen
             return null;
         }
 
-        Long id = null;
-        String titulo = null;
+        DocumentoResponse.TipoDocumentoResponse.TipoDocumentoResponseBuilder tipoDocumentoResponse = DocumentoResponse.TipoDocumentoResponse.builder();
 
-        id = tipoDocumento.getId();
-        titulo = tipoDocumento.getTitulo();
+        tipoDocumentoResponse.id(tipoDocumento.getId());
+        tipoDocumentoResponse.titulo(tipoDocumento.getTitulo());
 
-        return new DocumentoResponse.TipoDocumentoResponse(id, titulo);
+        return tipoDocumentoResponse.build();
     }
 }
