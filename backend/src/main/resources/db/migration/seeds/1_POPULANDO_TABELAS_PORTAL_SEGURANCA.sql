@@ -5,6 +5,18 @@ VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'vallengeo.dev@gmail.com',
         '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
         TRUE);
 
+INSERT INTO portal_seguranca.usuario
+    (id, email, senha_hash, data_cadastro, data_atualizacao, ativo)
+VALUES ('5c51b22c-4b51-44fd-932b-505a9428f4ca', 'vallengeo.analista@gmail.com',
+        '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
+        TRUE);
+
+INSERT INTO portal_seguranca.usuario
+    (id, email, senha_hash, data_cadastro, data_atualizacao, ativo)
+VALUES ('f34bd4aa-94a3-4df4-9c1e-fcbe7c714185', 'vallengeo.cidadao@gmail.com',
+        '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
+        TRUE);
+
 -- ************************* GRUPO ***********************************
 INSERT INTO portal_seguranca.grupo
     (id, nome, codigo)
@@ -27,6 +39,14 @@ VALUES ('8abc3181-d4d9-40ab-8477-5202074afae3', 'Cidadão', 'CIDADAO');
 INSERT INTO portal_seguranca.usuario_perfil
     (id_usuario, id_perfil)
 VALUES ('99b551f8-f532-40a0-b63f-094661844bd8', 'd66df945-104d-4412-a1ee-0d0659bf86b5');
+
+INSERT INTO portal_seguranca.usuario_perfil
+    (id_usuario, id_perfil)
+VALUES ('5c51b22c-4b51-44fd-932b-505a9428f4ca', 'aae3d727-2f2c-4539-a2a0-0ce34ecf5529');
+
+INSERT INTO portal_seguranca.usuario_perfil
+    (id_usuario, id_perfil)
+VALUES ('f34bd4aa-94a3-4df4-9c1e-fcbe7c714185', '8abc3181-d4d9-40ab-8477-5202074afae3');
 
 -- ************************* RELACAO GRUPO PERFIL ************************************************************************
 INSERT INTO portal_seguranca.grupo_perfil

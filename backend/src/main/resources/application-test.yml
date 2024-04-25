@@ -1,0 +1,43 @@
+server:
+  port: 8888
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.spatial.dialect.postgis.PostgisDialect
+        enable_lazy_load_no_trans: true
+    show-sql: false
+  sql:
+    init:
+      mode: ALWAYS
+      platform: postgresql
+      data-locations:
+        - classpath:db/migration/seeds/1_POPULANDO_TABELAS_PORTAL_SEGURANCA.sql
+        - classpath:db/migration/seeds/V2_POPULANDO_TIPO_DOCUMENTO.sql
+  main:
+    allow-bean-definition-overriding: true
+  messages:
+    basename: i18n/messages
+    encoding: UTF-8
+
+api:
+  security:
+    token:
+      algorithm: HS256
+      secret: 7BTglohe03phks95iqAh6DHytaoDsSVDI4rs8AvqM/xti+rF9bEK2qs4G3L6V8Nu
+      expiration: 600000
+      refresh: 600000
+
+via-cep-url: https://viacep.com.br/ws
+
+usuario:
+  codigoAcesso:
+    validade:
+      minutos: 10

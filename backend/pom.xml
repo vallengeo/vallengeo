@@ -13,6 +13,7 @@
         <spring.security.jwt.version>0.11.5</spring.security.jwt.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <org.mapstruct.version>1.5.3.Final</org.mapstruct.version>
+        <testcontainers.version>1.19.7</testcontainers.version>
         <tests.skip>true</tests.skip>
     </properties>
 
@@ -230,6 +231,42 @@
             <version>2.11.0</version>
         </dependency>
 
+        <!-- Tests -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers-bom</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

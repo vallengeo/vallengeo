@@ -3,6 +3,7 @@ package com.vallengeo.core.exceptions;
 import com.vallengeo.core.exceptions.custom.enums.ExceptionTypesEnum;
 import com.vallengeo.core.helpers.StringHelpers;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor(force = true)
 public class ApiExceptionCustom {
 
     private final int status;
