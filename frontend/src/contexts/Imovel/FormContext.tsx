@@ -6,12 +6,16 @@ import {
   useState,
 } from "react";
 
+type ContatoType = 'representante' | 'responsavel' | 'outro';
+
 interface FormContextProps {
-  formData: any;
-  setFormData: Dispatch<SetStateAction<any>>;
-  onHandleBack: () => void;
-  onHandleNext: () => void;
-  step: number;
+  formData: any
+  setFormData: Dispatch<SetStateAction<any>>
+  onHandleBack: () => void
+  onHandleNext: () => void
+  step: number,
+  contato: ContatoType
+  setContato: Dispatch<SetStateAction<ContatoType>>
 }
 
 const FormContext = createContext<FormContextProps>({
@@ -20,6 +24,8 @@ const FormContext = createContext<FormContextProps>({
   onHandleNext: () => {},
   setFormData: () => {},
   step: 0,
+  contato: 'representante',
+  setContato: () => {}
 });
 
 interface FormProviderProps {
@@ -29,6 +35,7 @@ interface FormProviderProps {
 export function FormProvider({ children }: FormProviderProps) {
   const [formData, setFormData] = useState();
   const [step, setStep] = useState(1);
+  const [contato, setContato] = useState<ContatoType>('representante')
 
   function onHandleNext() {
     setStep((prev) => prev + 1);
@@ -40,7 +47,15 @@ export function FormProvider({ children }: FormProviderProps) {
 
   return (
     <FormContext.Provider
-      value={{ formData, setFormData, onHandleBack, onHandleNext, step }}
+      value={{
+        formData,
+        setFormData,
+        onHandleBack,
+        onHandleNext,
+        step,
+        contato,
+        setContato
+      }}
     >
       {children}
     </FormContext.Provider>

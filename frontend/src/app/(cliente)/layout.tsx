@@ -5,6 +5,7 @@ import '@/styles/globals.css'
 
 import { Brasao } from "@/components/brasao";
 import { CityBackdrop } from "@/components/cityBackdrop";
+import { Toaster } from '@/components/ui/toaster';
 
 export const inter = Inter({
   subsets: ['latin'],
@@ -43,6 +44,7 @@ export default function RootLayout({
             </div>
           </div>
         </main>
+        <Toaster />
       </body>
     </html>
   )

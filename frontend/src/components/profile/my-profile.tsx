@@ -25,7 +25,7 @@ export function MyProfile({ showAddress, openModalChangePassword }: MyProfilePro
                 onClick={openModalChangePassword}
                 className="h-auto p-0 justify-start mt-1 w-fit"
               >
-                Redefinir minha senha
+                Redefinir senha
               </Button>
 
               <Link href="/" className="inline-flex items-center gap-1 self-end">
