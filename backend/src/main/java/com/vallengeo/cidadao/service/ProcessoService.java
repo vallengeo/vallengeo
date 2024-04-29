@@ -97,7 +97,8 @@ public class ProcessoService {
 
     private static String gerarCodigoProtocolo() {
         LocalDateTime dateTime = convertDateToLocalDateTime(new Date());
-        Random random = new Random();
+        Random random;
+        random = new Random();
         StringBuilder codigo = new StringBuilder();
         codigo.append(dateTime.format(DateTimeFormatter.ofPattern("yyyy")));
 
@@ -108,9 +109,5 @@ public class ProcessoService {
         codigo.append("-");
         codigo.append(dateTime.format(DateTimeFormatter.ofPattern("MM")));
         return codigo.toString();
-    }
-
-    private ProcessoResponse montarOutput(Processo processo) {
-        return ProcessoMapper.INSTANCE.toResponse(processo);
     }
 }
