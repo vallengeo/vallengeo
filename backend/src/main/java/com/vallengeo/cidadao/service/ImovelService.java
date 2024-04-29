@@ -42,7 +42,6 @@ public class ImovelService {
 
     @Transactional
     public ProcessoResponse cadastrar(ProcessoImovelRequest input) {
-    public ProcessoResponse cadastrar(ProcessoImovelRequest input) {
 
         Processo processo = processoService.cadastrar(input.idGrupo());
 
