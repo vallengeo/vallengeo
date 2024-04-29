@@ -15,25 +15,25 @@ export const links = [
     id: 1,
     titulo: 'Home',
     icon: <Home size={18} />,
-    href: '/home'
+    href: '/dashboard'
   },
   {
     id: 2,
     titulo: 'Imóveis',
     icon: <Map size={18} />,
-    href: '/imoveis'
+    href: '/dashboard/imoveis'
   },
-  // {
-  //   id: 3,
-  //   titulo: 'Protocolos',
-  //   icon: <Archive size={18} />,
-  //   href: '/protocolos'
-  // },
+  {
+    id: 3,
+    titulo: 'Protocolos',
+    icon: <Archive size={18} />,
+    href: '/dashboard/protocolos'
+  },
   {
     id: 4,
     titulo: 'Relatórios',
     icon: <ClipboardList size={18} />,
-    href: '/relatorios'
+    href: '/dashboard/relatorios'
   },
 ];
 
@@ -47,7 +47,7 @@ export function Menu() {
           <li key={link.id}>
             <Link
               href={link.href}
-              className={`group flex items-center gap-1 text-sm p-2 ${pathname.indexOf(link.href) > -1 ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : ''} rounded-lg hover:bg-primary hover:text-primary-foreground hover:font-semibold`}
+              className={`group flex items-center gap-1 text-sm p-2 ${pathname === link.href ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : ''} rounded-lg hover:bg-primary hover:text-primary-foreground hover:font-semibold`}
             >
               {link.icon}
               {link.titulo}

@@ -4,6 +4,7 @@ import com.vallengeo.cidadao.enumeration.SituacaoProcessoEnum;
 import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.payload.request.ProcessoDocumentoRequest;
 import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
+import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.service.mapper.ProcessoMapper;
@@ -52,6 +53,8 @@ public class ProcessoService {
 
         // cadastrar relação processo com situação do processo
         relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.PENDENTE_UPLOAD_ARQUIVO);
+        // cadastrar relação processo com situação do processo
+        relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.PENDENTE_UPLOAD_ARQUIVO);
 
         log.info(LOG_PREFIX + "cadastro do processo realizado em memória");
         return processo;
@@ -66,6 +69,18 @@ public class ProcessoService {
                 () -> new ValidatorException("Processo " + request.getIdProcesso() + NOT_FOUND, HttpStatus.NOT_FOUND));
 
         processo.setDataAlteracao(convertDateToLocalDateTime(new Date()));
+        validarEnvioDocumentosObrigatorios(processoId);
+    }
+
+    private void validarEnvioDocumentosObrigatorios(UUID processoId) {
+        Long qtdeNaoEnviados = tipoDocumentoService.buscarTipoDocumentoNaoEnviadoPeloProcesso(processoId).stream()
+                .filter(TipoDocumentoResponse::obrigatorio)
+                .count();
+
+        if (qtdeNaoEnviados.equals(0L)) {
+            relProcessoSituacaoProcessoService.alterar(processoId, Collections.singletonList(SituacaoProcessoEnum.AGUARDANDO_APROVACAO));
+        }
+
         validarEnvioDocumentosObrigatorios(processoId);
     }
 

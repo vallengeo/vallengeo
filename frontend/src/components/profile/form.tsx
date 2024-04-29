@@ -32,16 +32,11 @@ type resetPasswordData = z.infer<typeof resetPasswordSchema>
 
 export function FormRedefinirSenha() {
   const form = useForm<resetPasswordData>({
-    resolver: zodResolver(resetPasswordSchema)
+    resolver: zodResolver(resetPasswordSchema),
   });
 
   const onSubmit: SubmitHandler<resetPasswordData> = (data) => {
     console.log(data);
-  }
-
-  function handleResetForm() {
-    form.setValue('password', '');
-    form.setValue('confirm_password', '');
   }
 
   return (
@@ -53,14 +48,14 @@ export function FormRedefinirSenha() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="password">Nova senha</FormLabel>
+                <FormLabel htmlFor="password" className="font-semibold">Nova senha</FormLabel>
                 <FormControl>
                   <Input
                     id="password"
                     type="password"
                     placeholder="********"
                     {...field}
-                    className="max-w-none bg-[#F0F0F0] border-0"
+                    className="max-w-none bg-input border-0"
                   />
                 </FormControl>
                 <FormMessage />
@@ -75,14 +70,14 @@ export function FormRedefinirSenha() {
             name="confirm_password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="confirm_password">Repetir senha</FormLabel>
+                <FormLabel htmlFor="confirm_password" className="font-semibold">Repetir senha</FormLabel>
                 <FormControl>
                   <Input
                     id="confirm_password"
                     type="password"
                     placeholder="********"
                     {...field}
-                    className="max-w-none bg-[#F0F0F0] border-0"
+                    className="max-w-none bg-input border-0"
                   />
                 </FormControl>
                 <FormMessage />
@@ -95,17 +90,17 @@ export function FormRedefinirSenha() {
           <Button
             type="button"
             variant="secondary"
-            onClick={handleResetForm}
-            className="px-16 h-12"
+            onClick={() => {
+              form.reset({
+                password: "",
+                confirm_password: "",
+              })
+            }}
           >
             Limpar
           </Button>
 
-          <Button
-            type="submit"
-            variant="default"
-            className="px-16 h-12"
-          >
+          <Button type="submit" variant="default">
             Salvar
           </Button>
         </div>

@@ -1,6 +1,4 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ProfileTrigger } from "@/components/profile-trigger";
 
 import {
   DropdownMenu,
@@ -9,41 +7,39 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { ProfileTrigger } from "@/components/profile-trigger";
+
 export function Menu() {
-
-  const isLoggedIn = false;
-
   return (
-    <>
-      {isLoggedIn
-        ?
-        <div>
-          <DropdownMenu>
-            <DropdownMenuTrigger>
-              <ProfileTrigger />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              align="end"
-              alignOffset={-24}
-              className="min-w-[12rem] py-4 rounded-2xl space-y-2 before:contents[''] before:absolute before:-top-3.5 before:right-6 before:triangle-to-top"
-            >
-              <DropdownMenuItem className="text-base justify-center">Meus imóveis</DropdownMenuItem>
-              <DropdownMenuItem className="text-base justify-center">Configurações</DropdownMenuItem>
-              <DropdownMenuItem className="text-base justify-center">
-                <Link href="/logout">
-                  Sair
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        :
-        <Link href="/autenticacao">
-          <Button variant="default">
-            Entrar
-          </Button>
-        </Link>
-      }
-    </>
+    <div className="flex items-center gap-x-8">
+      <Link
+        href="/imoveis"
+        className="inline-flex items-center gap-2 text-[#FCFCFC] font-medium"
+      >
+        Registro de Imóveis
+      </Link>
+
+      <DropdownMenu modal={false}>
+        <DropdownMenuTrigger>
+          <ProfileTrigger />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="end"
+          alignOffset={-24}
+          className="min-w-[12rem] py-4 rounded-2xl before:content-[''] before:absolute before:-top-3.5 before:right-6 before:triangle-to-top"
+        >
+          <DropdownMenuItem className="text-base justify-center">
+            <Link href="/configuracoes">
+              Configurações
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="text-base justify-center mt-4">
+            <Link href="/autenticacao/logout">
+              Sair
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
   )
 }
