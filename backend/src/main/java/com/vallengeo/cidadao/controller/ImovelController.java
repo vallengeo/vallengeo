@@ -1,6 +1,7 @@
 package com.vallengeo.cidadao.controller;
 
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
+import com.vallengeo.cidadao.payload.response.FichaImovelResponse;
 import com.vallengeo.cidadao.payload.response.GeometriaPorAquivoResponse;
 import com.vallengeo.cidadao.payload.response.TipoUsoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.UUID;
 
 import static com.vallengeo.core.util.Constants.*;
 
@@ -64,6 +66,16 @@ public class ImovelController {
         log.info("Buscando geometria(s) por arquivo");
         var response = georreferenciamentoService.obterGeometriaPorShapeFile(file, request);
         return ResponseEntity.ok().body(response);
+    }
+
+    @Operation(summary = "Listar os tipo de usos ativos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/ficha/{processoId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<FichaImovelResponse> fichaImovelPeloProcessoId(@PathVariable UUID processoId) {
+        return ResponseEntity.ok(imovelService.fichaImovel(processoId));
     }
 
     @Operation(summary = "Serviço de cadastro do imóvel")
