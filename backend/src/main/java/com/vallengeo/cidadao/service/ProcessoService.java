@@ -4,7 +4,6 @@ import com.vallengeo.cidadao.enumeration.SituacaoProcessoEnum;
 import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.payload.request.ProcessoDocumentoRequest;
 import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
-import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.service.mapper.ProcessoMapper;
@@ -53,8 +52,6 @@ public class ProcessoService {
 
         // cadastrar relação processo com situação do processo
         relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.PENDENTE_UPLOAD_ARQUIVO);
-        // cadastrar relação processo com situação do processo
-        relProcessoSituacaoProcessoService.cadastrar(processo.getId(), SituacaoProcessoEnum.PENDENTE_UPLOAD_ARQUIVO);
 
         log.info(LOG_PREFIX + "cadastro do processo realizado em memória");
         return processo;
@@ -81,23 +78,12 @@ public class ProcessoService {
             relProcessoSituacaoProcessoService.alterar(processoId, Collections.singletonList(SituacaoProcessoEnum.AGUARDANDO_APROVACAO));
         }
 
-        validarEnvioDocumentosObrigatorios(processoId);
-    }
-
-    private void validarEnvioDocumentosObrigatorios(UUID processoId) {
-        Long qtdeNaoEnviados = tipoDocumentoService.buscarTipoDocumentoNaoEnviadoPeloProcesso(processoId).stream()
-                .filter(TipoDocumentoResponse::obrigatorio)
-                .count();
-
-        if (qtdeNaoEnviados.equals(0L)) {
-            relProcessoSituacaoProcessoService.alterar(processoId, Collections.singletonList(SituacaoProcessoEnum.AGUARDANDO_APROVACAO));
-        }
-
     }
 
     private static String gerarCodigoProtocolo() {
         LocalDateTime dateTime = convertDateToLocalDateTime(new Date());
-        Random random = new Random();
+        Random random;
+        random = new Random();
         StringBuilder codigo = new StringBuilder();
         codigo.append(dateTime.format(DateTimeFormatter.ofPattern("yyyy")));
 
@@ -108,9 +94,5 @@ public class ProcessoService {
         codigo.append("-");
         codigo.append(dateTime.format(DateTimeFormatter.ofPattern("MM")));
         return codigo.toString();
-    }
-
-    private ProcessoResponse montarOutput(Processo processo) {
-        return ProcessoMapper.INSTANCE.toResponse(processo);
     }
 }
