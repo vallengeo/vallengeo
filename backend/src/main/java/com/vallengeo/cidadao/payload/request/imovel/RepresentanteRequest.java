@@ -15,7 +15,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serial;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 import static com.vallengeo.core.util.Constants.*;
@@ -30,9 +30,9 @@ import static com.vallengeo.core.util.Constants.*;
         }
 )
 public class RepresentanteRequest extends PessoaRequest implements Serializable {
-   @Valid
-   @NotNull(message = CAMPO_OBRIGATORIO)
-   private Contato contato;
+    @Valid
+    @NotNull(message = CAMPO_OBRIGATORIO)
+    private Contato contato;
 
     @Getter
     @Setter
@@ -70,7 +70,11 @@ public class RepresentanteRequest extends PessoaRequest implements Serializable 
         private String email;
         @NotEmpty(message = CAMPO_OBRIGATORIO)
         private String telefone;
-        @NotNull(message = CAMPO_OBRIGATORIO)
+        @NotEmpty(message = CAMPO_OBRIGATORIO)
+        @Size(min = 11, max = 14, message = "Favor informar documento inválido")
+        private String documento;
         private Boolean responsavelTecnico;
+        private Boolean representanteLegal;
+        private Boolean outro;
     }
 }

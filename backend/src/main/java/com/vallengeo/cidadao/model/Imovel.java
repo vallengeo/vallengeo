@@ -2,13 +2,13 @@ package com.vallengeo.cidadao.model;
 
 import com.vallengeo.core.util.Schemas;
 import lombok.*;
+import org.locationtech.jts.geom.Geometry;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
@@ -27,6 +27,10 @@ public class Imovel implements Serializable {
     private Long id;
     @Column(name = "inscricao_imobiliaria", nullable = false)
     private String inscricaoImobiliaria;
+
+    @NotNull
+    @Column(name = "geometria", nullable = false)
+    private Geometry geometria;
 
     @NotNull
     @OneToOne

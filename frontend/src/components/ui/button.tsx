@@ -13,7 +13,7 @@ const buttonVariants = cva(
 
         secondary: "text-lg bg-transparent text-primary-foreground font-semibold hover:bg-primary-foreground hover:text-white border border-primary-foreground",
 
-        tertiary: "text-lg text-white bg-primary-foreground font-medium hover:bg-transparent hover:text-primary-foreground border border-primary-foreground",
+        tertiary: "text-lg text-white bg-primary-foreground font-medium hover:opacity-90 border border-primary-foreground",
 
         ghost: "hover:bg-accent hover:text-accent-foreground",
 

@@ -2,8 +2,6 @@ package com.vallengeo.portal.security.jwt;
 
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.core.util.SecurityUtils;
-import com.vallengeo.portal.model.Grupo;
-import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.payload.response.LoginResponse;
 import com.vallengeo.portal.service.AuthorizationService;
 import io.jsonwebtoken.*;
@@ -115,6 +113,10 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && !isTokenRevoked(token);
+    }
+     public void revokeToken(HttpServletRequest http) {
+      String tokenFull = recoverToken(http);
+      revokeToken(tokenFull);
     }
 
     public void revokeToken(String token) {

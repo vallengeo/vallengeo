@@ -13,16 +13,19 @@ const config: Config = {
       center: true,
       padding: "1rem",
       screens: {
-        "2xl": "1332px",
+        "2xl": "1334px",
       },
     },
     extend: {
       colors: {
         border: "hsl(var(--border))",
         input: "var(--input)",
+        "input-secondary": "var(--input-secondary)",
         ring: "hsl(var(--ring))",
         background: "var(--background)",
+        "background-secondary": "var(--background-secondary)",
         foreground: "hsl(var(--foreground))",
+        link: "var(--link)",
         primary: {
           DEFAULT: "var(--primary)",
           hover: "var(--primary-hover)",
@@ -65,6 +68,8 @@ const config: Config = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
+        amarelo: 'var(--amarelo)'
       },
 
       borderRadius: {

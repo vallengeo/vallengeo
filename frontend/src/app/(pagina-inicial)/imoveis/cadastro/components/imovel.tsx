@@ -41,6 +41,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import Mapa from "./mapa";
 
 export function CadastroImovel() {
   const { onHandleBack, setFormData, formData } = useFormState();
@@ -513,11 +514,12 @@ export function CadastroImovel() {
         </fieldset>
 
         <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
-          <legend className="sr-only">Georeferenciamento</legend>
+          <legend className="sr-only">Georreferenciamento</legend>
 
           <header className="flex items-center justify-between mb-1">
-            <h2 className="text-xl">Georeferenciamento</h2>
+            <h2 className="text-xl">Georreferenciamento</h2>
           </header>
+          <Mapa/>
         </fieldset>
 
         <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">

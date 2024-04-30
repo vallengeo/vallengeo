@@ -1,11 +1,11 @@
 package com.vallengeo.portal.service.mapper;
 
+import com.vallengeo.cidadao.payload.request.imovel.RepresentanteRequest;
 import com.vallengeo.portal.model.Pessoa;
 import com.vallengeo.portal.model.PessoaFisica;
 import com.vallengeo.portal.model.PessoaJuridica;
 import com.vallengeo.portal.payload.request.pessoa.PessoaRequest;
 import com.vallengeo.portal.payload.response.PessoaResponse;
-import com.vallengeo.cidadao.payload.request.imovel.RepresentanteRequest;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

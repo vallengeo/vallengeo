@@ -3,11 +3,10 @@ package com.vallengeo.cidadao.payload.response.cadastro.imovel;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 import static com.vallengeo.core.config.Config.DATE_FORMAT;
-import static com.vallengeo.core.helpers.DateHelpers.convertDateToLocalDateTime;
 
 @Data
 public class CaracterizacaoImovelResponse implements Serializable {
@@ -18,11 +17,11 @@ public class CaracterizacaoImovelResponse implements Serializable {
     private Float areaTerreno;
     private Float testadaPrincipal;
     private Float fracaoIdeal;
-    private Date dataInclusao;
+    private LocalDate dataInclusao;
 
     public String getDataInclusaoFormatada() {
         if (this.dataInclusao != null) {
-            return convertDateToLocalDateTime(this.dataInclusao).format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+            return this.dataInclusao.format(DateTimeFormatter.ofPattern(DATE_FORMAT));
         }
         return "-";
     }

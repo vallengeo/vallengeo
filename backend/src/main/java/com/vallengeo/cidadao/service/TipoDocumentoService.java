@@ -5,6 +5,7 @@ import com.vallengeo.cidadao.model.Documento;
 import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.model.TipoDocumento;
 import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
+import com.vallengeo.cidadao.repository.DocumentoRepository;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.repository.RelGrupoTipoDocumentoRepository;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
@@ -25,27 +26,25 @@ import static com.vallengeo.core.util.Constants.NOT_FOUND;
 public class TipoDocumentoService {
     private final RelGrupoTipoDocumentoRepository relGrupoTipoDocumentoRepository;
     private final ProcessoRepository processoRepository;
-    private final DocumentoService documentoService;
+    private final DocumentoRepository documentoRepository;
 
     public List<TipoDocumentoResponse> buscarTipoDocumento(HttpServletRequest request) {
         List<TipoDocumentoResponse> output = new ArrayList<>();
-        relGrupoTipoDocumentoRepository.findAllByGrupoId(UUID.fromString(SecurityUtils.getUserJwt(request).getIdGrupo())).forEach(relGrupoTipoDocumento -> {
-            output.add(
-                    new TipoDocumentoResponse(
-                            relGrupoTipoDocumento.getTipoDocumento().getId(),
-                            relGrupoTipoDocumento.getTipoDocumento().getTitulo(),
-                            relGrupoTipoDocumento.getObrigatorio(),
-                            Objects.nonNull(relGrupoTipoDocumento.getTipoDocumento().getFormato())
-                                    ? List.of(relGrupoTipoDocumento.getTipoDocumento().getFormato().split(","))
-                                    : new ArrayList<>()
-                    )
-            );
-        });
+        relGrupoTipoDocumentoRepository.findAllByGrupoId(UUID.fromString(SecurityUtils.getUserJwt(request).getIdGrupo())).forEach(relGrupoTipoDocumento -> output.add(
+                new TipoDocumentoResponse(
+                        relGrupoTipoDocumento.getTipoDocumento().getId(),
+                        relGrupoTipoDocumento.getTipoDocumento().getTitulo(),
+                        relGrupoTipoDocumento.getObrigatorio(),
+                        Objects.nonNull(relGrupoTipoDocumento.getTipoDocumento().getFormato())
+                                ? List.of(relGrupoTipoDocumento.getTipoDocumento().getFormato().split(","))
+                                : new ArrayList<>()
+                )
+        ));
 
         return ordenar(output);
     }
 
-     public List<TipoDocumentoResponse> buscarTipoDocumentoEnviadoPeloProcesso(UUID processoId) {
+    public List<TipoDocumentoResponse> buscarTipoDocumentoEnviadoPeloProcesso(UUID processoId) {
         List<TipoDocumentoResponse> output = new ArrayList<>();
 
         Processo processo = processoRepository.findById(processoId).orElseThrow(
@@ -99,7 +98,7 @@ public class TipoDocumentoService {
     }
 
     private List<TipoDocumento> buscarTipoDocumentoEnviadoPeloProcessoId(UUID processoId) {
-        return documentoService.buscarDocumentoEnviadoPeloProcessoId(processoId)
+        return documentoRepository.findAllByProcessoId(processoId)
                 .stream()
                 .map(Documento::getTipoDocumento).distinct()
                 .toList();

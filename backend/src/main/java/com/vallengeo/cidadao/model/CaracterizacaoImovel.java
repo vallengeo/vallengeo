@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import static com.vallengeo.core.util.Constants.CAMPO_OBRIGATORIO;
@@ -58,7 +58,7 @@ public class CaracterizacaoImovel implements Serializable {
     private Float fracaoIdeal;
     @NotNull(message = CAMPO_OBRIGATORIO)
     @Column(name = "data_inclusao")
-    private Date dataInclusao;
+    private LocalDate dataInclusao;
 
     @Override
     public boolean equals(Object o) {
