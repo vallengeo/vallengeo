@@ -17,6 +17,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -68,7 +70,7 @@ public class ImovelController {
         return ResponseEntity.ok().body(response);
     }
 
-    @Operation(summary = "Listar os tipo de usos ativos")
+    @Operation(summary = "Informações referente a ficha imobiliária pelo identificador do processo.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
@@ -76,6 +78,20 @@ public class ImovelController {
     @GetMapping(value = "/ficha/{processoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FichaImovelResponse> fichaImovelPeloProcessoId(@PathVariable UUID processoId) {
         return ResponseEntity.ok(imovelService.fichaImovel(processoId));
+    }
+
+    @Operation(summary = "Informações referente a ficha imobiliária pelo identificador do processo.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/ficha/{processoId}/download", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> baixarFichaImovelPeloProcessoId(@PathVariable UUID processoId) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + processoId + ".pdf")
+                .header("X-FILE-ID", processoId.toString())
+                .body(imovelService.fichaImovelImprimir(processoId));
     }
 
     @Operation(summary = "Serviço de cadastro do imóvel")

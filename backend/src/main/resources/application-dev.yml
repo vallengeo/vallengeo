@@ -30,6 +30,5 @@ spring:
     url: ${DATABASE_URL}
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-    
 
 geoserver-url: http://localhost:9001/geoserver/vallengeo
