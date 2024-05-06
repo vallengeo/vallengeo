@@ -11,19 +11,28 @@ import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.repository.RelProcessoSituacaoProcessoRepository;
 import com.vallengeo.cidadao.service.mapper.ImovelMapper;
 import com.vallengeo.cidadao.service.mapper.RepresentanteMapper;
+import com.vallengeo.core.exceptions.custom.BadRequestException;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.portal.service.PessoaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
+import org.thymeleaf.ITemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.UUID;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
+import static com.vallengeo.core.config.Config.APPLICATION_DEFINITIVE_UPLOAD;
 import static com.vallengeo.core.util.Constants.NOT_FOUND;
 
 @Slf4j
@@ -39,6 +48,7 @@ public class ImovelService {
     private final CaracterizacaoImovelService caracterizacaoImovelService;
     private final PessoaService pessoaService;
     private final DocumentoService documentoService;
+    private final ITemplateEngine templateEngine;
 
     @Transactional
     public ProcessoResponse cadastrar(ProcessoImovelRequest input) {
@@ -77,6 +87,54 @@ public class ImovelService {
                 .representantes(montaRepresentantesPeloImovel(imovel))
                 .documentosEnviados(documentoService.buscarDocumentoEnviadoPeloProcesso(processoId))
                 .build();
+    }
+
+    public ByteArrayResource fichaImovelImprimir(UUID processoId) {
+        String outputFile = APPLICATION_DEFINITIVE_UPLOAD + File.separator + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + File.separator + processoId + ".pdf";
+        File file = new File(outputFile);
+        try {
+            //   if (!file.exists()) {
+            String html = parseThymeleafTemplate(processoId);
+
+            final var definitivePath = new File(APPLICATION_DEFINITIVE_UPLOAD + File.separator + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+            log.info("Definitive Path {}", definitivePath);
+            if (!definitivePath.exists() && definitivePath.mkdir()) {
+                log.info("Create Definitive Path");
+            }
+            OutputStream outputStream = new FileOutputStream(outputFile);
+
+//            ITextRenderer renderer = new ITextRenderer();
+//            renderer.setDocumentFromString(html);
+//            renderer.layout();
+//            renderer.createPDF(outputStream);
+
+            outputStream.close();
+
+            //   }
+            return new ByteArrayResource(Files.readAllBytes(Path.of(outputFile)));
+        } catch (IOException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    private String parseThymeleafTemplate(UUID processoId) throws IOException {
+        Locale local = new Locale("pt", "BR");
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", local);
+
+        InputStream inputStream = new ClassPathResource("static/images/logo_vallengeo.png").getInputStream();
+        byte[] bytes = StreamUtils.copyToByteArray(inputStream);
+        String logoPlataforma = "data:image/png;base64," + Base64.getEncoder()
+                .encodeToString(bytes);
+//        Processo processo = processoRepository.findById(processoId).orElseThrow(
+//                () -> new ValidatorException("Processo " + processoId + NOT_FOUND, HttpStatus.NOT_FOUND));
+
+        // CONTEXT
+
+        Context context = new Context();
+       context.setVariable("basePath", "/css");
+        context.setVariable("logo_plataforma", logoPlataforma);
+        return templateEngine.process("ficha/main.html", context);
+
     }
 
     private String montaInscricaoImobiliaria(CaracterizacaoImovel caracterizacaoImovel) {

@@ -2,19 +2,14 @@ package com.vallengeo.cidadao.payload.response.cadastro.imovel;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.vallengeo.core.util.DocumentoUtil;
 import com.vallengeo.portal.enumeration.TipoPessoaEnum;
 import com.vallengeo.portal.payload.response.PessoaResponse;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import java.io.Serial;
 import java.io.Serializable;
-
-import static com.vallengeo.core.util.Constants.CAMPO_OBRIGATORIO;
-import static com.vallengeo.core.util.Constants.EMAIL_INVALIDO;
 
 @Getter
 @Setter
@@ -22,23 +17,33 @@ public class RepresentanteResponse extends PessoaResponse implements Serializabl
     @Serial
     private static final long serialVersionUID = 1L;
     private Contato contato;
+    private String tipoPessoa;
+
+    public String getTipoPessoa() {
+        if (this instanceof PessoaFisica) {
+            return TipoPessoaEnum.Nome.FISICA;
+        } else {
+            return TipoPessoaEnum.Nome.JURIDICA;
+        }
+    }
 
     @Getter
     @Setter
     public static class Contato implements Serializable {
-        @NotEmpty(message = CAMPO_OBRIGATORIO)
         private String nome;
-        @NotEmpty(message = CAMPO_OBRIGATORIO)
-        @Email(message = EMAIL_INVALIDO)
         private String email;
-        @NotEmpty(message = CAMPO_OBRIGATORIO)
         private String telefone;
-        @NotEmpty(message = CAMPO_OBRIGATORIO)
-        @Size(min = 11, max = 14, message = "Favor informar documento inválido")
         private String documento;
         private Boolean responsavelTecnico;
         private Boolean representanteLegal;
         private Boolean outro;
+
+         public String getDocumento() {
+            if (this.documento != null) {
+                return DocumentoUtil.addMascara(this.documento);
+            }
+            return "-";
+        }
     }
 
     @Getter
@@ -50,6 +55,13 @@ public class RepresentanteResponse extends PessoaResponse implements Serializabl
         private String rg;
         @JsonIgnore
         private String tipoPessoa = TipoPessoaEnum.Nome.FISICA;
+
+        public String getCpf() {
+            if (this.cpf != null) {
+                return DocumentoUtil.addMascara(this.cpf);
+            }
+            return "-";
+        }
     }
 
     @Getter
@@ -61,6 +73,13 @@ public class RepresentanteResponse extends PessoaResponse implements Serializabl
         private RepresentanteResponse.PessoaFisica responsavel;
         @JsonIgnore
         private String tipoPessoa = TipoPessoaEnum.Nome.JURIDICA;
+
+        public String getCnpj() {
+            if (this.cnpj != null) {
+                return DocumentoUtil.addMascara(this.cnpj);
+            }
+            return "-";
+        }
     }
 
 }

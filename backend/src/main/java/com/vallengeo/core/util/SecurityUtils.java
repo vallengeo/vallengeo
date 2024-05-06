@@ -45,9 +45,9 @@ public final class SecurityUtils {
 
     public static String getJwtToken(HttpServletRequest request) {
         isAuthenticated();
-            String authHeader = request.getHeader("Authorization");
-            if (Objects.isNull(authHeader)) return null;
-            return authHeader.replace("Bearer ", "");
+        String authHeader = request.getHeader("Authorization");
+        if (Objects.isNull(authHeader)) return null;
+        return authHeader.replace("Bearer ", "");
 
     }
 
@@ -65,7 +65,7 @@ public final class SecurityUtils {
         return Objects.nonNull(response.getIdGrupo()) ? UUID.fromString(response.getIdGrupo()) : null;
     }
 
-     public String[] urlPermitted() {
+    public String[] urlPermitted() {
         return new String[]{
                 "/#/**",
                 "/swagger-ui/**",
@@ -81,6 +81,9 @@ public final class SecurityUtils {
                 "/favicon.ico",
                 "/img/**",
                 "/images/**",
+                "/static/fonts/**",
+                "/static/**",
+                "/fonts/**",
                 "/js/**",
                 "/css/**",
                 "/error",
@@ -89,7 +92,15 @@ public final class SecurityUtils {
                 "/api/v1/autenticacao/logout/**",
                 "/api/v1/usuario/esqueci-minha-senha",
                 "/api/v1/usuario/recuperar-senha",
-                "/api/v1/localidade/**"
+                "/api/v1/localidade/**",
+                "/ficha",
+                "/generate",
+                "/gerar-pdf",
+                "/gerar-pdf-2",
+                "/gerar-pdf-3",
+                "/gerar-pdf-4",
+                "/gerar-pdf-5",
+                "/gerar-pdf-6"
         };
     }
 

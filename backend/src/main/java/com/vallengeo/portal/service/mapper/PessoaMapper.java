@@ -54,7 +54,7 @@ public interface PessoaMapper {
 
     default Pessoa requestToEntity(RepresentanteRequest request) {
         if (request instanceof RepresentanteRequest.PessoaFisicaRequest) {
-            return requestToEntity(request);
+            return requestToEntity((RepresentanteRequest.PessoaFisicaRequest) request);
         } else {
             return requestToEntity((RepresentanteRequest.PessoaJuridicaRequest) request);
         }

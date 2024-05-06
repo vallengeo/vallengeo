@@ -1,0 +1,301 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org/" lang="pt">
+<header th:fragment="representante" class="representante">
+    <div class="card">
+        <h2>Representante do imóvel</h2>
+
+        <div class="container" th:if="${representantes != null}" th:each="dados,iter : ${representantes}">
+            <table th:if="${dados.tipoPessoa =='FISICA'}" class="tabela-representante">
+                <tr>
+                    <td colspan="2">
+                        <h4>Nome Completo</h4>
+                        <p th:if="${dados.nome != null}" th:text="${dados.nome}"></p>
+                        <p th:if="${dados.nome == null}">-</p>
+                    </td>
+                    <td>
+                        <h4>CPF</h4>
+                        <p th:if="${dados.cpf != null}" th:text="${dados.cpf}"></p>
+                        <p th:if="${dados.cpf == null}">-</p>
+                    </td>
+                    <td>
+                        <h4>RG</h4>
+                        <p th:if="${dados.rg != null}" th:text="${dados.rg}"></p>
+                        <p th:if="${dados.rg == null}">-</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <h4>CEP</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.cep != null}"
+                           th:text="${dados.endereco.cep}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.cep == null}">-</p>
+                    </td>
+                    <td colspan="2">
+                        <h4>Endereço</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.logradouro != null}"
+                           th:text="${dados.endereco.logradouro}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.logradouro == null}">-</p>
+                    </td>
+                    <td>
+                        <h4>Número</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.numero != null}"
+                           th:text="${dados.endereco.numero}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.numero == null}">-</p>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <h4>Complemento</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.complemento != null}"
+                           th:text="${dados.endereco.complemento}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.complemento == null}">-</p>
+                    </td>
+                    <td>
+                        <h4>Bairro</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.bairro != null}"
+                           th:text="${dados.endereco.bairro}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.bairro == null}">-</p>
+                    </td>
+
+                    <td>
+                        <h4>Cidade</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.municipio != null && dados.endereco.municipio.estado != null && dados.endereco.municipio.estado.nome != null}"
+                           th:text="${dados.endereco.municipio.estado.nome}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.municipio == null || dados.endereco.municipio.estado == null || dados.endereco.municipio.estado.nome == null}">
+                            -</p>
+                    </td>
+                    <td>
+                        <h4>Estado</h4>
+                        <p th:if="${dados.endereco != null && dados.endereco.municipio != null && dados.endereco.municipio.estado != null && dados.endereco.municipio.estado.nome != null}"
+                           th:text="${dados.endereco.municipio.estado.nome}"></p>
+                        <p th:if="${dados.endereco == null || dados.endereco.municipio == null || dados.endereco.municipio.estado == null || dados.endereco.municipio.estado.nome == null}">
+                            -</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Telefone</h4>
+                        <p th:if="${dados.telefone != null}"
+                           th:text="${dados.telefone}"></p>
+                        <p th:if="${dados.telefone == null}">-</p>
+                    </td>
+                    <td colspan="2">
+                        <h4>E-mail</h4>
+                        <p th:if="${dados.email != null}" th:text="${dados.email}"></p>
+                        <p th:if="${dados.email == null}">-</p>
+                    </td>
+                </tr>
+            </table>
+
+            <div th:if="${dados.tipoPessoa =='JURIDICA'}">
+                <table class="tabela-representante">
+                    <tr>
+                        <td colspan="2">
+                            <h4>Nome completo representante da empresa</h4>
+                            <p th:if="${dados.responsavel.nome != null}" th:text="${dados.responsavel.nome}"></p>
+                            <p th:if="${dados.responsavel.nome == null}">-</p>
+                        </td>
+                        <td>
+                            <h4>CPF</h4>
+                            <p th:if="${dados.responsavel.cpf != null}" th:text="${dados.responsavel.cpf}"></p>
+                            <p th:if="${dados.responsavel.cpf == null}">-</p>
+                        </td>
+                        <td>
+                            <h4>RG</h4>
+                            <p th:if="${dados.responsavel.rg != null}" th:text="${dados.responsavel.rg}"></p>
+                            <p th:if="${dados.responsavel.rg == null}">-</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h4>CEP</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.cep != null}"
+                               th:text="${dados.responsavel.endereco.cep}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.cep == null}">
+                                -</p>
+                        </td>
+                        <td colspan="2">
+                            <h4>Endereço</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.logradouro != null}"
+                               th:text="${dados.responsavel.endereco.logradouro}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.logradouro == null}">
+                                -</p>
+                        </td>
+                        <td>
+                            <h4>Número</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.numero != null}"
+                               th:text="${dados.responsavel.endereco.numero}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.numero == null}">
+                                -</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h4>Complemento</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.complemento != null}"
+                               th:text="${dados.responsavel.endereco.complemento}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.complemento == null}">
+                                -</p>
+                        </td>
+                        <td>
+                            <h4>Bairro</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.bairro != null}"
+                               th:text="${dados.responsavel.endereco.bairro}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.bairro == null}">
+                                -</p>
+                        </td>
+
+                        <td>
+                            <h4>Cidade</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.municipio != null && dados.responsavel.endereco.municipio.estado != null && dados.responsavel.endereco.municipio.estado.nome != null}"
+                               th:text="${dados.responsavel.endereco.municipio.estado.nome}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.municipio == null || dados.responsavel.endereco.municipio.estado == null || dados.responsavel.endereco.municipio.estado.nome == null}">
+                                -</p>
+                        </td>
+                        <td>
+                            <h4>Estado</h4>
+                            <p th:if="${dados.responsavel.endereco != null && dados.responsavel.endereco.municipio != null && dados.responsavel.endereco.municipio.estado != null && dados.responsavel.endereco.municipio.estado.nome != null}"
+                               th:text="${dados.responsavel.endereco.municipio.estado.nome}"></p>
+                            <p th:if="${dados.responsavel.endereco == null || dados.responsavel.endereco.municipio == null || dados.responsavel.endereco.municipio.estado == null || dados.responsavel.endereco.municipio.estado.nome == null}">
+                                -</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Telefone</h4>
+                            <p th:if="${dados.responsavel.telefone != null}"
+                               th:text="${dados.responsavel.telefone}"></p>
+                            <p th:if="${dados.responsavel.telefone == null}">-</p>
+                        </td>
+                        <td colspan="2">
+                            <h4>E-mail</h4>
+                            <p th:if="${dados.responsavel.email != null}" th:text="${dados.responsavel.email}"></p>
+                            <p th:if="${dados.responsavel == null}">-</p>
+                        </td>
+                    </tr>
+                </table>
+
+
+                <h3>Informações da empresa</h3>
+                <table class="tabela-representante">
+                    <tr>
+                        <td colspan="3">
+                            <h4>Razão Social da empresa</h4>
+                            <p th:if="${dados.razaoSocial != null}" th:text="${dados.razaoSocial}"></p>
+                            <p th:if="${dados.razaoSocial == null}">-</p>
+                        </td>
+                        <td>
+                            <h4>CNPJ</h4>
+                            <p th:if="${dados.cnpj != null}" th:text="${dados.cnpj}"></p>
+                            <p th:if="${dados.cnpj == null}">-</p>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h4>CEP</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.cep != null}"
+                               th:text="${dados.endereco.cep}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.cep == null}">-</p>
+                        </td>
+
+                        <td colspan="2">
+                            <h4>Endereço</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.logradouro != null}"
+                               th:text="${dados.endereco.logradouro}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.logradouro == null}">-</p>
+                        </td>
+
+                        <td>
+                            <h4>Número</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.numero != null}"
+                               th:text="${dados.endereco.numero}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.numero == null}">-</p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <h4>Complemento</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.complemento != null}"
+                               th:text="${dados.endereco.complemento}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.complemento == null}">-</p>
+                        </td>
+                        <td>
+                            <h4>Bairro</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.bairro != null}"
+                               th:text="${dados.endereco.bairro}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.bairro == null}">-</p>
+                        </td>
+
+                        <td>
+                            <h4>Cidade</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.municipio != null && dados.endereco.municipio.estado != null && dados.endereco.municipio.estado.nome != null}"
+                               th:text="${dados.endereco.municipio.estado.nome}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.municipio == null || dados.endereco.municipio.estado == null || dados.endereco.municipio.estado.nome == null}">
+                                -</p>
+                        </td>
+                        <td>
+                            <h4>Estado</h4>
+                            <p th:if="${dados.endereco != null && dados.endereco.municipio != null && dados.endereco.municipio.estado != null && dados.endereco.municipio.estado.nome != null}"
+                               th:text="${dados.endereco.municipio.estado.nome}"></p>
+                            <p th:if="${dados.endereco == null || dados.endereco.municipio == null || dados.endereco.municipio.estado == null || dados.endereco.municipio.estado.nome == null}">
+                                -</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Telefone</h4>
+                            <p th:if="${dados.telefone != null}"
+                               th:text="${dados.telefone}"></p>
+                            <p th:if="${dados.telefone == null}">-</p>
+                        </td>
+                        <td colspan="2">
+                            <h4>E-mail</h4>
+                            <p th:if="${dados.email != null}" th:text="${dados.email}"></p>
+                            <p th:if="${dados.email == null}">-</p>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+
+            <h3>Informações de contato</h3>
+            <table class="tabela-representante">
+                <tr>
+                    <td>
+                        <h4>Nome Completo</h4>
+                        <p th:if="${dados.contato.nome != null}" th:text="${dados.contato.nome}"></p>
+                        <p th:if="${dados.contato.nome == null}">-</p>
+                    </td>
+                    <td>
+                        <h4>CPF</h4>
+                        <p th:if="${dados.contato.documento != null}" th:text="${dados.contato.documento}"></p>
+                        <p th:if="${dados.contato.documento == null}">-</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Telefone</h4>
+                        <p th:if="${dados.contato.telefone != null}"
+                           th:text="${dados.contato.telefone}"></p>
+                        <p th:if="${dados.contato.telefone == null}">-</p>
+                    </td>
+                    <td>
+                        <h4>E-mail</h4>
+                        <p th:if="${dados.contato.email != null}" th:text="${dados.contato.email}"></p>
+                        <p th:if="${dados.contato.email == null}">-</p>
+                    </td>
+
+
+                </tr>
+            </table>
+        </div>
+    </div>
+</header>
+</html>

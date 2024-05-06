@@ -5,7 +5,6 @@ import com.vallengeo.cidadao.payload.response.DocumentoTemporarioResponse;
 import com.vallengeo.cidadao.payload.response.DocumentosEnviadosResponse;
 import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.service.DocumentoService;
-import com.vallengeo.cidadao.service.TipoDocumentoService;
 import com.vallengeo.core.util.Constants;
 import com.vallengeo.global.model.Arquivo;
 import com.vallengeo.global.service.ArquivoService;
