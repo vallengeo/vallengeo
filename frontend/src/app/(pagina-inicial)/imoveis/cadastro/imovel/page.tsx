@@ -3,7 +3,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import { Header } from "@/app/(pagina-inicial)/components/header";
+import { Header } from "@/components/header";
 import { CadastroImovel } from "@/app/(pagina-inicial)/imoveis/cadastro/components/imovel";
 
 export const metada: Metadata = {
