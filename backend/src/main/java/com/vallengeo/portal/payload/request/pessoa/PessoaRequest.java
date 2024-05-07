@@ -33,7 +33,7 @@ public class PessoaRequest implements Serializable {
     private static final long serialVersionUID = 1L;
     private String id;
     @NotEmpty(message = CAMPO_OBRIGATORIO)
-    @Email(message = EMAIL_INVALIDO)
+    @Email(regexp = EMAIL_REGEX, message = EMAIL_INVALIDO)
     private String email;
     @NotEmpty(message = CAMPO_OBRIGATORIO)
     private String telefone;

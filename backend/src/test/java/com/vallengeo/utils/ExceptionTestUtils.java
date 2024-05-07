@@ -1,18 +1,20 @@
 package com.vallengeo.utils;
 
-import com.vallengeo.core.exceptions.ApiExceptionCustom;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ExceptionTestUtils {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    
+    public static Map<String, Object> errosListToMap(List<String> erros) {
+        Map<String, Object> mapErros = new HashMap<>();
 
-    public static ApiExceptionCustom stringToApiExceptionCustom(String value) {
-        try {
-            return MAPPER.readValue(value, ApiExceptionCustom.class);
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+        for (String erro: erros) {
+            var split = Arrays.asList(erro.split(": "));
+            mapErros.put(split.get(0), split.get(1));
         }
+
+        return mapErros;
     }
 }

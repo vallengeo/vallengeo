@@ -78,7 +78,7 @@ public class PessoaService {
                 : pessoaJuridicaRepository.findByCnpj(DocumentoUtil.removeMascara(((PessoaJuridica) pessoa).getCnpj()));
 
         if (pessoaDocumento.isPresent() && !pessoa.equals(pessoaDocumento.get())) {
-            throw new ValidatorException((pessoa instanceof PessoaFisica ? "CPF " : "CNPJ") + " já cadastrado no sistema.", HttpStatus.CONFLICT);
+            throw new ValidatorException((pessoa instanceof PessoaFisica ? "CPF" : "CNPJ") + " já cadastrado no sistema.", HttpStatus.CONFLICT);
         }
     }
 

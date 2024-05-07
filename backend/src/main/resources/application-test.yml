@@ -33,7 +33,7 @@ api:
       algorithm: HS256
       secret: 7BTglohe03phks95iqAh6DHytaoDsSVDI4rs8AvqM/xti+rF9bEK2qs4G3L6V8Nu
       expiration: 600000
-      refresh: 600000
+      refresh: 1200000
 
 via-cep-url: https://viacep.com.br/ws
 
@@ -41,3 +41,5 @@ usuario:
   codigoAcesso:
     validade:
       minutos: 10
+
+geoserver-url: http://localhost:9001/geoserver/vallengeo

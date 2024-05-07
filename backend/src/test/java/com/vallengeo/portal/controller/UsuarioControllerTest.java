@@ -1,22 +1,24 @@
 package com.vallengeo.portal.controller;
 
+import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.core.exceptions.ApiExceptionCustom;
 import com.vallengeo.core.exceptions.InvalidPasswordException;
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.Constants;
-import com.vallengeo.AbstractIntegrationTest;
-import com.vallengeo.portal.model.Grupo;
 import com.vallengeo.portal.model.Usuario;
-import com.vallengeo.portal.payload.request.usuario.*;
+import com.vallengeo.portal.payload.request.usuario.CadastroRequest;
+import com.vallengeo.portal.payload.request.usuario.CadastroSimplificadoRequest;
+import com.vallengeo.portal.payload.request.usuario.EsqueciMinhaSenhaRequest;
+import com.vallengeo.portal.payload.request.usuario.RedefinirSenhaRequest;
 import com.vallengeo.portal.payload.response.UsuarioResponse;
 import com.vallengeo.portal.repository.UsuarioRepository;
-import com.vallengeo.utils.ExceptionTestUtils;
 import com.vallengeo.utils.JwtTestUtils;
 import com.vallengeo.utils.UsuarioTestUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
+import io.restassured.response.ResponseOptions;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +31,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,29 +55,30 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Value("${api.security.token.algorithm}")
     private String algorithm;
 
-    private RequestSpecification specification;
-    private CadastroRequest cadastroRequest;
-    private CadastroSimplificadoRequest simplificadoRequest;
     private EsqueciMinhaSenhaRequest esqueciMinhaSenhaRequest;
+    private CadastroSimplificadoRequest simplificadoRequest;
     private RedefinirSenhaRequest redefinirSenhaRequest;
+    private CadastroRequest cadastroRequest;
     private Usuario admin;
-    private String accessToken;
-    private String expiredAccessToken;
 
-    private final String moduloPrefeitura = "PREFEITURA";
+    private static String accessToken;
+    private static String expiredAccessToken;
+    private static RequestSpecification specification;
+    private static final String moduloPrefeitura = "PREFEITURA";
 
     @BeforeEach
     public void setup() {
         specification = new RequestSpecBuilder()
+                .setContentType(ContentType.JSON)
                 .setBasePath("/api/v1/usuario")
                 .setPort(serverPort)
                 .build();
 
-        admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com");
+        if (Objects.isNull(admin))
+            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com");
 
-        Grupo grupo = admin.getGrupos().get(0);
-        accessToken = JwtTestUtils.buildJwtToken(admin, String.valueOf(grupo.getId()), secretKey, expiration, algorithm);
-        expiredAccessToken = JwtTestUtils.buildJwtToken(admin, String.valueOf(grupo.getId()), secretKey, -expiration, algorithm);
+        accessToken = JwtTestUtils.buildJwtToken(admin, null, secretKey, expiration, algorithm);
+        expiredAccessToken = JwtTestUtils.buildJwtToken(admin, null, secretKey, -expiration, algorithm);
 
         simplificadoRequest = new CadastroSimplificadoRequest(
                 "usuario_simplificado@email.com",
@@ -99,16 +99,16 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         redefinirSenhaRequest = new RedefinirSenhaRequest("newPassword@123", admin.getCodigoAcesso());
     }
 
+
     @Test
     @DisplayName("Integration Test - Cadastro Simplificado quando Usuario nao Autenticado Deve Retornar Unauthorized (401)")
     void testCadastroSimplificado_QuandoUsuarioNaoAutenticado_DeveRetornarUnauthorized() {
-        var content = given().spec(specification)
-                .contentType(ContentType.JSON).body(simplificadoRequest)
-                .when().post("/simplificado")
-                .then().statusCode(HttpStatus.UNAUTHORIZED.value())
-                .extract().body().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .body(simplificadoRequest)
+                .when().post("/simplificado");
 
-        var actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
+        var actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED.value(), actual.getStatus());
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), actual.getError());
@@ -118,24 +118,24 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Cadastro Simplificado quando Body Invalido deve Retornar Unsupported Media Type (415)")
     void testCadastroSimplificado_QuandoBodyInvalido_DeveRetornarUnsupportedMediaType() {
-        given().spec(specification)
+        ResponseOptions<?> response = given().spec(specification)
                 .contentType(ContentType.XML).body(simplificadoRequest.toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().post("/simplificado")
-                .then().statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+                .when().post("/simplificado");
+
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), response.statusCode());
     }
 
     @Test
     @DisplayName("Integration Test - Cadastro Simplificado quando AccessToken Expirado Deve Retornar Forbidden (403)")
     void testCadastroSimplificado_QuandoAccessTokenExpirado_DeveRetornarForbidden() {
-        var content = given().spec(specification)
-                .contentType(ContentType.JSON).body(simplificadoRequest)
+        ResponseOptions<?> response = given().spec(specification)
+                .body(simplificadoRequest)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + expiredAccessToken)
-                .when().post("/simplificado")
-                .then().statusCode(HttpStatus.FORBIDDEN.value())
-                .extract().body().asString();
+                .when().post("/simplificado");
 
-        var actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.statusCode());
+        var actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), actual.getStatus());
         assertEquals(HttpStatus.FORBIDDEN.getReasonPhrase(), actual.getError());
@@ -149,14 +149,14 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         var requestInvalida = new CadastroSimplificadoRequest(
                 "   ", new ArrayList<>(), null, null);
 
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(requestInvalida)
+        ResponseOptions<?> response = given().spec(specification)
+                .body(requestInvalida)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().post("/simplificado")
-                .then().statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().body().asString();
+                .when().post("/simplificado");
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        var actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), actual.getStatus());
         assertEquals(MethodArgumentNotValidException.class.getName(), actual.getException());
@@ -169,14 +169,14 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Cadastro Simplificado quando Sucesso Deve Retornar Created (201)")
     void testCadastroSimplificado_QuandoSucesso_DeveRetornarCreated() {
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(simplificadoRequest)
+        ResponseOptions<?> response = given().spec(specification)
+                .body(simplificadoRequest)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().post("/simplificado")
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract().body().asString();
+                .when().post("/simplificado");
 
-        assertEquals(Constants.SALVO_SUCESSO, content);
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        assertEquals(Constants.SALVO_SUCESSO, response.body().asString());
+
         Optional<Usuario> usuarioCadastrado = usuarioRepository.findByEmail(simplificadoRequest.email());
 
         assertTrue(usuarioCadastrado.isPresent());
@@ -189,13 +189,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Cadastro quando Usuario Nao Autenticado Deve Retornar Unauthorized (401)")
     void testCadastro_QuandoUsuarioNaoAutenticado_DeveRetornarUnauthorized() {
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(cadastroRequest)
-                .when().post()
-                .then().statusCode(HttpStatus.UNAUTHORIZED.value())
-                .extract().body().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .body(cadastroRequest)
+                .when().post();
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED.value(), actual.getStatus());
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), actual.getError());
@@ -205,23 +204,23 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Cadastro quando Body Invalido deve Retornar Unsupported Media Type (415)")
     void testCadastro_QuandoBodyInvalido_DeveRetornarUnsupportedMediaType() {
-        given().spec(specification)
+        ResponseOptions<?> response = given().spec(specification)
                 .contentType(ContentType.XML).body(cadastroRequest.toString())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().post()
-                .then().statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+                .when().post();
+
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), response.statusCode());
     }
     @Test
     @DisplayName("Integration Test - Cadastro quando AccessToken Expirado Deve Retornar Forbidden (403)")
     void testCadastro_QuandoAccessTokenExpirado_DeveRetornarForbidden() {
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(cadastroRequest)
+        ResponseOptions<?> response = given().spec(specification)
+                .body(cadastroRequest)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + expiredAccessToken)
-                .when().post()
-                .then().statusCode(HttpStatus.FORBIDDEN.value())
-                .extract().body().asString();
+                .when().post();
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), actual.getStatus());
         assertEquals(HttpStatus.FORBIDDEN.getReasonPhrase(), actual.getError());
@@ -235,14 +234,13 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         var requestInvalida = new CadastroRequest(
                 null, new ArrayList<>(), null, new ArrayList<>(), "");
 
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(requestInvalida)
+        ResponseOptions<?> response = given().spec(specification)
+                .body(requestInvalida)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().post()
-                .then().statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract().body().asString();
+                .when().post();
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.BAD_REQUEST.value(), actual.getStatus());
         assertEquals(MethodArgumentNotValidException.class.getName(), actual.getException());
@@ -255,14 +253,14 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Cadastro quando Sucesso Deve Retornar Created (201)")
     void testCadastro_QuandoSucesso_DeveRetornarCreated() {
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(cadastroRequest)
+        ResponseOptions<?> response = given().spec(specification)
+                .body(cadastroRequest)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().post()
-                .then().statusCode(HttpStatus.CREATED.value())
-                .extract().body().asString();
+                .when().post();
 
-        assertEquals(Constants.SALVO_SUCESSO, content);
+        assertEquals(HttpStatus.CREATED.value(), response.statusCode());
+        assertEquals(Constants.SALVO_SUCESSO, response.body().asString());
+
         Optional<Usuario> usuarioCadastrado = usuarioRepository.findByEmail(cadastroRequest.email());
 
         assertTrue(usuarioCadastrado.isPresent());
@@ -275,12 +273,11 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Listar Usuarios quando Usuario nao Autenticado Deve Retornar Unauthorized (401)")
     void testListarUsuarios_QuandoUsuarioNaoAutenticado_DeveRetornarUnauthorized() {
-        String content = given().spec(specification)
-                .when().get()
-                .then().statusCode(HttpStatus.UNAUTHORIZED.value())
-                .extract().body().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .when().get();
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED.value(), actual.getStatus());
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), actual.getError());
@@ -290,13 +287,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Listar Usuarios quando AccessToken Expirado Deve Retornar Forbidden (403)")
     void testListarUsuarios_QuandoAccessTokenExpirado_DeveRetornarForbidden() {
-        String content = given().spec(specification)
+        ResponseOptions<?> response = given().spec(specification)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + expiredAccessToken)
-                .when().get()
-                .then().statusCode(HttpStatus.FORBIDDEN.value())
-                .extract().body().asString();
+                .when().get();
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.FORBIDDEN.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.FORBIDDEN.value(), actual.getStatus());
         assertEquals(HttpStatus.FORBIDDEN.getReasonPhrase(), actual.getError());
@@ -306,14 +302,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Listar Usuarios quando Sucesso Deve Retornar OK (200)")
     void testListarUsuarios_QuandoSucesso_DeveRetornarOk() {
-        UsuarioResponse[] content = given().spec(specification)
-                .contentType(ContentType.JSON)
+        ResponseOptions<?> response = given().spec(specification)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
-                .when().get()
-                .then().statusCode(HttpStatus.OK.value())
-                .extract().body().as(UsuarioResponse[].class);
+                .when().get();
 
-        List<UsuarioResponse> actual = Arrays.stream(content).toList();
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        List<UsuarioResponse> actual = Arrays.asList( response.body().as(UsuarioResponse[].class) );
 
         assertEquals(5, actual.size());
         assertInstanceOf(UsuarioResponse.class, actual.get(0));
@@ -322,10 +316,11 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Esqueci Minha Senha quando Body Invalido deve Retornar Unsupported Media Type (415)")
     void testEsqueciMinhaSenha_QuandoBodyInvalido_DeveRetornarUnsupportedMediaType() {
-        given().spec(specification)
+        ResponseOptions<?> response = given().spec(specification)
                 .contentType(ContentType.XML).body(esqueciMinhaSenhaRequest.toString())
-                .when().post("/esqueci-minha-senha")
-                .then().statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+                .when().post("/esqueci-minha-senha");
+
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), response.statusCode());
     }
 
     @Test
@@ -334,13 +329,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         EsqueciMinhaSenhaRequest request = new EsqueciMinhaSenhaRequest(
                 "usuario_naocadastrado@email.com", moduloPrefeitura);
 
-        String content = given().spec(specification)
-                .contentType(ContentType.JSON).body(request)
-                .when().post("/esqueci-minha-senha")
-                .then().statusCode(HttpStatus.NOT_FOUND.value())
-                .extract().body().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .body(request)
+                .when().post("/esqueci-minha-senha");
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatus());
         assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), actual.getError());
@@ -351,11 +345,11 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Esqueci Minha Senha quando Sucesso deve Retornar OK (200)")
     void testEsqueciMinhaSenha_QuandoSucesso_DeveRetornarOk() {
-        given().spec(specification)
-                .contentType(ContentType.JSON).body(esqueciMinhaSenhaRequest)
-                .when().post("/esqueci-minha-senha")
-                .then().statusCode(HttpStatus.OK.value());
+        ResponseOptions<?> response = given().spec(specification)
+                .body(esqueciMinhaSenhaRequest)
+                .when().post("/esqueci-minha-senha");
 
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
         Optional<Usuario> actual = usuarioRepository.findByEmail(admin.getEmail());
 
         assertTrue(actual.isPresent());
@@ -367,10 +361,11 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Redefinir Senha quando Body Invalido deve Retornar Unsupported Media Type (415)")
     void testRedefinirSenha_QuandoBodyInvalido_DeveRetornarUnsupportedMediaType() {
-        given().spec(specification)
+        ResponseOptions<?> response = given().spec(specification)
                 .contentType(ContentType.XML).body(redefinirSenhaRequest.toString())
-                .when().post("/recuperar-senha")
-                .then().statusCode(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value());
+                .when().post("/recuperar-senha");
+
+        assertEquals(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value(), response.statusCode());
     }
 
     @Test
@@ -379,13 +374,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         RedefinirSenhaRequest request = new RedefinirSenhaRequest(
                 "senhaInvalida", admin.getCodigoAcesso());
 
-        var content = given().spec(specification)
-                .contentType(ContentType.JSON).body(request)
-                .when().post("/recuperar-senha")
-                .then().statusCode(HttpStatus.NOT_ACCEPTABLE.value())
-                .extract().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .body(request)
+                .when().post("/recuperar-senha");
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.NOT_ACCEPTABLE.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.NOT_ACCEPTABLE.value(), actual.getStatus());
         assertEquals(HttpStatus.NOT_ACCEPTABLE.getReasonPhrase(), actual.getError());
@@ -399,13 +393,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         RedefinirSenhaRequest request = new RedefinirSenhaRequest(
                 UsuarioTestUtils.DEFAULT_PASSWORD, "789ABC");
 
-        var content = given().spec(specification)
-                .contentType(ContentType.JSON).body(request)
-                .when().post("/recuperar-senha")
-                .then().statusCode(HttpStatus.NOT_FOUND.value())
-                .extract().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .body(request)
+                .when().post("/recuperar-senha");
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.NOT_FOUND.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatus());
         assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), actual.getError());
@@ -418,13 +411,12 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         admin.setValidadeCodigo(LocalDateTime.now().minusMinutes(10));
         usuarioRepository.save(admin);
 
-        var content = given().spec(specification)
-                .contentType(ContentType.JSON).body(redefinirSenhaRequest)
-                .when().post("/recuperar-senha")
-                .then().statusCode(HttpStatus.UNAUTHORIZED.value())
-                .extract().asString();
+        ResponseOptions<?> response = given().spec(specification)
+                .body(redefinirSenhaRequest)
+                .when().post("/recuperar-senha");
 
-        ApiExceptionCustom actual = ExceptionTestUtils.stringToApiExceptionCustom(content);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
+        ApiExceptionCustom actual = response.body().as(ApiExceptionCustom.class);
 
         assertEquals(HttpStatus.UNAUTHORIZED.value(), actual.getStatus());
         assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), actual.getError());
@@ -438,11 +430,11 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         admin.setValidadeCodigo(LocalDateTime.now().plusMinutes(10));
         usuarioRepository.save(admin);
 
-        given().spec(specification)
-                .contentType(ContentType.JSON).body(redefinirSenhaRequest)
-                .when().post("/recuperar-senha")
-                .then().statusCode(HttpStatus.OK.value());
+        ResponseOptions<?> response = given().spec(specification)
+                .body(redefinirSenhaRequest)
+                .when().post("/recuperar-senha");
 
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
         Optional<Usuario> actual = usuarioRepository.findByEmail(admin.getEmail());
 
         assertTrue(actual.isPresent());

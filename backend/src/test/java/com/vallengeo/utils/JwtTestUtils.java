@@ -29,4 +29,17 @@ public class JwtTestUtils {
                 .signWith(Keys.hmacShaKeyFor(keyBytes), SignatureAlgorithm.forName(algorithm))
                 .compact();
     }
+
+    public static String buildJwtRefreshToken(
+            UserDetails userDetails, String secretKey, Long expiration, String algorithm
+    ) {
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+
+        return Jwts.builder()
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(Keys.hmacShaKeyFor(keyBytes), SignatureAlgorithm.forName(algorithm))
+                .compact();
+    }
 }

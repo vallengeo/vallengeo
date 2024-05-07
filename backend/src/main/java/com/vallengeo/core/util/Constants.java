@@ -6,6 +6,8 @@ public class Constants {
     private Constants() {
     }
 
+    public static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
+
     public static final long FIRST_MILLISECONDS_DATE = 0L;
 
     public static final String DATA_CADASTRO_DB = "dataCadastro";
