@@ -1,7 +1,5 @@
 package com.vallengeo.global.service;
 
-import com.google.common.base.Throwables;
-import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.FileUnzipper;
 import com.vallengeo.global.model.Arquivo;
 import com.vallengeo.global.repository.ArquivoRepository;
@@ -10,12 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLConnection;
 import java.util.List;
@@ -24,7 +20,6 @@ import java.util.UUID;
 
 import static com.vallengeo.core.config.Config.APPLICATION_DEFINITIVE_UPLOAD;
 import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
-import static com.vallengeo.core.util.Constants.FILE_NOT_FOUND;
 
 @Slf4j
 @Service

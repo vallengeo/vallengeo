@@ -1,0 +1,82 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org/" lang="pt">
+<header th:fragment="caracterizacao" class="caracterizacao">
+    <div class="card">
+        <h2>Caracterização do imóvel</h2>
+        <div class="row">
+            <div class="col">
+
+            </div>
+            <div class="col">
+
+            </div>
+
+            <div class="col">
+
+            </div>
+
+            <div class="col">
+
+            </div>
+        </div>
+
+        <table class="tabela-caracterizacao">
+            <tr>
+                <td>
+                    <h4>Setor</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.setor != null}"
+                       th:text="${caracterizacaoImovel.setor}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.setor == null}">-</p>
+                </td>
+                <td>
+                    <h4>Quadra</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.quadra != null}"
+                       th:text="${caracterizacaoImovel.quadra}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.quadra == null}">-</p>
+                </td>
+
+                <td>
+                    <h4>Lote</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.lote != null}"
+                       th:text="${caracterizacaoImovel.lote}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.lote == null}">-</p>
+                </td>
+                <td>
+                    <h4>Unidade</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.unidade != null}"
+                       th:text="${caracterizacaoImovel.unidade}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.unidade == null}">-</p>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <h4>Área do terreno</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.areaTerreno != null}"
+                       th:text="${caracterizacaoImovel.areaTerreno}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.areaTerreno == null}">-</p>
+                </td>
+                <td>
+                    <h4>Testada principal</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.testadaPrincipal != null}"
+                       th:text="${caracterizacaoImovel.testadaPrincipal}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.testadaPrincipal == null}">-</p>
+                </td>
+
+                <td>
+                    <h4>Fracção ideal</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.fracaoIdeal != null}"
+                       th:text="${caracterizacaoImovel.fracaoIdeal}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.fracaoIdeal == null}">-</p>
+                </td>
+                <td>
+                    <h4>Data de inclusão</h4>
+                    <p th:if="${caracterizacaoImovel != null && caracterizacaoImovel.dataInclusaoFormatada != null}"
+                       th:text="${caracterizacaoImovel.dataInclusaoFormatada}"></p>
+                    <p th:if="${caracterizacaoImovel == null || caracterizacaoImovel.dataInclusaoFormatada == null}">
+                        -</p>
+                </td>
+
+            </tr>
+    </div>
+</header>
+</html>
