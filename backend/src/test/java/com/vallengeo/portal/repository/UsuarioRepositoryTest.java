@@ -57,7 +57,7 @@ public class UsuarioRepositoryTest extends AbstractIntegrationTest {
         List<Usuario> actual = usuarioRepository.findAll();
 
         assertNotNull(actual);
-        assertEquals(4, actual.size());
+        assertEquals(5, actual.size());
         assertInstanceOf(Usuario.class, actual.get(0));
     }
 

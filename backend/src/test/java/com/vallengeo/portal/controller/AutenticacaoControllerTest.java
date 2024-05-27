@@ -24,7 +24,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Map;
@@ -74,7 +73,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         expiredAccessToken = JwtTestUtils.buildJwtToken(admin, null, secretKey, Math.negateExact(expiration), algorithm);
     }
 
-   @Test @Order(1)
+    @Test @Order(1)
     @DisplayName("Integration Test - Login quando Atributos Invalidos deve Retornar Bad Request (400)")
     void testLogin_QuandoAtributosInvalidos_DeveRetornarBadRequest() {
         LoginRequest requestInvalido = new LoginRequest("email@invalido", "", null);
@@ -97,7 +96,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(Constants.CAMPO_OBRIGATORIO, mapErros.get("idGrupo"));
     }
 
-   @Test @Order(2)
+    @Test @Order(2)
     @DisplayName("Integration Test - Login quando Email Nao Cadastrado deve Retornar Forbidden (403)")
     void testLogin_QuandoEmailNaoCadastrado_DeveRetornarForbidden() {
         LoginRequest request = new LoginRequest(
@@ -113,10 +112,10 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(HttpStatus.FORBIDDEN.value(), actual.getStatus());
         assertEquals(HttpStatus.FORBIDDEN.getReasonPhrase(), actual.getError());
         assertEquals("Usuário e/ou senha inválidos.", actual.getMessage());
-        assertEquals(InternalAuthenticationServiceException.class.getName(), actual.getException());
+        assertEquals(BadCredentialsException.class.getName(), actual.getException());
     }
 
-   @Test @Order(3)
+    @Test @Order(3)
     @DisplayName("Integration Test - Login quando Senha Incorreta deve Retornar Forbidden (403)")
     void testLogin_QuandoSenhaIncorreta_DeveRetornarForbidden() {
         LoginRequest request = new LoginRequest(
@@ -135,7 +134,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(BadCredentialsException.class.getName(), actual.getException());
     }
 
-   @Test @Order(4)
+    @Test @Order(4)
     @DisplayName("Integration Test - Login quando Sucesso deve Retornar OK (200)")
     void testLogin_QuandoSucesso_DeveRetornarOk() {
         LoginRequest request = new LoginRequest(
@@ -152,7 +151,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         loginResponse = actual.getBody();
     }
 
-   @Test @Order(5)
+    @Test @Order(5)
     @DisplayName("Integration Test - Refresh Token quando Usuario Nao Autenticado deve Retornar Unauthorized (401)")
     void testRefreshToken_QuandoUsuarioNaoAutenticado_DeveRetornarUnauthorized() {
         ResponseOptions<?> response = given().spec(specification)
@@ -166,7 +165,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(AccessDeniedException.class.getName(), actual.getException());
     }
 
-   @Test @Order(6)
+    @Test @Order(6)
     @DisplayName("Integration Test - Refresh Token quando Access Token Expirado deve Retornar Forbidden (403)")
     void testRefreshToken_QuandoAccessTokenExpirado_DeveRetornarUnauthorized() {
         ResponseOptions<?> response = given().spec(specification)
@@ -181,7 +180,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(ExpiredJwtException.class.getName(), actual.getException());
     }
 
-   @Test @Order(7)
+    @Test @Order(7)
     @DisplayName("Integration Test - Refresh Token quando Refresh Token Expirado deve Retornar Forbidden (403)")
     void testRefreshToken_QuandoRefreshTokenExpirado_DeveRetornarUnauthorized() {
         var expiredRefreshToken = JwtTestUtils.buildJwtRefreshToken(
@@ -202,7 +201,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(ExpiredJwtException.class.getName(), actual.getException());
     }
 
-   @Test @Order(8)
+    @Test @Order(8)
     @DisplayName("Integration Test - Refresh Token quando Token Invalido deve Retornar Bad Request (400)")
     void testRefreshToken_QuandoTokenInvalido_DeveRetornarBadRequest() {
         var request = new TokenRefreshRequest(null);
@@ -218,9 +217,12 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(HttpStatus.BAD_REQUEST.value(), actual.getStatus());
         assertEquals(HttpStatus.BAD_REQUEST.getReasonPhrase(), actual.getError());
         assertEquals(MethodArgumentNotValidException.class.getName(), actual.getException());
+
+        var mapErros = ExceptionTestUtils.errosListToMap(actual.getErros());
+        assertEquals(Constants.CAMPO_OBRIGATORIO, mapErros.get("refreshToken"));
     }
 
-   @Test @Order(9)
+    @Test @Order(9)
     @DisplayName("Integration Test - Refresh Token quando Sucesso deve Retornar OK (200)")
     void testRefreshToken_QuandoSucesso_DeveRetornarOk() {
         var request = new TokenRefreshRequest(loginResponse.refreshToken());

@@ -309,7 +309,7 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
         assertEquals(HttpStatus.OK.value(), response.statusCode());
         List<UsuarioResponse> actual = Arrays.asList( response.body().as(UsuarioResponse[].class) );
 
-        assertEquals(5, actual.size());
+        assertEquals(6, actual.size());
         assertInstanceOf(UsuarioResponse.class, actual.get(0));
     }
 

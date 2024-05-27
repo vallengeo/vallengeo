@@ -17,6 +17,12 @@ VALUES ('f34bd4aa-94a3-4df4-9c1e-fcbe7c714185', 'vallengeo.cidadao@gmail.com',
         '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
         TRUE);
 
+INSERT INTO portal_seguranca.usuario
+    (id, email, senha_hash, data_cadastro, data_atualizacao, ativo)
+VALUES ('1549a09f-f12d-4dfd-bcdc-edc2ccb39ce7', 'vallengeo.semperfil@gmail.com',
+        '$2a$10$dT7kf2bujTwQyRJSLjOwfuKDmTssM99wquQTdujc8GBdvQUgjySFS', NOW(), NULL,
+        TRUE);
+
 -- ************************* GRUPO ***********************************
 INSERT INTO portal_seguranca.grupo
     (id, nome, codigo)

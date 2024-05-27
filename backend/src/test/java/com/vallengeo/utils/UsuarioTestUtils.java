@@ -30,7 +30,7 @@ public class UsuarioTestUtils {
                 )).toList();
     }
 
-    private static List<CadastroRequest.Permissao> getTelaPermissoes(Tela tela) {
+    public static List<CadastroRequest.Permissao> getTelaPermissoes(Tela tela) {
         return tela.getPermissoes().stream().map(
                 permissao -> new CadastroRequest.Permissao(permissao.getCodigo())
         ).toList();

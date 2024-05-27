@@ -31,10 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -326,6 +323,9 @@ class PessoaControllerTest extends AbstractIntegrationTest {
                 .when().get();
 
         assertEquals(HttpStatus.OK.value(), response.statusCode());
+        var responseMapList = List.of(response.body().as(Map[].class));
+
+        assertEquals(2, responseMapList.size());
     }
 
     @Test @Order(13)
@@ -425,7 +425,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(AccessDeniedException.class.getName(), actual.getException());
     }
 
-    @Test @Order(18)
+    @Test @Order(19)
     @DisplayName("Integration Test - Buscar Por Id quando Access Token Expirado deve Retornar Forbidden (403)")
     void testBuscarPorId_QuandoAccessTokenExpirado_DeveRetornarUnauthorized() {
         ResponseOptions<?> response = given().spec(specification)
@@ -441,7 +441,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(ExpiredJwtException.class.getName(), actual.getException());
     }
 
-    @Test @Order(19)
+    @Test @Order(20)
     @DisplayName("Integration Test - Buscar Por Id quando Id Nao Encontrado deve Retornar Not Found (404)")
     void testBuscarPorId_QuandoIdNaoEncontrado_DeveRetornarUnauthorized() {
         ResponseOptions<?> response = given().spec(specification)
@@ -452,7 +452,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(HttpStatus.NOT_FOUND.value(), response.statusCode());
     }
 
-    @Test @Order(20)
+    @Test @Order(21)
     @DisplayName("Integration Test - Buscar Por Id Pessoa Fisica quando Sucesso deve Retornar OK (200)")
     void testBuscarPorIdPessoaFisica_QuandoSucesso_DeveRetornarOk() {
         ResponseOptions<?> response = given().spec(specification)
@@ -466,9 +466,10 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertEquals(actual.getId(), pessoaFisicaCadastrada.getId().toString());
         assertEquals(actual.getCpf(), pessoaFisicaCadastrada.getCpf());
+        assertEquals(actual.getEmail(), pessoaFisicaCadastrada.getEmail());
     }
 
-    @Test @Order(21)
+    @Test @Order(22)
     @DisplayName("Integration Test - Buscar Por Id Pessoa Juridica quando Sucesso deve Retornar OK (200)")
     void testBuscarPorIdPessoaJuridica_QuandoSucesso_DeveRetornarOk() {
         ResponseOptions<?> response = given().spec(specification)
@@ -486,7 +487,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(actual.getResponsavel().getId(), pessoaJuridicaCadastrada.getResponsavel().getId().toString());
     }
 
-    @Test @Order(22)
+    @Test @Order(23)
     @DisplayName("Integration Test - Editar Pessoa quando Usuario Nao Autenticado deve Retornar Unauthorized (401)")
     void testEditarPessoa_QuandoUsuarioNaoAutenticado_DeveRetornarUnauthorized() {
         ResponseOptions<?> response = given().spec(specification)
@@ -500,7 +501,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(AccessDeniedException.class.getName(), actual.getException());
     }
 
-    @Test @Order(22)
+    @Test @Order(24)
     @DisplayName("Integration Test - Editar Pessoa quando Access Token Expirado deve Retornar Forbidden (403)")
     void testEditarPessoa_QuandoAccessTokenExpirado_DeveRetornarForbidden() {
         ResponseOptions<?> response = given().spec(specification)
@@ -515,7 +516,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(ExpiredJwtException.class.getName(), actual.getException());
     }
 
-    @Test @Order(23)
+    @Test @Order(25)
     @DisplayName("Integration Test - Editar Pessoa quando Parametros Divergentes deve Retornar Not Acceptable (406)")
     void testEditarPessoa_QuandoParametrosDivergentes_DeveRetornarNotAcceptable() {
         ResponseOptions<?> response = given().spec(specification)
@@ -533,7 +534,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(Constants.PARAMETER_DIVERGENT, actual.getMessage());
     }
 
-    @Test @Order(24)
+    @Test @Order(26)
     @DisplayName("Integration Test - Editar Pessoa quando Id Nao Encontrado deve Retornar Not Found (404)")
     void testEditarPessoa_QuandoIdNaoEncontrado_DeveRetornarNotFound() {
         pessoaFisicaRequest.setId(UUID.randomUUID().toString());
@@ -552,7 +553,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(ValidatorException.class.getName(), actual.getException());
     }
 
-    @Test @Order(25)
+    @Test @Order(27)
     @DisplayName("Integration Test - Editar Pessoa quando Pessoa Fisica & Sucesso deve Retornar Created (201)")
     void testEditarPessoa_QuandoPessoaFisicaSucesso_DeveRetornarCreated() {
         pessoaFisicaRequest.setId(pessoaFisicaCadastrada.getId().toString());
@@ -575,7 +576,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(pessoaFisicaRequest.getTelefone(), actual.getTelefone());
     }
 
-    @Test @Order(26)
+    @Test @Order(28)
     @DisplayName("Integration Test - Editar Pessoa quando Pessoa Juridica & Sucesso deve Retornar Created (201)")
     void testEditarPessoa_QuandoPessoaJuridicaSucesso_DeveRetornarCreated() {
         pessoaJuridicaRequest.setId(pessoaJuridicaCadastrada.getId().toString());

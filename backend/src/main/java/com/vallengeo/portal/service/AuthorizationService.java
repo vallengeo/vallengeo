@@ -20,8 +20,13 @@ public class AuthorizationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return usuarioRepository.findByEmailAndAtivoIsTrue(username);
-    }
+        var usuario = usuarioRepository.findByEmailAndAtivoIsTrue(username);
+
+        if (usuario == null)
+            throw new UsernameNotFoundException("Usuário e/ou senha inválidos.");
+
+        return usuario;
+     }
 
     public boolean hasPerfil(String perfil) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

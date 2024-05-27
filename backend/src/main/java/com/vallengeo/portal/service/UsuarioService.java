@@ -96,7 +96,10 @@ public class UsuarioService {
 
     @Transactional
     public void esqueciMinhaSenha(EsqueciMinhaSenhaRequest request) {
-        Usuario usuario = usuarioRepository.findByEmail(request.email()).orElseThrow(() -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND, HttpStatus.NOT_FOUND));
+        Usuario usuario = usuarioRepository.findByEmail(request.email())
+                .orElseThrow(
+                        () -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND, HttpStatus.NOT_FOUND));
+
         usuarioRepository.save(this.sendEmailRedefinirSenha(usuario, request.modulo()));
     }
 
