@@ -9,13 +9,13 @@ export function UltimosProcessos() {
 
       <ul className="space-y-2.5">
         <li className="bg-[#FDFDFD] hover:bg-muted/50 transition-colors border border-[#F0F0F0] rounded-2xl">
-          <Link href="/protocolos" className="flex items-center justify-between px-4 py-2">
+          <Link href="/dashboard/protocolos/ficha/1" className="flex items-center justify-between px-4 py-2">
             1245678932659589-45
             <ChevronRight className="text-primary" />
           </Link>
         </li>
         <li className="bg-[#FDFDFD] hover:bg-muted/50 transition-colors border border-[#F0F0F0] rounded-2xl">
-          <Link href="/protocolos" className="flex items-center justify-between px-4 py-2">
+          <Link href="/dashboard/protocolos/ficha/1" className="flex items-center justify-between px-4 py-2">
             1245678932659589-45
             <ChevronRight className="text-primary" />
           </Link>
@@ -23,7 +23,7 @@ export function UltimosProcessos() {
       </ul>
 
       <Button asChild variant="link" className="text-primary w-fit mx-auto">
-        <Link href="/protocolos">Visualizar</Link>
+        <Link href="/dashboard/protocolos">Visualizar</Link>
       </Button>
     </div>
   )

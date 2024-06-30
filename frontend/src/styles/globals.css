@@ -58,19 +58,6 @@
 }
 
 @layer components {
-  .clipped {
-    clip: rect(0 0 0 0);
-    border: 0;
-    -webkit-clip-path: inset(50%);
-    clip-path: inset(50%);
-    display: block;
-    margin: 0 -1px -1px 0;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    z-index: -1;
-  }
-
   .triangle-to-top {
     @apply w-0 h-0 border-solid border-t-0 border-x-8 border-b-[16px] border-t-transparent border-x-transparent border-b-white;
   }

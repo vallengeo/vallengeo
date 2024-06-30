@@ -1,3 +1,5 @@
+"use client"
+
 import { useFormState } from "@/contexts/Imovel/FormContext";
 import { cn, consultarCep, formatarCampo } from "@/lib/utils";
 import { mapearEstados } from "@/validation/estados";
@@ -6,9 +8,10 @@ import {
   imovelFormSchema,
   mapearGrupos,
 } from "@/validation/imovel/imovel";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { format } from "date-fns";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { format } from "date-fns"
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -38,8 +41,11 @@ import {
   PenSquare as LucidePenSquare
 } from "lucide-react";
 
+import { useToast } from "@/components/ui/use-toast";
+
 export function CadastroImovel() {
-  const { onHandleBack, setFormData, formData } = useFormState();
+  const { toast } = useToast()
+  const { onHandleBack, onHandleNext, setFormData, formData } = useFormState();
 
   const form = useForm<imovelFormData>({
     resolver: zodResolver(imovelFormSchema),
@@ -48,6 +54,7 @@ export function CadastroImovel() {
 
   const onSubmit: SubmitHandler<imovelFormData> = (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
+    onHandleNext();
     console.log(formData)
   }
 
@@ -73,6 +80,10 @@ export function CadastroImovel() {
         const response = await consultarCep(formattedValue)
 
         if (response.erro) {
+          toast({
+            description: 'CEP não encontrado!',
+            variant: 'destructive'
+          })
           return
         }
 
@@ -90,13 +101,13 @@ export function CadastroImovel() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <h2 className="text-xl font-medium">Georeferenciamento</h2>
 
           {/* TODO: Campo de upload da localidade */}
         </fieldset>
 
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-medium">Informações do imóvel</h2>
@@ -243,7 +254,7 @@ export function CadastroImovel() {
           </div>
         </fieldset>
 
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-medium">Caracterização do imóvel</h2>
@@ -386,7 +397,6 @@ export function CadastroImovel() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          lang="pt-br"
                         />
                       </PopoverContent>
                     </Popover>
@@ -398,13 +408,9 @@ export function CadastroImovel() {
           </div>
         </fieldset>
 
-        <div className="flex justify-between items-center flex-wrap gap-4">
+        <div className="flex justify-end items-center flex-wrap gap-4">
           <Button variant="secondary" onClick={onHandleBack}>Voltar</Button>
-
-          <div className="space-x-4">
-            <Button variant="secondary">Continuar depois</Button>
-            <Button type="submit">Finalizar</Button>
-          </div>
+          <Button type="submit">Avançar</Button>
         </div>
       </form>
     </Form>

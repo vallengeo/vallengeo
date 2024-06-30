@@ -14,7 +14,9 @@ export default function CadastrarComEmailPage() {
         className="mx-auto"
       />
 
-      <p className="my-8 max-w-[200px] mx-auto text-center">Complete o cadastro com as informações abaixo.</p>
+      <p className="my-8 sm:max-w-[200px] mx-auto text-center">
+        Complete o cadastro com as informações abaixo.
+      </p>
 
       <CadastrarComEmail />
     </>

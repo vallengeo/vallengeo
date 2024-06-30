@@ -6,7 +6,11 @@ interface SupportProps {
 
 export function Support({ variant = 'link' }: SupportProps) {
   return (
-    <Button variant={variant} className="flex-1">
+    <Button
+      asChild
+      variant={variant}
+      className="flex-1"
+    >
       <a href="#">
         Suporte
       </a>

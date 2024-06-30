@@ -11,9 +11,9 @@ export default function RelatoriosPage() {
     <>
       <Header title="Relatórios" canShowBrasao />
 
-      <main className="space-y-4 my-6">
+      <div className="space-y-4 my-6">
         <ResumoRelatorios/>
-      </main>
+      </div>
     </>
   )
 }

@@ -32,7 +32,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import Legenda from "./legenda"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -40,6 +39,15 @@ import {
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
+
+import { Legenda } from "@/components/legenda"
+
+const legendas = [
+  { color: "#70C64D", text: "Aprovado" },
+  { color: "#DA1C4A", text: "Reprovado" },
+  { color: "#FFBE5B", text: "Em análise" },
+  { color: "#729397", text: "Arquivado" },
+]
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -183,7 +191,7 @@ export function DataTable<TData, TValue>({
         </Table>
 
         <div className="flex items-center justify-end max-md:flex-col gap-2 py-4">
-          <Legenda className="flex-1" />
+          <Legenda legendas={legendas} className="flex-1" />
 
           <div className="space-x-2">
             <Button

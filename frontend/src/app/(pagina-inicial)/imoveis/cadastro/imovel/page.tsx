@@ -3,8 +3,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 
-import { Header } from "@/app/(pagina-inicial)/components/header";
-import { CadastroImovel } from "@/app/(pagina-inicial)/imoveis/cadastro/components/imovel";
+import { Header } from "@/components/header";
+import { CadastroImovel } from "../components/imovel";
 
 export const metada: Metadata = {
   title: 'Cadastro de imóvel',
@@ -24,7 +24,7 @@ export default function CadastroImoveisImovel() {
         </div>
       </Header>
 
-      <main className="space-y-6 mt-6 mb-4">       
+      <main className="space-y-6 mt-6 mb-4">
        <CadastroImovel/>
       </main>
     </>

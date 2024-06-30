@@ -101,7 +101,7 @@ export function CadastroImovel() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <legend className="sr-only">Informações do imóvel</legend>
 
           <header className="flex items-center justify-between mb-1">
@@ -312,7 +312,7 @@ export function CadastroImovel() {
           </div>
         </fieldset>
 
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <legend className="sr-only">Caracterização do imóvel</legend>
 
           <header className="flex items-center justify-between mb-1">
@@ -513,7 +513,7 @@ export function CadastroImovel() {
           </div>
         </fieldset>
 
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <legend className="sr-only">Georreferenciamento</legend>
 
           <header className="flex items-center justify-between mb-1">
@@ -522,7 +522,7 @@ export function CadastroImovel() {
           <Mapa/>
         </fieldset>
 
-        <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl p-6">
+        <fieldset className="bg-white border border-input rounded-2xl p-6">
           <legend className="sr-only">Observações</legend>
 
           <header className="flex items-center justify-between mb-1">

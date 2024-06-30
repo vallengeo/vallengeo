@@ -59,7 +59,7 @@ export function Historico() {
           ))}
         </div>
 
-        <div className="w-0.5 bg-[#E8E1E1] h-[calc(100%_+_20px)] absolute left-0 top-2"></div>
+        <div className="w-0.5 bg-input h-[calc(100%_+_20px)] absolute left-0 top-2"></div>
       </div>
     </div>
   )

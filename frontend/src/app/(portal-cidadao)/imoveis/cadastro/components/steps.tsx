@@ -1,8 +1,4 @@
-import {
-  Book,
-  Building,
-  User
-} from "lucide-react";
+import { Book, Building, User } from "lucide-react";
 
 interface CurrentStepProps {
   currentStep: number;
@@ -10,7 +6,7 @@ interface CurrentStepProps {
 
 export function Steps({ currentStep }: CurrentStepProps) {
   return (
-    <div className="bg-white border border-[#E8E1E1] rounded-2xl px-16">
+    <div className="bg-white border border-input rounded-2xl px-16">
       <div className="flex items-center justify-center max-w-[450px] h-[145px] mx-auto">
         <div className={`flex-1 bg-primary text-primary h-1 relative`}>
           <User size={40} className="absolute bottom-0 -translate-y-4 -translate-x-1/2" />

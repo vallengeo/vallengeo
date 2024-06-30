@@ -14,7 +14,7 @@ export default function HomePage() {
     <>
       <Header title="Home" canShowBrasao />
 
-      <main className="space-y-6 my-6">
+      <div className="space-y-6 my-6">
         <div className="flex gap-5 max-md:flex-col">
           <Welcome/>
           <Notificacoes/>
@@ -33,13 +33,13 @@ export default function HomePage() {
         </div>
 
         <div className="bg-white border border-input rounded-3xl p-4">
-          <h2 className="text-xl mb-6">Mapa da Cidade</h2>
+          <h2 className="text-xl font-medium mb-6">Mapa da Cidade</h2>
         </div>
 
         <div>
           <ResumoImoveis/>
         </div>
-      </main>
+      </div>
     </>
   );
 }

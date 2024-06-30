@@ -14,6 +14,15 @@ import { RepresentantesImovel } from "./components/representantes";
 import { Button } from "@/components/ui/button";
 import { HistoricoObservacoes } from "./components/historico-observacoes";
 
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+
 export default function FichaImovelPage({
   params
 }: {
@@ -25,17 +34,23 @@ export default function FichaImovelPage({
     <>
       <Header
         title="Ficha de imóvel"
-        linkBack="/imoveis"
+        linkBack="/dashboard/imoveis"
         canShowBrasao
       >
-        <div className="flex items-center gap-1">
-          <Link href="/dashboard/imoveis">Visualização imóveis</Link>
-          <span>/</span>
-          <span>01.10.347.031.001</span>
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/dashboard/imoveis">Visualização imóveis</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbPage>{params.id}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </Header>
 
-      <main role="main" className="space-y-6 py-6">
+      <div className="space-y-6 py-6">
         <DownloadFicha ficha={params.id} />
         <VisaoGeral ficha={params.id} />
         <RepresentantesImovel />
@@ -54,16 +69,10 @@ export default function FichaImovelPage({
           <Button variant="secondary" className="mr-auto">
             Arquivar ficha
           </Button>
-
-          <Button variant="secondary">
-            Reprovar
-          </Button>
-
-          <Button variant="default">
-            Aprovar
-          </Button>
+          <Button variant="secondary">Reprovar</Button>
+          <Button variant="default">Aprovar</Button>
         </div>
-      </main>
+      </div>
     </>
   )
 }

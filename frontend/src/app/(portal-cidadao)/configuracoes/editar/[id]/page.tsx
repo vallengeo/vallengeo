@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Metadata } from "next"
-import { FormEditarConfiguracoes } from "../components/form-editar-configuracoes"
+import { FormEditarConfiguracoes } from "./components/form-editar-configuracoes"
 import { Avatar } from "@/components/avatar"
 import { Button } from "@/components/ui/button"
 
