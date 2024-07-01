@@ -26,6 +26,7 @@ class EnderecoServiceTest extends AbstractIntegrationTest {
     @Autowired
     private MunicipioRepository municipioRepository;
 
+    private static Long enderecoId;
     private static EnderecoRequest enderecoRequest;
 
     @BeforeAll
@@ -65,6 +66,7 @@ class EnderecoServiceTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Dado EnderecoRequest Quando salvar() Deve Retornar Endereco")
     void testDadoEnderecoRequest_QuandoSalvar_DeveRetornarEndereco() {
         var actual = enderecoService.salvar(enderecoRequest);
+        enderecoId = actual.getId();
 
         assertInstanceOf(Endereco.class, actual);
         assertNotNull(actual.getId());
@@ -82,6 +84,7 @@ class EnderecoServiceTest extends AbstractIntegrationTest {
         var actual = enderecoService.salvar(enderecoRequest);
 
         assertInstanceOf(Endereco.class, actual);
+        assertEquals(enderecoId, actual.getId());
         assertEquals(enderecoRequest.cep(), actual.getCep());
         assertEquals(enderecoRequest.logradouro(), actual.getLogradouro());
         assertEquals(enderecoRequest.bairro(), actual.getBairro());

@@ -15,6 +15,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -78,7 +79,8 @@ public class ArquivoServiceTest extends AbstractIntegrationTest {
 
         assertNotNull(actual);
         assertFalse(actual.isEmpty());
-        assertInstanceOf(String.class, actual.stream().findFirst().get());
+        assertInstanceOf(String.class, actual.get(0));
+        assertTrue(new File(actual.get(0)).exists());
     }
 
     @Test @Order(3)

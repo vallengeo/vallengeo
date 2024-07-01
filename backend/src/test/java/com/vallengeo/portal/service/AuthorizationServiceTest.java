@@ -4,12 +4,11 @@ import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.core.exceptions.custom.ForbiddenException;
 import com.vallengeo.portal.repository.PerfilRepository;
 import com.vallengeo.portal.repository.UsuarioRepository;
+import com.vallengeo.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -28,14 +27,6 @@ class AuthorizationServiceTest extends AbstractIntegrationTest {
     private PerfilRepository perfilRepository;
     @Autowired
     private AuthenticationManager authManager;
-
-    private void setAuthentication(String email, String senha) {
-        var authToken = new UsernamePasswordAuthenticationToken(email, senha);
-
-        var authentication = authManager.authenticate(authToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-    }
 
     @Test @Order(1)
     @DisplayName("Integration Test - Dado Email Nao Cadastrado Quando loadUserByUsername() Deve Lancar UsernameNotFoundException")
@@ -66,21 +57,21 @@ class AuthorizationServiceTest extends AbstractIntegrationTest {
     @Test @Order(4)
     @DisplayName("Integration Test - Dado Usuario Sem Perfil Quando hasPerfil() Deve Retornar False")
     void testDadoUsuarioSemPerfil_QuandoHasPerfil_DeveRetornarFalse() {
-        setAuthentication("vallengeo.semperfil@gmail.com", "123456");
+        AuthTestUtils.setAuthentication(authManager, "vallengeo.semperfil@gmail.com", "123456");
         assertFalse(authorizationService.hasPerfil("ADMINISTRADOR"));
     }
 
     @Test @Order(5)
     @DisplayName("Integration Test - Dado Perfil Nao Atribuido Quando hasPerfil() Deve Lancar ForbiddenException")
     void testDadoPerfilNaoAtribuido_QuandoHasPerfil_DeveLancarForbiddenException() {
-        setAuthentication("vallengeo.cidadao@gmail.com", "123456");
+        AuthTestUtils.setAuthentication(authManager, "vallengeo.cidadao@gmail.com", "123456");
         assertThrows(ForbiddenException.class, () -> authorizationService.hasPerfil("ADMINISTRADOR"));
     }
 
     @Test @Order(6)
     @DisplayName("Integration Test - Dado Perfil Quando hasPerfil() Deve Retornar True")
     void testDadoPerfil_QuandoHasPerfil_DeveRetornarTrue() {
-        setAuthentication("vallengeo.dev@gmail.com", "123456");
+        AuthTestUtils.setAuthentication(authManager, "vallengeo.dev@gmail.com", "123456");
         assertTrue(authorizationService.hasPerfil("ADMINISTRADOR"));
     }
 }
