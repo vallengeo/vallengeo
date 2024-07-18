@@ -28,6 +28,11 @@ class AuthorizationServiceTest extends AbstractIntegrationTest {
     @Autowired
     private AuthenticationManager authManager;
 
+    @BeforeAll
+    public static void setup() {
+        AuthTestUtils.cleanAuthentication();
+    }
+
     @Test @Order(1)
     @DisplayName("Integration Test - Dado Email Nao Cadastrado Quando loadUserByUsername() Deve Lancar UsernameNotFoundException")
     void testDadoEmailNaoCadastrado_QuandoLoadUserByUsername_DeveLancarUsernameNotFoundException() {

@@ -11,4 +11,8 @@ public class AuthTestUtils {
         var authentication = authManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
+
+    public static void cleanAuthentication() {
+        SecurityContextHolder.getContext().setAuthentication(null);
+    }
 }
