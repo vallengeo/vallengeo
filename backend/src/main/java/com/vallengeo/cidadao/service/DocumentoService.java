@@ -60,7 +60,10 @@ public class DocumentoService {
         String nomeTemporario = id + extension;
         File dest = new File(APPLICATION_TEMP_UPLOAD + File.separator + nomeTemporario);
 
-        TipoDocumento tipoDocumento = relGrupoTipoDocumentoRepository.findByGrupoIdAndTipoDocumentoId(SecurityUtils.extractGrupoId(request), tipoDocumentoId).orElseThrow(() -> new ValidatorException("Não foi possível encontrar a relação entre o grupo e o tipo do arquivo!", HttpStatus.NOT_FOUND)).getTipoDocumento();
+        TipoDocumento tipoDocumento = relGrupoTipoDocumentoRepository
+                .findByGrupoIdAndTipoDocumentoId(SecurityUtils.extractGrupoId(request), tipoDocumentoId)
+                .orElseThrow(() -> new ValidatorException("Não foi possível encontrar a relação entre o grupo e o tipo do arquivo!", HttpStatus.NOT_FOUND))
+                .getTipoDocumento();
 
         // tipo "Outros" não validar formato
         if (Boolean.FALSE.equals(TipoDocumentoEnum.OUTROS.getCodigo().equals(tipoDocumento.getId()))) {
@@ -100,19 +103,23 @@ public class DocumentoService {
                 if (tempFile.exists() && !tempFile.isDirectory()) {
                     String extensao = "." + FilenameUtils.getExtension(request.getNomeOriginal());
                     Arquivo arquivo = Arquivo.builder()
+                            .id(UUID.fromString(FilenameUtils.getBaseName(request.getNomeTemporario())))
                             .nome(request.getNomeOriginal().replace(extensao, ""))
                             .extensao(extensao)
                             .tamanho(FileUtils.readFileToByteArray(tempFile).length)
                             .dataEnvio(request.getDataEnvio())
                             .build();
+
                     Documento documento = new Documento(arquivo);
                     documento.setProcesso(processo);
                     documento.setTipoDocumento(tipoDocumentoRepository.findById(request.getIdTipoDocumento()).orElseThrow(
-                            () -> new ValidatorException("Tipo do documento" + request.getNomeOriginal() + NOT_FOUND, HttpStatus.NOT_FOUND)));
+                            () -> new ValidatorException("Tipo do documento " + request.getNomeOriginal() + NOT_FOUND, HttpStatus.NOT_FOUND)));
 
                     documentos.add(documento);
                     moverParaPastaDefinitiva(tempFile, documento.getId().toString(), documento.getExtensao());
                 }
+             } catch (ValidatorException e) {
+                throw e;
             } catch (Exception e) {
                 log.error("Erro ao ler o arquivo." + " " + Throwables.getStackTraceAsString(e));
                 throw new ValidatorException("Erro ao ler o arquivo.");
@@ -167,7 +174,7 @@ public class DocumentoService {
         return output;
     }
 
- public List<TipoDocumentoResponse> buscarTipoDocumento(HttpServletRequest request) {
+    public List<TipoDocumentoResponse> buscarTipoDocumento(HttpServletRequest request) {
         return tipoDocumentoService.buscarTipoDocumento(request);
     }
 

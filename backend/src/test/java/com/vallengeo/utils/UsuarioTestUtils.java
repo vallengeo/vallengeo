@@ -6,9 +6,13 @@ import com.vallengeo.portal.payload.request.usuario.CadastroRequest;
 import com.vallengeo.portal.payload.request.usuario.CadastroSimplificadoRequest;
 
 import java.util.List;
+import java.util.UUID;
 
 public class UsuarioTestUtils {
     public static final String DEFAULT_PASSWORD = "vallengeo@123";
+    public static final UUID GRUPO_ID = UUID.fromString("4d3c1497-af40-4ddf-8b06-d8f40c8df139");
+    public static final String DEFAULT_DEV_EMAIL = "vallengeo.dev@gmail.com";
+    public static final String DEFAULT_DEV_PASSWORD = "123456";
 
     public static List<CadastroSimplificadoRequest.Grupo> getGruposFromEntity(Usuario usuario) {
         return  usuario.getGrupos().stream().map(
