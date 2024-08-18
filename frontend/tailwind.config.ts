@@ -43,6 +43,11 @@ const config: Config = {
           foreground: "hsl(var(--destructive-foreground))",
         },
 
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+
         "gov-br": {
           DEFAULT: "rgb(var(--gov-br))",
           hover: "rgb(var(--gov-br-hover))",
@@ -99,6 +104,9 @@ const config: Config = {
       }
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('tailwind-scrollbar-hide')
+  ],
 }
 export default config

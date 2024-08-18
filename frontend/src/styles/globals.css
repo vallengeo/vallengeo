@@ -31,6 +31,9 @@
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
+    --success: 0 84.2% 60.2%;
+    --success-foreground: 210 40% 98%;
+
     --gov-br: 34 83 174;
     --gov-br-hover: 24 65 141;
     --gov-br-foreground: 255 255 255;

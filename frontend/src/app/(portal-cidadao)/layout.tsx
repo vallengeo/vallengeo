@@ -20,7 +20,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const isLoggedIn = true;
+  const isLoggedIn = false;
 
   return (
     <div className="h-screen flex flex-col">
@@ -55,18 +55,13 @@ export default function RootLayout({
         {children}
       </div>
 
-      {isLoggedIn ? (
-        <footer role="contentinfo" className="bg-background-secondary py-6 text-center relative">
-          <Copyright />
-          <Brasao className="absolute top-1/2 -translate-y-1/2 right-4" />
-        </footer>
-      ) : (
-        <footer role="contentinfo" className="bg-background-secondary py-2">
-          <div className="container">
-            <Brasao className="ml-auto" />
-          </div>
-        </footer>
-      )}
+      <footer
+        role="contentinfo"
+        className="bg-background-secondary py-6 text-center relative min-h-[68px]"
+      >
+        {isLoggedIn && <Copyright />}
+        <Brasao className="absolute top-1/2 -translate-y-1/2 right-4" />
+      </footer>
     </div>
   )
 }
