@@ -21,6 +21,7 @@ spring:
       data-locations:
         - classpath:db/migration/seeds/1_POPULANDO_TABELAS_PORTAL_SEGURANCA.sql
         - classpath:db/migration/seeds/V2_POPULANDO_TIPO_DOCUMENTO.sql
+        - classpath:db/migration/seeds/V3_POPULANDO_CAMADA_GRUPO_CRUZEIRO.sql
   main:
     allow-bean-definition-overriding: true
   messages:
