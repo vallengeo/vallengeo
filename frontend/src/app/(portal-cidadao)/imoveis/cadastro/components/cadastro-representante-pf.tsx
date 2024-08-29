@@ -1,28 +1,25 @@
+'use client'
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-
+import { dadosPessoaisSchema, dadosPessoaisData } from "@/validation/imovel/representante";
 import { useFormState } from "@/contexts/Imovel/FormContext";
-
-import {
-  representantePJSchema,
-  representantePJData
-} from "@/validation/imovel/representante";
-
-import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Contato } from "./contato";
-import { DadosPessoais } from "./dados-pessoais";
-import { DadosEmpresa } from "./dados-empresa";
+import { Form } from "@/components/ui/form";
+import { CadastroRepresentantes } from "./step-representantes";
 
-export function CadastroRepresentantePJ() {
+export function CadastroRepresentantePF() {
   const { onHandleNext, setFormData, formData } = useFormState()
 
-  const form = useForm<representantePJData>({
-    resolver: zodResolver(representantePJSchema),
-    defaultValues: formData
+  const form = useForm<dadosPessoaisData>({
+    mode: 'all',
+    criteriaMode: 'all',
+    resolver: zodResolver(dadosPessoaisSchema),
+    defaultValues: formData,
   })
 
-  const onSubmit: SubmitHandler<representantePJData> = (data) => {
+  const onSubmit: SubmitHandler<dadosPessoaisData> = (data) => {
+    console.log(data)
     setFormData((prev: any) => ({ ...prev, ...data }));
     onHandleNext()
   }
@@ -33,9 +30,9 @@ export function CadastroRepresentantePJ() {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-6"
       >
-        <DadosPessoais />
-        <DadosEmpresa />
-        <Contato />
+        <div className="space-y-6">
+          <CadastroRepresentantes />
+        </div>
 
         <div className="flex justify-end mt-6">
           <Button type="submit">Avançar</Button>

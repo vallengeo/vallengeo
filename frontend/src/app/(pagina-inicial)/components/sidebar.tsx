@@ -16,8 +16,8 @@ export function Sidebar() {
       .then(() => {
         router.push('/');
       })
-
   }
+
   return (
     <>
       <div className="flex flex-col justify-between w-40 max-md:w-full bg-primary-foreground h-full text-white pt-6 px-4 pb-12 rounded-2xl max-md:rounded-none">

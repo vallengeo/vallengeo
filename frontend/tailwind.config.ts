@@ -13,7 +13,7 @@ const config: Config = {
       center: true,
       padding: "1rem",
       screens: {
-        "2xl": "1334px",
+        "2xl": "1340px",
       },
     },
     extend: {
@@ -41,6 +41,11 @@ const config: Config = {
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
+        },
+
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
         },
 
         "gov-br": {
@@ -99,6 +104,9 @@ const config: Config = {
       }
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('tailwind-scrollbar-hide')
+  ],
 }
 export default config

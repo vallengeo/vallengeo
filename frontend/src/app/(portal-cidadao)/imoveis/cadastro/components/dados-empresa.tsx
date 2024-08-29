@@ -1,6 +1,7 @@
 import { useFormContext } from "react-hook-form"
 import { dadosEmpresaData } from "@/validation/imovel/representante"
 import { ufOptions, convertUFToState } from "@/validation/estados";
+import { formatarCampo, consultarCep } from "@/lib/utils";
 
 import {
   FormControl,
@@ -9,14 +10,25 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+
 import {
   Select,
   SelectContent,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { Input } from "@/components/ui/input";
-import { formatarCampo, consultarCep } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import { Info as LucideInfo } from "lucide-react";
 
 export function DadosEmpresa() {
   const { control, setValue } = useFormContext<dadosEmpresaData>()
@@ -47,7 +59,7 @@ export function DadosEmpresa() {
   }
 
   return (
-    <fieldset className="bg-white border border-[#E8E1E1] rounded-2xl py-6 space-y-6 [&>div]:px-6">
+    <fieldset className="bg-white border border-input rounded-2xl p-6 space-y-6">
       <div>
         <h2 className="text-xl font-medium">Informações da empresa</h2>
         <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
@@ -103,7 +115,21 @@ export function DadosEmpresa() {
           name="cep_empresa"
           render={({ field }) => (
             <FormItem className="w-1/5">
-              <FormLabel>CEP*</FormLabel>
+              <div className="flex items-center gap-1.5">
+                <FormLabel className="leading-6">CEP*</FormLabel>
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button type="button" variant="no-style" size="no-style">
+                        <LucideInfo size={16} />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Insira o CEP para preenchimento automático do endereço.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
               <FormControl>
                 <Input type="tel" {...field} onChange={handleChangeCEP} />
               </FormControl>

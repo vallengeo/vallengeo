@@ -23,37 +23,6 @@ export default function CidadaoConfiguracoesPage() {
 
       <main role="main" className="space-y-6">
         <Representantes />
-
-        <div className="bg-white border border-input rounded-2xl p-6">
-          <h2 className="text-xl mb-7">Informações de contato</h2>
-
-          <div className="grid grid-cols-5 gap-4">
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Nome Completo</span>
-              <span>Davi Luan Manuel da Cruz</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Telefone</span>
-              <span>(24) 2758-1193</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">E-mail</span>
-              <span>daviluandacruz@zf-lensysteme.com</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">CNPJ</span>
-              <span>119.220.336-22</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">CPF</span>
-              <span>119.220.336-22</span>
-            </div>
-          </div>
-        </div>
       </main>
     </div>
   )

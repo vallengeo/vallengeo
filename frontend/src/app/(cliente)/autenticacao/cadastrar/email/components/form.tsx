@@ -1,8 +1,8 @@
 'use client'
 
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
+import { cadastroFormSchema, cadastroFormData } from "@/validation/autenticacao/cadastro"
 
 import { formatarCampo } from "@/lib/utils";
 
@@ -16,42 +16,8 @@ import {
   FormLabel,
   FormMessage
 } from "@/components/ui/form";
+
 import Link from "next/link";
-
-const cadastroFormSchema = z.object({
-  nome_completo: z
-    .string({ required_error: "Nome é obrigatório" })
-    .nonempty("Nome é obrigatório"),
-
-  email: z
-    .string({ required_error: "Email é obrigatório" })
-    .nonempty("E-mail é obrigatório")
-    .email({
-      message: "E-mail inválido, tente: exemplo@exemplo.com"
-    }),
-
-  cpf: z
-    .string({ required_error: "CPF é obrigatório" }),
-
-  telefone: z
-    .string({ required_error: "Telefone é obrigatório" }),
-
-  senha: z
-    .string({ required_error: "Senha é obrigatório" })
-    .nonempty("Senha é obrigatório")
-    .min(6, "Mínimo 6 dígitos"),
-
-  confirmar_senha: z
-    .string({ required_error: "Senha é obrigatório" })
-    .nonempty("Senha é obrigatório")
-    .min(6, "Mínimo 6 dígitos")
-})
-  .refine(({ senha, confirmar_senha }) => senha === confirmar_senha, {
-    message: "A senha não corresponde",
-    path: ["confirmar_senha"]
-  })
-
-type cadastroFormData = z.infer<typeof cadastroFormSchema>
 
 export function CadastrarComEmail() {
   const form = useForm<cadastroFormData>({
@@ -85,16 +51,15 @@ export function CadastrarComEmail() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
             name="nome_completo"
             render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormLabel htmlFor="nome-completo">Nome completo*</FormLabel>
+              <FormItem className="sm:col-span-2">
+                <FormLabel>Nome completo*</FormLabel>
                 <FormControl>
                   <Input
-                    id="nome-completo"
                     type="text"
                     {...field}
                   />
@@ -108,11 +73,10 @@ export function CadastrarComEmail() {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="col-span-2">
-                <FormLabel htmlFor="email">E-mail*</FormLabel>
+              <FormItem className="sm:col-span-2">
+                <FormLabel>E-mail*</FormLabel>
                 <FormControl>
                   <Input
-                    id="email"
                     type="email"
                     {...field}
                   />
@@ -127,12 +91,12 @@ export function CadastrarComEmail() {
             name="cpf"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="cpf">CPF*</FormLabel>
+                <FormLabel>CPF*</FormLabel>
                 <FormControl>
                   <Input
-                    id="cpf"
                     type="tel"
                     maxLength={14}
+                    autoComplete="off"
                     {...field}
                     onChange={handleChangeCPF}
                   />
@@ -147,10 +111,9 @@ export function CadastrarComEmail() {
             name="telefone"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="telefone">Telefone*</FormLabel>
+                <FormLabel>Telefone*</FormLabel>
                 <FormControl>
                   <Input
-                    id="telefone"
                     type="tel"
                     maxLength={15}
                     {...field}
@@ -167,12 +130,11 @@ export function CadastrarComEmail() {
             name="senha"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="senha">Senha*</FormLabel>
+                <FormLabel>Senha*</FormLabel>
                 <FormControl>
                   <Input
-                    id="senha"
                     type="password"
-                    autoComplete="on"
+                    autoComplete="off"
                     {...field}
                   />
                 </FormControl>
@@ -186,12 +148,11 @@ export function CadastrarComEmail() {
             name="confirmar_senha"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="confirmar-senha">Confirmar senha*</FormLabel>
+                <FormLabel>Confirmar senha*</FormLabel>
                 <FormControl>
                   <Input
-                    id="confirmar-senha"
                     type="password"
-                    autoComplete="on"
+                    autoComplete="off"
                     {...field}
                   />
                 </FormControl>
@@ -201,14 +162,14 @@ export function CadastrarComEmail() {
           />
         </div>
 
-        <div className="flex items-center justify-between">
-          <Button asChild variant="secondary">
+        <div className="flex items-center justify-between flex-col-reverse sm:flex-row gap-6">
+          <Button asChild variant="secondary" className="w-72 sm:w-fit">
             <Link href="/autenticacao/cadastrar">
               Voltar
             </Link>
           </Button>
 
-          <Button type="submit">
+          <Button type="submit" className="w-72 sm:w-fit">
             Cadastrar
           </Button>
         </div>
