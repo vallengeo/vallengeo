@@ -34,7 +34,7 @@ public class LocalidadeController {
             @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
     })
     @GetMapping(value = "cep/{cep}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<EnderecoViaCepResponse> query(@PathVariable String cep) {
+    public ResponseEntity<EnderecoViaCepResponse> buscarEnderecoPorCep(@PathVariable String cep) {
         return ResponseEntity.ok(localidadeService.buscarViaCep(cep));
     }
 
