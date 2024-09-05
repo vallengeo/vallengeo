@@ -24,7 +24,7 @@ export default function AutenticacaoPage() {
           </Button>
 
           <Button asChild className="h-12">
-            <Link href="/autenticacao/login?linkPreviousPage=true">
+            <Link href="/autenticacao/login">
               Acessar
             </Link>
           </Button>

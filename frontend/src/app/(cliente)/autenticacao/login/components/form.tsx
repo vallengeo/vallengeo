@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginFormSchema, loginFormData } from "@/validation/autenticacao/login"
 
-import { Support } from "@/components/support";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -27,8 +26,6 @@ export function FormLogin() {
   const searchParams = useSearchParams()
   const router = useRouter();
 
-  const linkPreviousPage = searchParams.get('linkPreviousPage')
-
   const form = useForm<loginFormData>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -46,7 +43,7 @@ export function FormLogin() {
 
     await login(user)
       .then(() => {
-        router.push('/home');
+        router.push('/dashboard');
       })
       .catch(() => {
         actionLogout();
@@ -105,17 +102,13 @@ export function FormLogin() {
         </Button>
 
         <div className="flex items-center justify-between gap-2 flex-col-reverse sm:flex-row">
-          {linkPreviousPage ? (
-            <Button
-              asChild
-              variant="link"
-              className="flex-shrink-0"
-            >
-              <Link href="/">Acessar sem login</Link>
-            </Button>
-          ) : (
-            <Support />
-          )}
+          <Button
+            asChild
+            variant="link"
+            className="flex-shrink-0"
+          >
+            <Link href="/">Acessar sem login</Link>
+          </Button>
 
           <Button
             type="submit"
