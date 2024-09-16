@@ -87,20 +87,15 @@ public final class SecurityUtils {
                 "/js/**",
                 "/css/**",
                 "/error",
+                "/ficha-imobiliaria-html",
                 "/api/v1/autenticacao/login",
                 "/api/v1/autenticacao/register",
                 "/api/v1/autenticacao/logout/**",
                 "/api/v1/usuario/esqueci-minha-senha",
                 "/api/v1/usuario/recuperar-senha",
-                "/api/v1/localidade/**",
-                "/ficha",
-                "/generate",
-                "/gerar-pdf",
-                "/gerar-pdf-2",
-                "/gerar-pdf-3",
-                "/gerar-pdf-4",
-                "/gerar-pdf-5",
-                "/gerar-pdf-6"
+                "/api/v1/localidade/**"
+
+
         };
     }
 

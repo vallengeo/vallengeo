@@ -2,18 +2,22 @@
 <html lang="pt-BR">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link th:href="@{css/leaflet.css}" rel="stylesheet" />
     <link th:href="@{css/main.css}" rel="stylesheet"/>
     <link th:href="@{css/fonts.css}" rel="stylesheet">
+    <script>L_DISABLE_3D = true;</script>
+    <script th:src="@{js/leaflet.js}"></script>
 
     <title>Ficha Imobiliária</title>
 </head>
 
-<div class="header" th:replace="ficha/header.html::header"></div>
-
 <body>
+<div class="titulo" th:replace="ficha/titulo.html::titulo"></div>
 <div class="visao-geral" th:replace="ficha/visao_geral.html::visao-geral"></div>
 <div class="georreferenciamento" th:replace="ficha/georreferenciamento.html::georreferenciamento"></div>
 <div class="representante" th:replace="ficha/representante.html::representante"></div>
 <div class="caracterizacao" th:replace="ficha/caracterizacao.html::caracterizacao"></div>
+<div th:replace="ficha/script :: script"></div>
 </body>
+
 </html>

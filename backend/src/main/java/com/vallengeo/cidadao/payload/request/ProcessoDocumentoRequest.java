@@ -1,5 +1,6 @@
 package com.vallengeo.cidadao.payload.request;
 
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.Valid;
@@ -12,6 +13,7 @@ import java.util.List;
 import static com.vallengeo.core.util.Constants.CAMPO_OBRIGATORIO;
 
 @Data
+@Builder
 public class ProcessoDocumentoRequest implements Serializable {
     @NotBlank(message = CAMPO_OBRIGATORIO)
     private String idProcesso;

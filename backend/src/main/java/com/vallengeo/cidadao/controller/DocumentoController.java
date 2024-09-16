@@ -5,6 +5,7 @@ import com.vallengeo.cidadao.payload.response.DocumentoTemporarioResponse;
 import com.vallengeo.cidadao.payload.response.DocumentosEnviadosResponse;
 import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.service.DocumentoService;
+import com.vallengeo.cidadao.service.ProcessoService;
 import com.vallengeo.core.util.Constants;
 import com.vallengeo.global.model.Arquivo;
 import com.vallengeo.global.service.ArquivoService;
@@ -44,6 +45,7 @@ public class DocumentoController {
     private final HttpServletRequest request;
     private final DocumentoService documentoService;
     private final ArquivoService arquivoService;
+    private final ProcessoService processoService;
 
     @Operation(summary = "Listar os tipo de documentos obrigatórios")
     @ApiResponses(value = {
@@ -107,7 +109,7 @@ public class DocumentoController {
         return ResponseEntity.ok().body(null);
     }
 
-        @Operation(summary = "Serviço de cadastro temporário de documento")
+    @Operation(summary = "Serviço de cadastro temporário de documento")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = SALVO_SUCESSO, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
             @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),
@@ -133,6 +135,7 @@ public class DocumentoController {
     public ResponseEntity<String> cadastrarDocumentos(@Validated @RequestBody ProcessoDocumentoRequest input) {
         log.info("cadastrando documentos do processo {}", input.getIdProcesso());
         documentoService.cadastrar(input);
+        processoService.validacaoPosCadastrarDocumento(UUID.fromString(input.getIdProcesso()));
         return ResponseEntity.status(201).body(SALVO_SUCESSO);
     }
 }

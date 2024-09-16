@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import {
     DEFAULT_CONFIG,
+    BASE_LAYERS_CONFIG,
     TILE_LAYER_CONFIG
 } from '@/lib/mapa/mapa.config'
 
@@ -47,6 +48,7 @@ const Mapa: React.FC<any> = ({
                 minZoom: DEFAULT_CONFIG.minZoom,
                 maxZoom: DEFAULT_CONFIG.maxZoom,
                 doubleClickZoom: false,
+                dragging: false,
                 zoomControl: false,
                 attributionControl: DEFAULT_CONFIG.attributionControl,
                 scrollWheelZoom: false
@@ -55,6 +57,8 @@ const Mapa: React.FC<any> = ({
         const map = mapRef.current;
 
         map.setView(DEFAULT_CONFIG.center, DEFAULT_CONFIG.zoom);
+
+        L.control.layers(BASE_LAYERS_CONFIG, {}).addTo(map);
 
         // // Adicione o controle de escala ao mapa usando as configurações do DEFAULT_CONFIG
         // if (DEFAULT_CONFIG.controles.escala.enabled) {

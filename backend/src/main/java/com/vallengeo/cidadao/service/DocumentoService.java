@@ -49,7 +49,6 @@ public class DocumentoService {
     private final DocumentoRepository repository;
     private final ProcessoRepository processoRepository;
     private final TipoDocumentoService tipoDocumentoService;
-    private final ProcessoService processoService;
     public static final String LOG_PREFIX = "[DOCUMENTO] - ";
 
     @Transactional
@@ -62,8 +61,9 @@ public class DocumentoService {
 
         TipoDocumento tipoDocumento = relGrupoTipoDocumentoRepository.findByGrupoIdAndTipoDocumentoId(SecurityUtils.extractGrupoId(request), tipoDocumentoId).orElseThrow(() -> new ValidatorException("Não foi possível encontrar a relação entre o grupo e o tipo do arquivo!", HttpStatus.NOT_FOUND)).getTipoDocumento();
 
-        // tipo "Outros" não validar formato
-        if (Boolean.FALSE.equals(TipoDocumentoEnum.OUTROS.getCodigo().equals(tipoDocumento.getId()))) {
+        // formato NULL não validar
+        if (Boolean.FALSE.equals(TipoDocumentoEnum.OUTROS.getCodigo().equals(tipoDocumento.getId()))
+            && Boolean.FALSE.equals(TipoDocumentoEnum.ANOTACAO_CONSIDERACAO_TECNICA.getCodigo().equals(tipoDocumento.getId()))) {
             List<String> formatosPermitidos = Arrays.asList(tipoDocumento.getFormato().split(","));
 
             if (Boolean.FALSE.equals(formatosPermitidos.contains(extension))) {
@@ -83,7 +83,7 @@ public class DocumentoService {
     }
 
     @Transactional
-    public void cadastrar(ProcessoDocumentoRequest input) {
+    public List<Documento> cadastrar(ProcessoDocumentoRequest input) {
 
         List<Documento> documentos = new ArrayList<>();
 
@@ -110,7 +110,7 @@ public class DocumentoService {
                     documento.setTipoDocumento(tipoDocumentoRepository.findById(request.getIdTipoDocumento()).orElseThrow(
                             () -> new ValidatorException("Tipo do documento" + request.getNomeOriginal() + NOT_FOUND, HttpStatus.NOT_FOUND)));
 
-                    documentos.add(documento);
+                    documentos.add(repository.save(documento));
                     moverParaPastaDefinitiva(tempFile, documento.getId().toString(), documento.getExtensao());
                 }
             } catch (Exception e) {
@@ -119,8 +119,7 @@ public class DocumentoService {
             }
         }
 
-        repository.saveAll(documentos);
-        processoService.validacaoPosCadastrarDocumento(input);
+        return repository.saveAll(documentos);
     }
 
     public List<Documento> buscarDocumentoEnviadoPeloProcessoId(UUID processoId) {
@@ -131,34 +130,7 @@ public class DocumentoService {
         List<DocumentosEnviadosResponse> output = new ArrayList<>();
 
         try {
-            List<Documento> documentos = buscarDocumentoEnviadoPeloProcessoId(idProcesso);
-
-            // Ordenar tipos de documento
-            List<TipoDocumento> tipoDocumentosOrdenados = ordenar(documentos.stream().map(Documento::getTipoDocumento).toList(), idProcesso);
-
-            // Agrupar documentos por tipo usando a lista ordenada
-            Map<TipoDocumento, List<Documento>> documentosPorTipo = documentos.stream()
-                    .filter(documento -> tipoDocumentosOrdenados.contains(documento.getTipoDocumento()))
-                    .collect(Collectors.groupingBy(Documento::getTipoDocumento));
-
-            documentosPorTipo.forEach((tipoDocumento, listaDocumentos) -> {
-                List<DocumentosEnviadosResponse.Documento> documentosResponse = listaDocumentos.stream().map(documento ->
-                        DocumentosEnviadosResponse.Documento.builder()
-                                .id(documento.getId())
-                                .nome(documento.getNome())
-                                .extensao(documento.getExtensao())
-                                .tamanho(documento.getTamanho())
-                                .dataEnvio(documento.getDataEnvio())
-                                .build()
-                ).toList();
-
-                output.add(DocumentosEnviadosResponse.builder()
-                        .id(tipoDocumento.getId())
-                        .titulo(tipoDocumento.getTitulo())
-                        .documentos(documentosResponse)
-                        .build()
-                );
-            });
+            output.addAll(montaDocumentosEnviadosResponsePorDocumentos(buscarDocumentoEnviadoPeloProcessoId(idProcesso), idProcesso));
 
         } catch (Exception e) {
             log.error("Erro ao buscar documentos pelo processo: " + Throwables.getStackTraceAsString(e));
@@ -167,7 +139,38 @@ public class DocumentoService {
         return output;
     }
 
- public List<TipoDocumentoResponse> buscarTipoDocumento(HttpServletRequest request) {
+    public List<DocumentosEnviadosResponse> montaDocumentosEnviadosResponsePorDocumentos(List<Documento> documentos, UUID idProcesso) {
+        List<DocumentosEnviadosResponse> output = new ArrayList<>();
+        // Ordenar tipos de documento
+        List<TipoDocumento> tipoDocumentosOrdenados = ordenar(documentos.stream().map(Documento::getTipoDocumento).toList(), idProcesso);
+
+        // Agrupar documentos por tipo usando a lista ordenada
+        Map<TipoDocumento, List<Documento>> documentosPorTipo = documentos.stream()
+                .filter(documento -> tipoDocumentosOrdenados.contains(documento.getTipoDocumento()))
+                .collect(Collectors.groupingBy(Documento::getTipoDocumento));
+
+        documentosPorTipo.forEach((tipoDocumento, listaDocumentos) -> {
+            List<DocumentosEnviadosResponse.Documento> documentosResponse = listaDocumentos.stream().map(documento ->
+                    DocumentosEnviadosResponse.Documento.builder()
+                            .id(documento.getId())
+                            .nome(documento.getNome())
+                            .extensao(documento.getExtensao())
+                            .tamanho(documento.getTamanho())
+                            .dataEnvio(documento.getDataEnvio())
+                            .build()
+            ).toList();
+
+            output.add(DocumentosEnviadosResponse.builder()
+                    .id(tipoDocumento.getId())
+                    .titulo(tipoDocumento.getTitulo())
+                    .documentos(documentosResponse)
+                    .build()
+            );
+        });
+        return output;
+    }
+
+    public List<TipoDocumentoResponse> buscarTipoDocumento(HttpServletRequest request) {
         return tipoDocumentoService.buscarTipoDocumento(request);
     }
 

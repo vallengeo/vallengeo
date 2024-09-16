@@ -1,24 +1,16 @@
 import L from "leaflet";
 
-export const TILE_LAYER_CONFIG = 
-//   {
-//     nome: "Satélite",
-//     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png",
-//     options: {
-//       attribution:
-//         'Tiles &copy; <a href="http://www.esri.com/" target="_blank">Esri</a>',
-//         maxZoom: 20
-//     },
-//   }
-  {
-    url: "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+export const TILE_LAYER_CONFIG = {
+    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png",
     options: {
       attribution:
-        'Map data &copy; <a href="https://www.google.com/maps">Google Maps</a>',
-        maxZoom: 20
+        'Tiles &copy; <a href="http://www.esri.com/" target="_blank">Esri</a>',
+        maxZoom: 19,
+        tileSize: 512,
+        zoomOffset: -1
     },
   }
-;
+
 
 export const DEFAULT_CONFIG = {
   center: L.latLng(-13.453737213419249, -55.06347656249999),
@@ -36,27 +28,52 @@ export const DEFAULT_CONFIG = {
   },
 };
 
-export const BASE_LAYERS_CONFIG = [
-  {
-    nome: "Satélite",
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png",
-    attribution:
-      'Tiles © <a href="http://www.esri.com/" target="_blank">Esri</a>',
-    maxNativeZoom: 15,
-    maxZoomLevel: 17,
-    urlImagem: "basemap_satellite.png",
-  },
-  {
-    nome: "Topomap",
-    url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
-    attribution:
-      "Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, " +
-      "NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community",
-    maxNativeZoom: 17,
-    maxZoomLevel: 17,
-    urlImagem: "basemap_topomap.png",
-  },
-];
+export const BASE_LAYERS_CONFIG = {
+  "Satélite": L.tileLayer(
+    `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png`,
+    {
+      attribution: 'Tiles &copy; <a href="http://www.esri.com/" target="_blank">Esri</a>',
+      maxZoom: 19
+    }
+  ),
 
-export const URL_GEOSERVER = `${location.origin}${process.env.VUE_APP_HTTP_PATH}/camadas/wms`;
-export const URL_WMS_SENTINEL = `${location.origin}${process.env.VUE_APP_HTTP_PATH}/camadas/sentinel/wms`;
+  "Terreno": L.tileLayer(
+    `https://tile.openstreetmap.org/{z}/{x}/{y}.png`,
+    {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }
+  ),
+  "OpenStreetMaps": L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "osm.streets"
+    }
+  ),
+  "Google-Map": L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "google.street"
+    }
+  ),
+  "Google-Satellite": L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "google.satellite"
+    }
+  ),
+  "Google-Hybrid": L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "google.hybrid"
+    }
+  )
+};
