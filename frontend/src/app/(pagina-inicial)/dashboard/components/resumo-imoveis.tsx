@@ -54,7 +54,7 @@ export async function ResumoImoveis() {
 
   return (
     <div className="bg-white border border-input rounded-3xl p-4">
-      <h2 className="text-xl mb-6">Resumo dos imoveis</h2>
+      <h2 className="text-xl font-medium mb-6">Resumo dos imoveis</h2>
 
       <div>
         <DataTable columns={columns} data={data} />

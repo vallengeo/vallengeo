@@ -2,25 +2,17 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-
 import { useFormState } from "@/contexts/Imovel/FormContext";
-
 import { documentosFormData, documentosFormSchema } from "@/validation/imovel/documentos";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 
 export function CadastroDocumentos() {
-  const { onHandleBack, onHandleNext, formData, setFormData } = useFormState();
+  const { toast } = useToast()
+
+  const { onHandleBack, formData, setFormData } = useFormState();
 
   const form = useForm<documentosFormData>({
     resolver: zodResolver(documentosFormSchema),
@@ -29,7 +21,11 @@ export function CadastroDocumentos() {
 
   const onSubmit: SubmitHandler<documentosFormData> = (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }))
-    onHandleNext()
+    console.log(formData)
+
+    toast({
+      description: 'Dados enviados com sucesso!',
+    })
   }
 
   return (
@@ -38,7 +34,7 @@ export function CadastroDocumentos() {
         onSubmit={form.handleSubmit(onSubmit)}
         encType="multipart/form-data"
       >
-        <div className="bg-white border border-[#E8E1E1] rounded-2xl p-6 space-y-6">
+        <div className="bg-white border border-input rounded-2xl p-6 space-y-6">
           <div className="flex items-center justify-between space-y-1">
             <h2 className="text-xl font-medium">Enviar documentos</h2>
             <p>Anexe os documentos no campo abaixo. Os arquivos aceitos são  shape, dwg, kml e PDF.</p>
@@ -51,21 +47,21 @@ export function CadastroDocumentos() {
               name="matricula"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -77,8 +73,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -92,21 +88,21 @@ export function CadastroDocumentos() {
               name="documento_proprietario"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado (RG, CPF ou CNH)</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado (RG, CPF ou CNH)</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -118,8 +114,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -130,21 +126,21 @@ export function CadastroDocumentos() {
               name="certidao_nascimento_proprietario"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado (Certidão de nascimento)</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado (Certidão de nascimento)</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -156,8 +152,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -168,21 +164,21 @@ export function CadastroDocumentos() {
               name="certidao_casamento_proprietario"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado (Certidão de casamento)</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado (Certidão de casamento)</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -194,8 +190,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -206,21 +202,21 @@ export function CadastroDocumentos() {
               name="comprovante_residencia_proprietario"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado (Comprovante de residência)</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado (Comprovante de residência)</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -232,8 +228,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -247,21 +243,21 @@ export function CadastroDocumentos() {
               name="aprovacao_habitese"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -273,8 +269,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -288,21 +284,21 @@ export function CadastroDocumentos() {
               name="habitese_imovel"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -314,8 +310,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -329,21 +325,21 @@ export function CadastroDocumentos() {
               name="projeto_arquitetonico"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -355,8 +351,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -370,21 +366,21 @@ export function CadastroDocumentos() {
               name="procuracao"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -396,8 +392,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -411,21 +407,21 @@ export function CadastroDocumentos() {
               name="responsavel_legal"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -437,8 +433,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -452,21 +448,21 @@ export function CadastroDocumentos() {
               name="iptu"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -478,8 +474,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -493,21 +489,21 @@ export function CadastroDocumentos() {
               name="eiv"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -519,8 +515,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -534,21 +530,21 @@ export function CadastroDocumentos() {
               name="rit"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-[#E8E1E1] p-6 cursor-pointer transition-colors text-base">
-                      <div className="flex items-center justify-between w-full">
-                        {field.value?.[0].name ? (
-                          <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                        ) : (
-                          <>
-                            <span>nenhum documento informado</span>
-                            <Button asChild variant="secondary">
-                              <span>anexar arquivo</span>
-                            </Button>
-                          </>
-                        )}
-                      </div>
+                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                    <div className="flex items-center justify-between w-full">
+                      {field.value?.[0].name ? (
+                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                      ) : (
+                        <>
+                          <span>nenhum documento informado</span>
+                          <Button asChild variant="secondary">
+                            <span>anexar arquivo</span>
+                          </Button>
+                        </>
+                      )}
+                    </div>
 
+                    <FormControl>
                       <Input
                         type="file"
                         accept=".pdf"
@@ -560,8 +556,8 @@ export function CadastroDocumentos() {
                         ref={field.ref}
                         className="sr-only"
                       />
-                    </FormLabel>
-                  </FormControl>
+                    </FormControl>
+                  </FormLabel>
                   <FormMessage />
                 </FormItem>
               )}
@@ -569,11 +565,17 @@ export function CadastroDocumentos() {
           </div>
         </div>
 
-        <div className="flex justify-between items-center flex-wrap gap-4">
-          <Button variant="secondary" onClick={onHandleBack}>Voltar</Button>
+        <div className="flex justify-between items-center flex-wrap gap-4 mt-6">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={onHandleBack}
+          >
+            Voltar
+          </Button>
 
           <div className="space-x-4">
-            <Button variant="secondary">Continuar depois</Button>
+            <Button type="button" variant="secondary">Continuar depois</Button>
             <Button type="submit">Finalizar</Button>
           </div>
         </div>

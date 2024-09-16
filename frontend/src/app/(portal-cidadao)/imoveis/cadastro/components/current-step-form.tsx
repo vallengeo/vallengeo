@@ -1,9 +1,8 @@
 "use client"
 
 import { useFormState } from "@/contexts/Imovel/FormContext";
-
-import { CadastroRepresentantePJ } from "./step-representante-pj";
-import { CadastroRepresentantePF } from "./step-representante-pf";
+import { CadastroRepresentantePJ } from "./cadastro-representante-pj";
+import { CadastroRepresentantePF } from "./cadastro-representante-pf";
 import { CadastroDocumentos } from "./step-documentos";
 import { CadastroImovel } from "./step-imovel";
 import { Steps } from "./steps";

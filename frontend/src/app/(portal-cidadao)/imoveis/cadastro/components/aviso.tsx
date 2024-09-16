@@ -7,18 +7,9 @@ import {
 
 interface AvisoProps {
   type: 'warning' | 'info'
-  size: number
+  size?: number
   message: string
   className?: string
-}
-
-export function Aviso({ type, size, message, className }: AvisoProps) {
-  return (
-    <div className={cn("flex items-center justify-center gap-4 p-4 bg-[#9897FF]/10 rounded-2xl text-lg", className)}>
-      {getIconByType(type, size)}
-      <p>{message}</p>
-    </div>
-  )
 }
 
 function getIconByType(type: string, size: number) {
@@ -34,4 +25,13 @@ function getIconByType(type: string, size: number) {
   }
 
   return icon;
+}
+
+export function Aviso({ type, size = 24, message, className }: AvisoProps) {
+  return (
+    <div className={cn("flex items-center justify-center gap-4 p-4 bg-[#9897FF]/10 rounded-2xl text-lg", className)}>
+      {getIconByType(type, size)}
+      <p>{message}</p>
+    </div>
+  )
 }

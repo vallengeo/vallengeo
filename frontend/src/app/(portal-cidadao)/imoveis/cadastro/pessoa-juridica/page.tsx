@@ -1,10 +1,14 @@
-'use client'
-
 import { Metadata } from "next";
-import Link from "next/link";
-
 import { Header } from "@/components/header";
 import { CurrentStepForm } from "../components/current-step-form";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbList,
+  BreadcrumbPage
+} from "@/components/ui/breadcrumb"
 
 export const metada: Metadata = {
   title: 'Cadastro de imóvel',
@@ -16,15 +20,23 @@ export default function CadastroImovelPJPage() {
       <div className="flex items-center justify-between">
         <Header
           title="Cadastro de imóvel"
-          linkBack="/imoveis"
+          linkBack="/imoveis/cadastro"
         >
-          <div className="flex items-center gap-1">
-            <Link href="/">Página Inicial</Link>
-            <span>/</span>
-            <Link href="/imoveis">Imóveis</Link>
-            <span>/</span>
-            <strong>Cadastro de imóvel</strong>
-          </div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/">Página Inicial</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbLink href="/imoveis">Imóveis</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-normal">Cadastro de imóvel</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </Header>
 
         <p>*itens obrigatórios</p>

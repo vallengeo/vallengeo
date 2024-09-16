@@ -1,15 +1,17 @@
 import Link from "next/link";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
+import { DropdownMenu, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { Button } from "@/components/ui/button";
 import { ProfileTrigger } from "@/components/profile-trigger";
+import { useRouter } from 'next/navigation'
+import { actionLogout } from "@/service/authService";
 
 export function Menu() {
+  const router = useRouter();
+  const logout = () => {
+    actionLogout().then(() => router.push('/'))
+  }
+
   return (
     <div className="flex items-center gap-x-8">
       <Link
@@ -28,15 +30,20 @@ export function Menu() {
           alignOffset={-24}
           className="min-w-[12rem] py-4 rounded-2xl before:content-[''] before:absolute before:-top-3.5 before:right-6 before:triangle-to-top"
         >
-          <DropdownMenuItem className="text-base justify-center">
-            <Link href="/configuracoes">
+          <DropdownMenuItem className="text-base">
+            <Link href="/configuracoes" className="flex justify-center w-full">
               Configurações
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem className="text-base justify-center mt-4">
-            <Link href="/autenticacao/logout">
+            <Button
+              onClick={logout}
+              variant="no-style"
+              size="no-style"
+              className="w-full"
+            >
               Sair
-            </Link>
+            </Button>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
