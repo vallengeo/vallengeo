@@ -7,6 +7,7 @@ import com.vallengeo.cidadao.payload.response.cadastro.imovel.RepresentanteRespo
 import com.vallengeo.core.util.GeometriySerializerUtil;
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 import org.locationtech.jts.geom.Geometry;
 
 import java.io.Serializable;
@@ -18,7 +19,7 @@ import java.util.UUID;
 import static com.vallengeo.core.config.Config.DATE_FORMAT_TIME_TABLE;
 
 @Data
-@Builder
+@SuperBuilder
 public class FichaImovelResponse implements Serializable {
     private Long id;
     private String inscricaoImobiliaria;

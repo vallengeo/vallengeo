@@ -1,0 +1,52 @@
+<div th:fragment="script" xmlns:th="http://www.thymeleaf.org">
+
+    <script type="text/javascript" th:inline="javascript">
+        const STYLE = {
+            color: '#6A68F0',
+            opacity: 0.8,
+            fillColor: '#6A68F0',
+            fillOpacity: 0.8
+        }
+
+
+        function criarMapas() {
+              const geometria = [# th:utext="${geometria} != null ? ${geometria} : 'null'"/];
+
+            const map = L.map('mapa', {
+                zoomControl: false,
+                maxZoom: 18,
+                attributionControl: false
+            }).setView([-13.453737213419249, -55.06347656249999], 4);
+
+
+            const params = {
+                mapa: map,
+                geometria: geometria
+            }
+            L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                attribution: '<a href="http://www.esri.com/" target="_blank">Esri</a>',
+                maxZoom: 18
+            }).addTo(map);
+
+            const grupo = new L.featureGroup();
+            if (params.geometria) {
+                grupo.addLayer(L.geoJSON(params.geometria, {
+                    style: function () {
+                        return STYLE;
+                    }
+                }));
+            }
+
+            grupo.addTo(map);
+
+            map.fitBounds(grupo.getBounds(), {
+                animate: false,
+                duration: 0,
+                noMoveStart: true
+            });
+        }
+
+        criarMapas();
+    </script>
+
+</div>

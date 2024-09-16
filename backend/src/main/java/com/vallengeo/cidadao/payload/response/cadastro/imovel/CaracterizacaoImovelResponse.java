@@ -9,15 +9,27 @@ import java.time.format.DateTimeFormatter;
 import static com.vallengeo.core.config.Config.DATE_FORMAT;
 
 @Data
-public class CaracterizacaoImovelResponse implements Serializable {
+public class  CaracterizacaoImovelResponse implements Serializable {
     String setor;
     private String quadra;
     private String lote;
     private String unidade;
-    private Float areaTerreno;
-    private Float testadaPrincipal;
-    private Float fracaoIdeal;
+    private double areaTerreno;
+    private double testadaPrincipal;
+    private double fracaoIdeal;
     private LocalDate dataInclusao;
+
+    public String getTestadaPrincipalFormatada() {
+        return String.format("%.0f", this.testadaPrincipal);
+    }
+
+    public String getFracaoIdealFormatada() {
+        return String.format("%.2f", this.fracaoIdeal).replace(",", ".");
+    }
+
+    public String getAreaTerrenoFormatada() {
+        return String.format("%.0f", this.areaTerreno) + " m²";
+    }
 
     public String getDataInclusaoFormatada() {
         if (this.dataInclusao != null) {

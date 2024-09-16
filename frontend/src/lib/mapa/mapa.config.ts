@@ -33,9 +33,7 @@ export const BASE_LAYERS_CONFIG = {
     `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png`,
     {
       attribution: 'Tiles &copy; <a href="http://www.esri.com/" target="_blank">Esri</a>',
-      maxZoom: 19,
-      tileSize: 512,
-      zoomOffset: -1
+      maxZoom: 19
     }
   ),
 
@@ -43,9 +41,39 @@ export const BASE_LAYERS_CONFIG = {
     `https://tile.openstreetmap.org/{z}/{x}/{y}.png`,
     {
       attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19
+    }
+  ),
+  "OpenStreetMaps": L.tileLayer(
+    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+    {
+      minZoom: 2,
       maxZoom: 19,
-      tileSize: 512,
-      zoomOffset: -1
+      id: "osm.streets"
+    }
+  ),
+  "Google-Map": L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "google.street"
+    }
+  ),
+  "Google-Satellite": L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "google.satellite"
+    }
+  ),
+  "Google-Hybrid": L.tileLayer(
+    "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+    {
+      minZoom: 2,
+      maxZoom: 19,
+      id: "google.hybrid"
     }
   )
 };

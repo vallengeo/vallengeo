@@ -1,8 +1,8 @@
-@page{
-  size: A4;
-  margin-top: 300px;
-  margin-bottom: 50px;
-  background-color: #00f;
+@page {
+    size: A4;
+    margin-top: 300px;
+    margin-bottom: 50px;
+    background-color: #00f;
 }
 
 
@@ -26,26 +26,22 @@ main {
     display: block;
 }
 
-.header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 1rem;
+.titulo {
+    text-align: center;
 }
 
-.header > img {
+.titulo > img {
     height: 3rem;
 }
 
-.header > h1 {
+.titulo > h1 {
     font-size: 2rem;
     font-weight: 500;
     line-height: 48px;
-    text-align: left;
 }
 
 .card {
-    background-color: #F5F5F5;
+    /*background-color: #F5F5F5;*/
     border-radius: 1.25rem;
     border-width: 1px;
     border-style: solid;
@@ -63,18 +59,20 @@ main {
 
 .card .container {
     padding: 2rem 0;
-    border-width: 0 0 0.0625rem 0;
-    border-style: solid;
-    border-color: #E8E1E1;
+    border: none;
+    border-bottom: 0.0625rem solid #E8E1E1;
+    /*border-width: 0 0 0.0625rem 0;*/
+    /*border-style: solid;*/
+    /*border-color: #E8E1E1;*/
 }
 
 .card .container:nth-of-type(1) {
-    padding: 0 0 2rem;
+    padding: 0 0 1rem;
 }
 
 .card .container:last-of-type {
     border: none;
-    padding: 0;
+    padding: 1.875rem 0 0;
 }
 
 .card .container h3 {
@@ -114,8 +112,30 @@ main {
     background: #FACF61;
 }
 
+.card .tabela-visao-geral {
+    width: 100%;
+}
+
+.card .tabela-visao-geral td {
+    width: 25%;
+    padding: 0 0 0.875rem;
+}
+
+.card .tabela-visao-geral h4 {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1rem;
+    margin: 0 0 0.25rem;
+}
+
+.card .tabela-visao-geral .button {
+    border-radius: 1.25rem;
+    padding: 0.5rem 0.875rem 0.25rem;
+    background: #FACF61;
+}
+
+
 .card .container .tabela-representante {
- page-break-inside: avoid;
     width: 100%;
 }
 
@@ -138,7 +158,6 @@ main {
 }
 
 .card .tabela-caracterizacao {
-    page-break-inside: avoid;
     width: 100%;
 }
 
@@ -160,6 +179,16 @@ main {
     line-height: 1.25rem;
 }
 
+.card .mapa {
+    height: 720px;
+    width: 825px;
+    border-radius: 25px;
+
+}
+
+.no-break {
+    page-break-inside: avoid;
+}
 
 #content {
     display: flex;
