@@ -1,29 +1,20 @@
 'use client'
 
 import Link from "next/link";
-
-import { useSearchParams, useRouter } from 'next/navigation'
-
+import { useState } from "react"
+import { useRouter } from 'next/navigation'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
 import { loginFormSchema, loginFormData } from "@/validation/autenticacao/login"
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
-
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Loader } from "@/components/loader"
 import { actionLogout, login } from '@/service/authService'
 import IUserLogin from "@/interfaces/IUserLogin";
 
 export function FormLogin() {
-  const searchParams = useSearchParams()
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
   const form = useForm<loginFormData>({
@@ -35,6 +26,8 @@ export function FormLogin() {
   });
 
   const onSubmit: SubmitHandler<loginFormData> = async (data) => {
+    setIsLoading(true);
+
     const user: IUserLogin = {
       email: data.email,
       senha: data.password,
@@ -43,13 +36,12 @@ export function FormLogin() {
 
     await login(user)
       .then(() => {
+        // TODO: Validar grupo para ajustar redirect
         router.push('/dashboard');
       })
       .catch(() => {
         actionLogout();
-      })
-
-
+      });
   }
 
   return (
@@ -113,9 +105,9 @@ export function FormLogin() {
           <Button
             type="submit"
             variant="default"
-            className="px-16 h-12 w-full sm:w-fit"
+            className={`'h-12 w-full sm:w-44' ${isLoading ? 'pointer-events-none' : ''}`}
           >
-            Entrar
+            {isLoading ? <Loader /> : 'Entrar'}
           </Button>
         </div>
       </form>

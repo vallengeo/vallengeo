@@ -16,7 +16,7 @@ const buttonVariants = cva(
         "gov-br": "text-lg text-gov-br-foreground bg-gov-br hover:bg-gov-br-hover",
         outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         link: "text-primary-foreground hover:text-primary-hover underline-offset-4 underline",
-        "no-style": "",
+        "no-style": "font-normal",
       },
       size: {
         default: "h-10 rounded-3xl px-10 py-2",

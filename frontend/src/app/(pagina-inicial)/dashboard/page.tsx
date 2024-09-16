@@ -8,6 +8,11 @@ import { HistoricoProcessos } from "./components/historico-processos";
 import { Notificacoes } from "./components/notificacoes";
 import { Welcome } from "./components/welcome";
 import { ResumoImoveis } from "./components/resumo-imoveis";
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Página Inicial - VallenGeo',
+}
 
 export default function HomePage() {
   return (

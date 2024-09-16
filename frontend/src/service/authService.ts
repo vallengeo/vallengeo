@@ -1,3 +1,5 @@
+'use client'
+
 import api from "./api";
 import IUserLogin from "@/interfaces/IUserLogin";
 import { ACCESS_TOKEN } from "@/constants/auth";
@@ -11,3 +13,8 @@ export const actionLogout = async () => {
   localStorage.removeItem(ACCESS_TOKEN);
   return null;
 };
+
+export const isLoggedIn = () => {
+  const token = localStorage.getItem(ACCESS_TOKEN);
+  return token !== null;
+}
