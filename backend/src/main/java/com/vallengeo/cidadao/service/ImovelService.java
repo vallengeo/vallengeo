@@ -53,6 +53,7 @@ public class ImovelService {
     private final DocumentoService documentoService;
     private final HistoricoAnotacaoConsideracaoTecnicaService historicoAnotacaoConsideracaoTecnicaService;
     private final WkhtmlService wkhtmlService;
+    private final NotificacaoService notificacaoService;
 
     public Paginacao.PaginacaoOutput<ProcessoListagemSimplificadoResponse> buscarTodosCadastrados(String pesquisa, Paginacao.PaginacaoInput paginacaoInput, HttpServletRequest request) {
         identificarOrdenacaoPaginacao(paginacaoInput);
@@ -98,6 +99,9 @@ public class ImovelService {
                 .caracterizacaoImovel(caracterizacaoImovel)
                 .inscricaoImobiliaria(montaInscricaoImobiliaria(caracterizacaoImovel))
                 .build());
+
+        notificacaoService.cadastrar(imovel.getId());
+
         return new ProcessoResponse(processo.getId(), processo.getProtocolo(), ImovelMapper.INSTANCE.toResponse(imovel));
     }
 
@@ -115,6 +119,9 @@ public class ImovelService {
         imovel.setInformacaoImovel(informacaoImovel);
         imovel.setCaracterizacaoImovel(caracterizacaoImovel);
         imovel.setInscricaoImobiliaria(montaInscricaoImobiliaria(caracterizacaoImovel));
+
+        notificacaoService.cadastrar(imovel.getId());
+
         return new ProcessoResponse(processo.getId(), processo.getProtocolo(), ImovelMapper.INSTANCE.toResponse(imovel));
     }
 

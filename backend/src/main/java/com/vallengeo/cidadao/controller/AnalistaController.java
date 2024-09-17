@@ -2,9 +2,12 @@ package com.vallengeo.cidadao.controller;
 
 import com.vallengeo.cidadao.payload.request.ProcessoArquivarRequest;
 import com.vallengeo.cidadao.payload.response.FichaImovelAnalistaResponse;
+import com.vallengeo.cidadao.payload.response.NotificacaoNaoVisualizadaResponse;
 import com.vallengeo.cidadao.payload.response.UltimoProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.service.ImovelService;
+import com.vallengeo.cidadao.service.NotificacaoService;
+import com.vallengeo.cidadao.service.NotificacaoVisualizadaService;
 import com.vallengeo.cidadao.service.ProcessoService;
 import com.vallengeo.core.util.Constants;
 import io.swagger.v3.oas.annotations.Operation;
@@ -37,6 +40,8 @@ public class AnalistaController {
     private final HttpServletRequest request;
     private final ImovelService imovelService;
     private final ProcessoService processoService;
+    private final NotificacaoService notificacaoService;
+    private final NotificacaoVisualizadaService notificacaoVisualizadaService;
 
     @Operation(summary = "Serviço de arquivamento do imóvel")
     @ApiResponses(value = {
@@ -77,14 +82,39 @@ public class AnalistaController {
     }
 
     @PreAuthorize("hasRole('HOME_ATUALIZACAO_PROCESSO_VISUALIZAR')")
-     @Operation(summary = "Lista os ultimos processos alterados.")
+    @Operation(summary = "Lista os ultimos processos alterados.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
     })
     @GetMapping(value = "/processo/ultimos-alterados", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<UltimoProcessoResponse>> buscarUltimosProcessosAlterados(@RequestParam(value = "pagina") int pagina,
-                                                                                          @RequestParam(value = "itens-por-pagina") int itensPorPagina) {
+                                                                                        @RequestParam(value = "itens-por-pagina") int itensPorPagina) {
         return ResponseEntity.ok(processoService.buscarUltimosProcessosAlterados(pagina, itensPorPagina, request));
     }
+
+    @Operation(summary = "Lista as notificações não visualizadas.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/notificacao-nao-visualizada", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<NotificacaoNaoVisualizadaResponse>> buscarNotificacaoNaoVisualizada(@RequestParam(value = "pagina") int pagina,
+                                                                                                   @RequestParam(value = "itens-por-pagina") int itensPorPagina) {
+        return ResponseEntity.ok(notificacaoService.buscaNotificacoesNaoVisualizadas(pagina, itensPorPagina, request));
+    }
+
+    @Operation(summary = "Marca como visualizada a notificação para o usuário logado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = SALVO_SUCESSO),
+            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),
+            @ApiResponse(responseCode = "403", description = FORBIDDEN_ERROR),
+            @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
+    })
+    @PostMapping(value = "/notificacao-visualizada/{notificacaoId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> cadastrarNotificacaoVisualizada(@PathVariable Long notificacaoId) {
+        notificacaoVisualizadaService.cadastrar(notificacaoId);
+        return ResponseEntity.status(201).body(SALVO_SUCESSO);
+    }
+
 }
