@@ -5,9 +5,11 @@ import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.payload.request.HistoricoAnotacaoConsideracaoTecnicaRequest;
 import com.vallengeo.cidadao.payload.request.ProcessoArquivarRequest;
 import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
+import com.vallengeo.cidadao.payload.response.TotalizadorProcessoResponse;
 import com.vallengeo.cidadao.payload.response.UltimoProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
+import com.vallengeo.cidadao.repository.projection.TotalizadorProcessoProjection;
 import com.vallengeo.cidadao.service.mapper.ProcessoMapper;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.Paginacao;
@@ -112,13 +114,17 @@ public class ProcessoService {
         validarEnvioDocumentosObrigatorios(processoId);
     }
 
+    public TotalizadorProcessoResponse buscarTotalizador(HttpServletRequest request) {
+       return montaTotalizador(repository.buscarTotalizadores(SecurityUtils.extractGrupoId(request)));
+    }
+
     public List<UltimoProcessoResponse> buscarUltimosProcessosCadastrados(int pagina, int itensPorPagina, HttpServletRequest request) {
         return montarUltimosProcessos(SecurityUtils.extractGrupoId(request),
                 montarPaginacaoPageRequest(new Paginacao.PaginacaoInput(pagina, itensPorPagina, "data_cadastro", "DESC"))
         );
     }
 
-     public List<UltimoProcessoResponse> buscarUltimosProcessosAlterados(int pagina, int itensPorPagina, HttpServletRequest request) {
+    public List<UltimoProcessoResponse> buscarUltimosProcessosAlterados(int pagina, int itensPorPagina, HttpServletRequest request) {
         return montarUltimosProcessos(SecurityUtils.extractGrupoId(request),
                 montarPaginacaoPageRequest(new Paginacao.PaginacaoInput(pagina, itensPorPagina, "data_alteracao", "DESC"))
         );
@@ -174,5 +180,14 @@ public class ProcessoService {
         });
 
         return ultimoProcessoResponseList;
+    }
+
+    private TotalizadorProcessoResponse montaTotalizador(TotalizadorProcessoProjection projection) {
+        return TotalizadorProcessoResponse.builder()
+                .total(projection.getTotal())
+                .novo(projection.getNovo())
+                .andamento(projection.getAndamento())
+                .finalizado(projection.getFinalizado())
+                .build();
     }
 }

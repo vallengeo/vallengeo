@@ -3,6 +3,7 @@ package com.vallengeo.cidadao.controller;
 import com.vallengeo.cidadao.payload.request.ProcessoArquivarRequest;
 import com.vallengeo.cidadao.payload.response.FichaImovelAnalistaResponse;
 import com.vallengeo.cidadao.payload.response.NotificacaoNaoVisualizadaResponse;
+import com.vallengeo.cidadao.payload.response.TotalizadorProcessoResponse;
 import com.vallengeo.cidadao.payload.response.UltimoProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.service.ImovelService;
@@ -67,6 +68,16 @@ public class AnalistaController {
     @GetMapping(value = "/imovel/ficha/{processoId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FichaImovelAnalistaResponse> fichaImovelAnalistaPeloProcessoId(@PathVariable UUID processoId) {
         return ResponseEntity.ok(imovelService.fichaImovelAnalista(processoId));
+    }
+
+    @Operation(summary = "Retorna os totalizadores de todos os processos cadastrados.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/processo/totalizadores", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<TotalizadorProcessoResponse> buscarTotalizador() {
+        return ResponseEntity.ok(processoService.buscarTotalizador(request));
     }
 
     @PreAuthorize("hasRole('HOME_ULTIMO_PROCESSO_VISUALIZAR')")
