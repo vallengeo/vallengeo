@@ -97,11 +97,9 @@ export function DataTable<TData, TValue>({
             <DropdownMenuContent side="left" align="center" className="border-none bg-transparent shadow-none">
               <Input
                 type="search"
-                placeholder="Pesquisar imóvel"
-                value={(table.getColumn("imoveis")?.getFilterValue() as string) ?? ""}
-                onChange={(event) =>
-                  table.getColumn("imoveis")?.setFilterValue(event.target.value)
-                }
+                placeholder="Pesquisar..."
+                value={table.getState().globalFilter ?? ''}
+                onChange={(event) => table.setGlobalFilter(event.target.value)}
                 className="max-w-sm"
               />
             </DropdownMenuContent>

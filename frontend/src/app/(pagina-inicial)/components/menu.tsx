@@ -50,7 +50,7 @@ export function Menu() {
             <li key={link.id}>
               <Link
                 href={`/dashboard/${link.href}`}
-                className={`group flex items-center gap-1 text-sm p-2 ${isActive ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : 'hover:bg-primary hover:text-primary-foreground hover:font-semibold'} rounded-lg`}
+                className={`group flex items-center gap-1 text-sm p-2 ${isActive ? 'bg-primary text-primary-foreground font-semibold pointer-events-none' : 'hover:text-primary hover:font-semibold'} rounded-lg`}
               >
                 {link.icon}
                 {link.titulo}

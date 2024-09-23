@@ -1,9 +1,9 @@
 'use client'
 
+import { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
-
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -13,11 +13,12 @@ import {
   FormLabel,
   FormMessage
 } from "@/components/ui/form"
+import { Button } from "@/components/ui/button";
 
 const recoveryPasswordUserFormSchema = z.object({
   code: z.string({ required_error: "Código não pode ser vazio" })
-    .length(6, {
-      message: 'O código deve ter 6 dígitos.'
+    .length(8, {
+      message: 'O código deve ter 8 dígitos.'
     })
     .refine(data => /^\d+$/.test(data), {
       message: 'O código deve conter apenas números.',
@@ -27,6 +28,7 @@ const recoveryPasswordUserFormSchema = z.object({
 type recoveryPasswordUserFormData = z.infer<typeof recoveryPasswordUserFormSchema>
 
 export function FormRecuperarSenha() {
+  const [btnReenviarCodigo, setBtnReenviarCodigo] = useState<boolean>(false);
   const form = useForm<recoveryPasswordUserFormData>({
     resolver: zodResolver(recoveryPasswordUserFormSchema)
   });
@@ -57,6 +59,14 @@ export function FormRecuperarSenha() {
               </FormItem>
             )}
           />
+        </div>
+
+        <div className="flex justify-between items-center mt-6 gap-2">
+            {btnReenviarCodigo && (
+              <Button variant="link">Reenviar código</Button>
+            )}
+
+            <Button variant="default" className="px-16 h-12 ml-auto">Enviar</Button>
         </div>
       </form>
     </Form>

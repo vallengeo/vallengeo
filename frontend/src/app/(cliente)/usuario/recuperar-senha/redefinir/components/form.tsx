@@ -19,10 +19,10 @@ import {
 const resetPasswordSchema = z.object({
   password: z.string({ required_error: "Senha é obrigatório" })
     .nonempty("Senha é obrigatório")
-    .min(6, "Mínimo 6 dígitos"),
+    .min(8, "Mínimo 8 dígitos"),
   confirm_password: z.string({ required_error: "Senha é obrigatório" })
     .nonempty("Senha é obrigatório")
-    .min(6, "Mínimo 6 dígitos")
+    .min(8, "Mínimo 8 dígitos")
 })
 .refine(({ password, confirm_password}) => password === confirm_password, {
   message: "A senha não corresponde",

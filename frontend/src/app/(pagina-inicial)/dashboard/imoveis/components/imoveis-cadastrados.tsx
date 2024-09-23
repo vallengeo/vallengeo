@@ -5,7 +5,7 @@ async function getData(): Promise<Imoveis[]> {
   return [
     {
       id: 1,
-      inscricao_imobiliaria: "1245678932659589-45",
+      inscricao_imobiliaria: "999",
       logradouro: "R. Antônio Delgado de Veiga",
       numero: "1234",
       bairro: "Centro",
@@ -16,7 +16,7 @@ async function getData(): Promise<Imoveis[]> {
     {
       id: 2,
       inscricao_imobiliaria: "1245678932659589-45",
-      logradouro: "R. Antônio Delgado de Veiga",
+      logradouro: "Jorge",
       numero: "1234",
       bairro: "Centro",
       cidade: "Taubaté",
@@ -29,7 +29,7 @@ async function getData(): Promise<Imoveis[]> {
       logradouro: "R. Antônio Delgado de Veiga",
       numero: "1234",
       bairro: "Centro",
-      cidade: "Taubaté",
+      cidade: "São Paulo",
       uf: "SP",
       situacao: "Em análise",
     },
