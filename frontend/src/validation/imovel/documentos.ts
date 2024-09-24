@@ -1,29 +1,23 @@
 import { z } from 'zod'
 
-const MAX_FILE_SIZE = 1024 * 1024 * 5; // 5 MB
-const ACCEPTED_MIME_TYPES = [
-  'application/octet-stream',
-  'image/vnd.dwg',
-  'application/vnd.google-earth.kml+xml',
-  'application/pdf'
-]
-// const ACCEPTED_MIME_TYPE_DOCUMENTOS = ['application/zip']
+const MAX_FILE_SIZE = 1024 * 1024 * 50; // 50 MB
+const ACCEPTED_MIME_TYPES = ['image/vnd.dwg', 'application/pdf'];
 
 export const documentosFormSchema = z.object({
   matricula: z
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => ACCEPTED_MIME_TYPES.includes(files?.[0]?.type),
-      'Formatos permitidos .shp, .dwg, .kml e .pdf.'
+      'Formatos permitidos .dwg e .pdf.'
     ),
   documento_proprietario: z
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -32,7 +26,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formatos permitido .pdf.'
@@ -41,7 +35,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -50,7 +44,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -59,7 +53,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -68,7 +62,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -77,7 +71,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -87,7 +81,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -97,7 +91,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -107,7 +101,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -117,7 +111,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
@@ -127,7 +121,7 @@ export const documentosFormSchema = z.object({
     .any()
     .refine((files) => {
       return files?.[0]?.size <= MAX_FILE_SIZE;
-    }, 'Tamanho permitido até 5MB.')
+    }, 'Tamanho permitido até 50MB.')
     .refine(
       (files) => 'application/pdf'.includes(files?.[0]?.type),
       'Formato permitido .pdf.'
