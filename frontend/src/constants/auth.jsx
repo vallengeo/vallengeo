@@ -1,4 +1,4 @@
-export const ACCESS_TOKEN = 'acessToken'
+export const ACCESS_TOKEN = 'accessToken'
 
 export const URL_OPENSTREET_LEAFLET =
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'

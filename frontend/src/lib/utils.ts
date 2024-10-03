@@ -39,3 +39,9 @@ const getPattern = (formato: string) => {
       throw new Error('Formato não suportado');
   }
 };
+
+export const cookies = () => {
+  // Obter cookies fora do diretorio app gera um erro
+  // see: https://github.com/vercel/next.js/issues/49757
+  return require('next/headers').cookies();
+};
