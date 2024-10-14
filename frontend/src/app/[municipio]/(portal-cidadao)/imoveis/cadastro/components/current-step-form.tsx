@@ -16,11 +16,11 @@ export function CurrentStepForm({ isPJ = false }: CurrentStepFormProps) {
   let currentForm;
 
   switch (step) {
-    case 2:
+    case 1:
       let formRepresentante = isPJ ? <CadastroRepresentantePJ/> : <CadastroRepresentantePF/>;
       currentForm = formRepresentante;
       break;
-    case 1:
+    case 2:
       currentForm = <CadastroImovel />;
       break;
     case 3:
