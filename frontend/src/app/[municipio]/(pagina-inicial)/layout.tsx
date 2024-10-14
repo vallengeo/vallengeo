@@ -14,7 +14,7 @@ export default function RootLayout({
   params: { municipio: string }
 }) {
   const pathname = usePathname()
-  const canShowSplashScreen = pathname === '/dashboard'
+  const canShowSplashScreen = pathname === `/${params.municipio}/dashboard`
   const [isLoading, setIsLoading] = useState<boolean>(canShowSplashScreen);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 

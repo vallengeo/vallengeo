@@ -10,8 +10,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Loader } from "@/components/loader"
-import { actionLogout, login } from '@/service/authService'
+import { login } from '@/service/authService'
 import IUserLogin from "@/interfaces/IUserLogin";
+import { useToast } from "@/components/ui/use-toast";
 
 interface IFormLogin {
   municipio: string
@@ -19,6 +20,7 @@ interface IFormLogin {
 
 export function FormLogin({ municipio }: IFormLogin) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { toast } = useToast();
   const router = useRouter();
 
   const form = useForm<loginFormData>({
@@ -35,15 +37,22 @@ export function FormLogin({ municipio }: IFormLogin) {
     const user: IUserLogin = {
       email: data.email,
       senha: data.password,
-      idGrupo: municipio
+      idGrupo: "4d3c1497-af40-4ddf-8b06-d8f40c8df139"
     };
 
     await login(user)
       .then(() => {
+        router.refresh();
         router.push(`/${municipio}/dashboard`);
       })
-      .catch(() => {
-        actionLogout();
+      .catch((error) => {
+        console.error(error);
+        toast({
+          variant: 'destructive',
+          description: error.toString(),
+        });
+
+        setIsLoading(false);
       });
   }
 

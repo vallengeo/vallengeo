@@ -15,5 +15,5 @@ export const actionLogout = async () => {
 };
 
 export const isAuthenticated = () => {
-  return !!cookies().get(ACCESS_TOKEN)?.value;
+  return !!cookies().get(ACCESS_TOKEN);
 }

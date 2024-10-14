@@ -8,7 +8,7 @@ export const loginFormSchema = z.object({
     }),
   password: z.string({ required_error: "Senha é obrigatório" })
     .nonempty("Senha é obrigatório")
-    .min(8, "Mínimo 8 dígitos")
+    .min(6, "Mínimo 6 dígitos")
 })
 
 export type loginFormData = z.infer<typeof loginFormSchema>

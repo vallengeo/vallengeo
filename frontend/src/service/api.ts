@@ -16,7 +16,7 @@ const Api = axios.create({
 
 Api.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    const token = Cookies.get(ACCESS_TOKEN)?.value;
+    const token = Cookies.get(ACCESS_TOKEN);
 
     if (config.headers === undefined) {
       config.headers = {}
@@ -49,7 +49,7 @@ Api.interceptors.response.use(
       (error.response.status === UNAUTHORIZED_STATUS_CODE ||
       error.response.status === FORBIDDEN_STATUS_CODE)
     ) {
-       actionLogout();
+      actionLogout();
     }
     return Promise.reject(error);
   }

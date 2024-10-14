@@ -1,22 +1,25 @@
 'use client'
 
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, useFieldArray } from "react-hook-form";
 import { useFormState } from "@/contexts/Imovel/FormContext";
 import { documentosFormData, documentosFormSchema } from "@/validation/imovel/documentos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
+import { tipoDocumento } from "@/service/documentoService";
+import ITipoDocumento from "@/interfaces/ITipoDocumento";
 
 export function CadastroDocumentos() {
+  const [documentos, setDocumentos] = useState<ITipoDocumento[]>([]);
   const { toast } = useToast()
 
   const { onHandleBack, formData, setFormData } = useFormState();
 
   const form = useForm<documentosFormData>({
     resolver: zodResolver(documentosFormSchema),
-    defaultValues: formData
   })
 
   const onSubmit: SubmitHandler<documentosFormData> = (data) => {
@@ -27,6 +30,15 @@ export function CadastroDocumentos() {
       description: 'Dados enviados com sucesso!',
     })
   }
+
+  useEffect(() => {
+    const documentos = async () => {
+      const response = await tipoDocumento();
+      setDocumentos(response.data);
+    };
+
+    documentos();
+  }, [])
 
   return (
     <Form {...form}>
@@ -40,529 +52,55 @@ export function CadastroDocumentos() {
             <p>Anexe os documentos no campo abaixo. Os arquivos aceitos são  shape, dwg, kml e PDF.</p>
           </div>
 
-          <div className="space-y-3">
-            <span className="font-bold block">Matrícula*</span>
-            <FormField
-              control={form.control}
-              name="matricula"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
+          {documentos && documentos.map(documento => {
+            const accept = documento.formatos.join(",");
 
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+            return (
+              <div key={documento.id} className="space-y-3">
+                <span className="font-bold block">
+                  {documento.titulo}{documento.obrigatorio && '*'}
+                </span>
 
-          <div className="space-y-3">
-            <span className="font-bold block">Documento de todos os proprietários*</span>
-            <FormField
-              control={form.control}
-              name="documento_proprietario"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado (RG, CPF ou CNH)</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
+                <FormField
+                  control={form.control}
+                  name="tipo_documento"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                        <div className="flex items-center justify-between w-full">
+                          {field.value?.[0].name ? (
+                            <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                          ) : (
+                            <>
+                              <span>nenhum documento informado</span>
+                              <Button asChild variant="secondary">
+                                <span>anexar arquivo</span>
+                              </Button>
+                            </>
+                          )}
+                        </div>
 
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="certidao_nascimento_proprietario"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado (Certidão de nascimento)</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="certidao_casamento_proprietario"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado (Certidão de casamento)</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="comprovante_residencia_proprietario"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado (Comprovante de residência)</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">Documento de solicitação de aprovação do habite-se*</span>
-            <FormField
-              control={form.control}
-              name="aprovacao_habitese"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">Habite-se do imóvel*</span>
-            <FormField
-              control={form.control}
-              name="habitese_imovel"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">Projeto arquitetonico</span>
-            <FormField
-              control={form.control}
-              name="projeto_arquitetonico"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">Procuração</span>
-            <FormField
-              control={form.control}
-              name="procuracao"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">Documentos responsável legal</span>
-            <FormField
-              control={form.control}
-              name="responsavel_legal"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">IPTU</span>
-            <FormField
-              control={form.control}
-              name="iptu"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">EIV (Estudo de impacto de vizinhança)</span>
-            <FormField
-              control={form.control}
-              name="eiv"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="space-y-3">
-            <span className="font-bold block">RIT (Relatório de impacto de trânsito)</span>
-            <FormField
-              control={form.control}
-              name="rit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                    <div className="flex items-center justify-between w-full">
-                      {field.value?.[0].name ? (
-                        <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
-                      ) : (
-                        <>
-                          <span>nenhum documento informado</span>
-                          <Button asChild variant="secondary">
-                            <span>anexar arquivo</span>
-                          </Button>
-                        </>
-                      )}
-                    </div>
-
-                    <FormControl>
-                      <Input
-                        type="file"
-                        accept=".pdf"
-                        name={field.name}
-                        onBlur={field.onBlur}
-                        onChange={(e) => {
-                          field.onChange(e.target.files);
-                        }}
-                        ref={field.ref}
-                        className="sr-only"
-                      />
-                    </FormControl>
-                  </FormLabel>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                        <FormControl>
+                          <Input
+                            type="file"
+                            accept={accept}
+                            name={field.name}
+                            onBlur={field.onBlur}
+                            onChange={(e) => {
+                              field.onChange(e.target.files);
+                            }}
+                            ref={field.ref}
+                            className="hidden"
+                          />
+                        </FormControl>
+                      </FormLabel>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )
+          })}
         </div>
 
         <div className="flex justify-between items-center flex-wrap gap-4 mt-6">

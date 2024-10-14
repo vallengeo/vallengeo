@@ -3,45 +3,19 @@
 import { useFormState } from "@/contexts/Imovel/FormContext";
 import { cn, consultarCep, formatarCampo } from "@/lib/utils";
 import { mapearEstados } from "@/validation/estados";
-import {
-  imovelFormData,
-  imovelFormSchema,
-  mapearGrupos,
-} from "@/validation/imovel/imovel";
-
+import { imovelFormData, imovelFormSchema, mapearGrupos } from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { format } from "date-fns"
-
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import {
-  CalendarIcon,
-  PenSquare as LucidePenSquare
-} from "lucide-react";
-
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import Mapa from "./mapa";
 
 export function CadastroImovel() {
   const { toast } = useToast()
@@ -104,7 +78,7 @@ export function CadastroImovel() {
         <fieldset className="bg-white border border-input rounded-2xl p-6">
           <h2 className="text-xl font-medium">Georeferenciamento</h2>
 
-          {/* TODO: Campo de upload da localidade */}
+          <Mapa />
         </fieldset>
 
         <fieldset className="bg-white border border-input rounded-2xl p-6">
