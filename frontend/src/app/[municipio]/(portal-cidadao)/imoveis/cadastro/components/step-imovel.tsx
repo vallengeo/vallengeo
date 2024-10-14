@@ -6,6 +6,7 @@ import { imovelFormData, imovelFormSchema, mapearGrupos } from "@/validation/imo
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { format } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -354,7 +355,7 @@ export function CadastroImovel() {
                             className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Selecione a data</span>}
+                            {field.value ? format(field.value, "PPP", { locale: ptBR }) : <span>Selecione a data</span>}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
