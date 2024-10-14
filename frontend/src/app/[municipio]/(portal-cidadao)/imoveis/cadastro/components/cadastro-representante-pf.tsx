@@ -18,6 +18,8 @@ export function CadastroRepresentantePF() {
     defaultValues: formData,
   })
 
+  const { formState: { isValid } } = form
+
   const onSubmit: SubmitHandler<dadosPessoaisData> = (data) => {
     console.log(data)
     setFormData((prev: any) => ({ ...prev, ...data }));
@@ -35,7 +37,7 @@ export function CadastroRepresentantePF() {
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button type="submit">Avançar</Button>
+          <Button type="submit" disabled={!isValid}>Avançar</Button>
         </div>
       </form>
     </Form>

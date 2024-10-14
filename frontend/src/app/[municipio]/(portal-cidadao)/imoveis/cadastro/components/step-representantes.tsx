@@ -7,8 +7,11 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip"
-import { X as LucideX, Info as LucideInfo } from "lucide-react";
+import { X as LucideX } from "lucide-react";
 import { Aviso } from "./aviso";
+import InputMask from "react-input-mask";
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function CadastroRepresentantes() {
   const { control, watch, formState: { errors } } = useFormContext<dadosPessoaisData>()
@@ -74,7 +77,13 @@ export function CadastroRepresentantes() {
                     <FormItem className="w-full md:w-1/5">
                       <FormLabel>CPF*</FormLabel>
                       <FormControl>
-                        <Input type="text" maxLength={14} {...field} />
+                        <InputMask
+                          mask="999.999.999-99"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        </InputMask>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -88,7 +97,13 @@ export function CadastroRepresentantes() {
                     <FormItem className="w-full md:w-1/5">
                       <FormLabel>RG*</FormLabel>
                       <FormControl>
-                        <Input type="text" maxLength={10} {...field} />
+                        <InputMask
+                          mask="99.999.999-9"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        </InputMask>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -102,7 +117,13 @@ export function CadastroRepresentantes() {
                     <FormItem className="w-full md:w-1/4">
                       <FormLabel>Telefone*</FormLabel>
                       <FormControl>
-                        <Input type="text" maxLength={15} {...field} />
+                        <InputMask
+                          mask="(99) 99999-9999"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        </InputMask>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -130,23 +151,15 @@ export function CadastroRepresentantes() {
                   name={`representantes.${index}.cep`}
                   render={({ field }) => (
                     <FormItem className="w-full md:w-1/5">
-                      <div className="flex items-center gap-1.5">
-                        <FormLabel className="leading-6">CEP*</FormLabel>
-                        <TooltipProvider delayDuration={200}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button type="button" variant="no-style" size="no-style">
-                                <LucideInfo size={16} />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Insira o CEP para preenchimento automático do endereço.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
+                      <FormLabel className="leading-6">CEP*</FormLabel>
                       <FormControl>
-                        <Input type="text" maxLength={9} {...field} />
+                        <InputMask
+                          mask="99999-999"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        </InputMask>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -176,7 +189,7 @@ export function CadastroRepresentantes() {
                     <FormItem className="w-full md:w-1/5">
                       <FormLabel>Número*</FormLabel>
                       <FormControl>
-                        <Input type="text" {...field} />
+                        <Input type="tel" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -340,7 +353,13 @@ export function CadastroRepresentantes() {
                         <FormItem>
                           <FormLabel>Telefone*</FormLabel>
                           <FormControl>
-                            <Input type="tel" {...field} />
+                            <InputMask
+                              mask="(99) 99999-9999"
+                              value={field.value}
+                              onChange={field.onChange}
+                            >
+                              {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                            </InputMask>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
