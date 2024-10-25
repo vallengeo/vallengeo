@@ -1,56 +1,35 @@
 "use client"
 
 import { useFormState } from "@/contexts/Imovel/FormContext";
-import { cn, consultarCep, formatarCampo } from "@/lib/utils";
 import { mapearEstados } from "@/validation/estados";
-import {
-  imovelFormData,
-  imovelFormSchema,
-  mapearGrupos,
-} from "@/validation/imovel/imovel";
-
+import { imovelFormData, imovelFormSchema, mapearGrupos } from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { format } from "date-fns"
-
+import { ptBR } from "date-fns/locale"
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from "@/components/ui/select";
-import {
-  CalendarIcon,
-  PenSquare as LucidePenSquare
-} from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
+import Mapa from "./mapa";
+import InputMask from "react-input-mask";
 
-import { useToast } from "@/components/ui/use-toast";
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function CadastroImovel() {
-  const { toast } = useToast()
   const { onHandleBack, onHandleNext, setFormData, formData } = useFormState();
 
   const form = useForm<imovelFormData>({
+    mode: 'all',
+    criteriaMode: 'all',
     resolver: zodResolver(imovelFormSchema),
     defaultValues: formData,
   })
+
+  const { formState: { isValid } } = form
 
   const onSubmit: SubmitHandler<imovelFormData> = (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
@@ -70,41 +49,13 @@ export function CadastroImovel() {
     </SelectItem>
   ))
 
-  const handleChangeCEP = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const rawValue = e.target.value
-    const formattedValue = formatarCampo(rawValue, 'CEP')
-    form.setValue('imovel_cep', formattedValue)
-
-    if (formattedValue.length === 9) {
-      try {
-        const response = await consultarCep(formattedValue)
-
-        if (response.erro) {
-          toast({
-            description: 'CEP não encontrado!',
-            variant: 'destructive'
-          })
-          return
-        }
-
-        form.setValue('imovel_endereco', response.logradouro)
-        form.setValue('imovel_complemento', response.complemento)
-        form.setValue('imovel_bairro', response.bairro)
-        form.setValue('imovel_cidade', response.localidade)
-        form.setValue('imovel_uf', response.uf)
-      } catch (error) {
-        console.error('Erro ao consultar CEP:', error)
-      }
-    }
-  }
-
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <fieldset className="bg-white border border-input rounded-2xl p-6">
           <h2 className="text-xl font-medium">Georeferenciamento</h2>
 
-          {/* TODO: Campo de upload da localidade */}
+          <Mapa />
         </fieldset>
 
         <fieldset className="bg-white border border-input rounded-2xl p-6">
@@ -114,10 +65,15 @@ export function CadastroImovel() {
               <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
             </div>
 
-            <button className="text-lg inline-flex items-center gap-2">
+            <Button
+              type="button"
+              variant="no-style"
+              size="no-style"
+              className="text-lg inline-flex items-center gap-2"
+            >
               <LucidePenSquare size={20} />
               Editar
-            </button>
+            </Button>
           </div>
 
           <div className="space-y-6 mt-6">
@@ -150,7 +106,13 @@ export function CadastroImovel() {
                   <FormItem className="w-full md:w-[30%]">
                     <FormLabel>CEP*</FormLabel>
                     <FormControl>
-                      <Input type="text" maxLength={8} {...field} onChange={handleChangeCEP} />
+                      <InputMask
+                        mask="99999-999"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                      </InputMask>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -261,10 +223,15 @@ export function CadastroImovel() {
               <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
             </div>
 
-            <button className="text-lg inline-flex items-center gap-2">
+            <Button
+              type="button"
+              variant="no-style"
+              size="no-style"
+              className="text-lg inline-flex items-center gap-2"
+            >
               <LucidePenSquare size={20} />
               Editar
-            </button>
+            </Button>
           </div>
 
           <div className="space-y-6 mt-6">
@@ -385,10 +352,10 @@ export function CadastroImovel() {
                         <FormControl>
                           <Button
                             variant={"outline"}
-                            className={cn("h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent")}
+                            className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP") : <span>Selecione a data</span>}
+                            {field.value ? format(field.value, "PPP", { locale: ptBR }) : <span>Selecione a data</span>}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -410,7 +377,7 @@ export function CadastroImovel() {
 
         <div className="flex justify-end items-center flex-wrap gap-4">
           <Button variant="secondary" onClick={onHandleBack}>Voltar</Button>
-          <Button type="submit">Avançar</Button>
+          <Button type="submit" disabled={!isValid}>Avançar</Button>
         </div>
       </form>
     </Form>
