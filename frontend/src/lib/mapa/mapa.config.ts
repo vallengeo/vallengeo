@@ -25,15 +25,16 @@ export const DEFAULT_CONFIG = {
     fullscreen: { enabled: true, position: "topright" },
     centralizar: { enabled: true, position: "bottomright" },
     escala: { enabled: true, position: "topright" },
+    medicao: { enabled: true, position: "topright" },
   },
 };
 
-export const BASE_LAYERS_CONFIG = {
+export const BASE_LAYERS_CONFIG: { [key: string]: L.TileLayer } = {
   "Satélite": L.tileLayer(
     `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}.png`,
     {
       attribution: 'Tiles &copy; <a href="http://www.esri.com/" target="_blank">Esri</a>',
-      maxZoom: 19
+      maxZoom: 17
     }
   ),
 
@@ -52,7 +53,7 @@ export const BASE_LAYERS_CONFIG = {
       id: "osm.streets"
     }
   ),
-  "Google-Map": L.tileLayer(
+  "Google Map": L.tileLayer(
     "https://mt1.google.com/vt/lyrs=r&x={x}&y={y}&z={z}",
     {
       minZoom: 2,
@@ -60,7 +61,7 @@ export const BASE_LAYERS_CONFIG = {
       id: "google.street"
     }
   ),
-  "Google-Satellite": L.tileLayer(
+  "Google Satélite": L.tileLayer(
     "https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
     {
       minZoom: 2,
@@ -68,7 +69,7 @@ export const BASE_LAYERS_CONFIG = {
       id: "google.satellite"
     }
   ),
-  "Google-Hybrid": L.tileLayer(
+  "Google Hibrído": L.tileLayer(
     "https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
     {
       minZoom: 2,

@@ -9,6 +9,7 @@ import { Notificacoes } from "./components/notificacoes";
 import { Welcome } from "./components/welcome";
 import { ResumoImoveis } from "./components/resumo-imoveis";
 import type { Metadata } from 'next'
+import { Mapa } from './components/mapa/mapa-cidade'
 
 export const metadata: Metadata = {
   title: 'Página Inicial - VallenGeo',
@@ -43,6 +44,7 @@ export default function HomePage({
 
         <div className="bg-white border border-input rounded-3xl p-4">
           <h2 className="text-xl font-medium mb-6">Mapa da Cidade</h2>
+          <Mapa/>
         </div>
 
         <div>
