@@ -1,0 +1,203 @@
+.map {
+  width: auto;
+  height: 80vh;
+  cursor: default;
+  position: relative;
+  min-height: 600px;
+}
+
+.leaflet-top.leaflet-right {
+  top: 50px !important;
+}
+
+.leaflet-top .leaflet-control {
+  margin-top: 5px !important;
+}
+
+#pesquisar-button,
+#zoom-center,
+#camadas-button,
+#ferramentas-button,
+#imprimir-button,
+#zoom-in,
+#zoom-out,
+#zoom-level {
+  background-color: white;
+  border-radius: 8%;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+}
+
+#zoom-center {
+  content: url("../mapa/icons/icon-locate.svg");
+}
+
+#imprimir-button {
+  content: url("../mapa/icons/icon-printer.svg");
+}
+
+#camadas-button {
+  content: url("../mapa/icons/icon-layers.svg");
+}
+
+#camadas-button.actived {
+  background-color: #70c64d;
+  content: url("../mapa/icons/icon-layers-outline.svg");
+}
+
+#pesquisar-button:hover,
+#zoom-center:hover,
+#camadas-button,
+#ferramentas-button:hover #imprimir-button:hover {
+  background-color: #f4f4f4;
+}
+
+#ferramentas-button {
+  content: url("../mapa/icons/icon-gear.svg");
+}
+
+#ferramentas-button.actived {
+  background-color: #70c64d;
+  content: url("../mapa/icons/icon-gear-outline.svg");
+}
+
+.pesquisar-container {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  font-size: 15px;
+  line-height: 20px;
+  width: 300px;
+  border-radius: 4px;
+  background-color: #ffffff;
+  padding-right: 5px;
+
+  :focus-visible {
+    border: none;
+    outline: none;
+  }
+
+  svg {
+    margin-left: 10px;
+  }
+
+  input {
+    font: inherit;
+    width: 100%;
+    border: 0;
+    background-color: transparent;
+    margin: 0;
+    color: #404040;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    height: 36px;
+    padding: 6px 35px 6px 10px;
+  }
+}
+
+/* ================================================================== */
+/* Card tools
+/* ================================================================== */
+
+.card-tools {
+  position: absolute;
+  top: 55px;
+  right: 10px;
+  width: 260px;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+  padding: 0 20px;
+  z-index: 1000;
+}
+.card-tools.open {
+  padding: 10px;
+
+  .titulo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 43px;
+    border-radius: 16px 16px 0px 0px;
+    background-color: #fcfcfc;
+
+    .text-title {
+      color: #000;
+      text-align: center;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+    }
+  }
+
+  .camada-content {
+    max-height: 80vh;
+  }
+}
+
+/* ================================================================== */
+/* Legenda
+/* ================================================================== */
+
+.leaflet-legend {
+  position: relative;
+  z-index: 1000;
+  margin: 0 0 10px 10px;
+  border-radius: 4px;
+}
+
+/* ================================================================== */
+/* Imprimir
+/* ================================================================== */
+@media all {
+  .page-break {
+    display: none;
+  }
+}
+
+@media print {
+  html,
+  body {
+    height: initial !important;
+    overflow: initial !important;
+  }
+
+  .page-break {
+    margin-top: 1rem;
+    display: block;
+    page-break-before: auto;
+  }
+
+  @page {
+    size: A4 landscape;
+    margin: 5mm;
+  }
+
+  .map {
+    border-radius: 0;
+  }
+
+  .leaflet-legend {
+    display: block;
+    bottom: 10px;
+  }
+
+  .leaflet-control-coordinates,
+  .pesquisar-container,
+  .card-tools,
+  .leaflet-top.leaflet-right {
+    display: none !important;
+  }
+}

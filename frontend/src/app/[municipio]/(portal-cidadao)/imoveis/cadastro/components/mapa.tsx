@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import L, { FeatureGroup, Map } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 import 'leaflet/dist/leaflet.css';
-import '@/lib/mapa/L.Control.Zoominfo.css'
+import '@/lib/mapa/Control.Zoominfo.css'
 import UploadBox from './uploadBox';
 import IIntersectGeo from '@/interfaces/IIntersectGeo';
 import IErrorUpload from '@/interfaces/IErrorUpload';
@@ -16,7 +16,7 @@ import {
 } from '@/lib/mapa/mapa.config'
 
 // Importe o controle de coordenadas
-import { CoordinatesControl } from '@/lib/mapa/L.Control.Zoominfo'
+import { CoordinatesControl } from '@/lib/mapa/Control.Zoominfo'
 
 type Props = IProps
 
