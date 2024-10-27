@@ -28,10 +28,7 @@ export function CadastroRepresentantePF() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
           <CadastroRepresentantes />
         </div>

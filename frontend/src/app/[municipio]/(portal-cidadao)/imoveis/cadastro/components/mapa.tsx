@@ -16,7 +16,7 @@ import {
 } from '@/lib/mapa/mapa.config'
 
 // Importe o controle de coordenadas
-import { CoordinatesControl } from '@/lib/mapa/Control.Zoominfo'
+// import { CoordinatesControl } from '@/lib/mapa/Control.Zoominfo'
 
 type Props = IProps
 

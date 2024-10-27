@@ -1,14 +1,7 @@
 import { Metadata } from "next";
 import { Header } from "@/components/header";
 import { CurrentStepForm } from "../components/current-step-form";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbSeparator,
-  BreadcrumbList,
-  BreadcrumbPage
-} from "@/components/ui/breadcrumb"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 
 export const metada: Metadata = {
   title: 'Cadastro de imóvel',
@@ -24,7 +17,7 @@ export default function CadastroImovelPJPage({
       <div className="flex items-center justify-between">
         <Header
           title="Cadastro de imóvel"
-          linkBack="/imoveis/cadastro"
+          linkBack={`/${params.municipio}/imoveis/cadastro`}
         >
           <Breadcrumb>
             <BreadcrumbList>

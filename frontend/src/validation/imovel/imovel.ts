@@ -21,19 +21,19 @@ export const imovelFormSchema = z.object({
   grupo: z.enum(grupos, {
       errorMap: () => ({ message: "Tipo do grupo é obrigatório" })
     }),
-  imovel_cep: z
+  cep: z
     .string({ required_error: "CEP é obrigatório" }),
-  imovel_endereco: z
+  endereco: z
     .string({ required_error: "Endereço é obrigatório" }),
-  imovel_numero: z
+  numero: z
     .string({ required_error: "Número é obrigatório" }),
-  imovel_complemento: z
+  complemento: z
     .string().optional(),
-  imovel_bairro: z
+  bairro: z
     .string({ required_error: "Bairro é obrigatório" }),
-  imovel_cidade: z
+  cidade: z
     .string({ required_error: "Cidade é obrigatório" }),
-  imovel_uf: z
+  uf: z
     .enum(estados, {
       errorMap: () => ({ message: "Estado é obrigatório" })
     }),
