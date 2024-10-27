@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import L, { FeatureGroup, Map } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 import 'leaflet/dist/leaflet.css';
-import '@/lib/mapa/Control.Zoominfo.css'
+import '@/lib/mapa/leaflet-zoominfo/Control.Zoominfo'
 import UploadBox from './uploadBox';
 import IIntersectGeo from '@/interfaces/IIntersectGeo';
 import IErrorUpload from '@/interfaces/IErrorUpload';
