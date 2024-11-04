@@ -3,6 +3,7 @@
 # ===============================
 server:
   port: ${API_PORT}
+  url: http://localhost:${API_PORT}
 
 spring:
   config:

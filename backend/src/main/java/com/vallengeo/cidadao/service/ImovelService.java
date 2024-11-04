@@ -2,45 +2,48 @@ package com.vallengeo.cidadao.service;
 
 import com.vallengeo.cidadao.model.*;
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
+import com.vallengeo.cidadao.payload.response.FichaImovelAnalistaResponse;
 import com.vallengeo.cidadao.payload.response.FichaImovelResponse;
+import com.vallengeo.cidadao.payload.response.ProcessoListagemSimplificadoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.ImovelResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.RepresentanteResponse;
 import com.vallengeo.cidadao.repository.ImovelRepository;
-import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.repository.RelProcessoSituacaoProcessoRepository;
 import com.vallengeo.cidadao.service.mapper.ImovelMapper;
 import com.vallengeo.cidadao.service.mapper.RepresentanteMapper;
-import com.vallengeo.core.exceptions.custom.BadRequestException;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
+import com.vallengeo.core.util.Paginacao;
+import com.vallengeo.core.util.SecurityUtils;
+import com.vallengeo.global.payload.request.wkhtml.ParamsHtmlRequest;
+import com.vallengeo.global.payload.request.wkhtml.ParamsRequest;
+import com.vallengeo.global.service.WkhtmlService;
 import com.vallengeo.portal.service.PessoaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.geotools.geojson.geom.GeometryJSON;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
-import org.thymeleaf.ITemplateEngine;
-import org.thymeleaf.context.Context;
+import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import static com.vallengeo.core.config.Config.APPLICATION_DEFINITIVE_UPLOAD;
 import static com.vallengeo.core.util.Constants.NOT_FOUND;
+import static com.vallengeo.core.util.Paginacao.montarPaginacaoPageRequest;
+import static com.vallengeo.core.util.SecurityUtils.getJwtToken;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ImovelService {
+    @Value("${server.url}")
+    private String SERVER_URL;
     private final ImovelRepository repository;
-    private final ProcessoRepository processoRepository;
     private final RelProcessoSituacaoProcessoRepository relProcessoSituacaoProcessoRepository;
     private final ProcessoService processoService;
     private final RepresentanteService representanteService;
@@ -48,7 +51,36 @@ public class ImovelService {
     private final CaracterizacaoImovelService caracterizacaoImovelService;
     private final PessoaService pessoaService;
     private final DocumentoService documentoService;
-    private final ITemplateEngine templateEngine;
+    private final HistoricoAnotacaoConsideracaoTecnicaService historicoAnotacaoConsideracaoTecnicaService;
+    private final WkhtmlService wkhtmlService;
+    private final NotificacaoService notificacaoService;
+
+    public Paginacao.PaginacaoOutput<ProcessoListagemSimplificadoResponse> buscarTodosCadastrados(String pesquisa, Paginacao.PaginacaoInput paginacaoInput, HttpServletRequest request) {
+        identificarOrdenacaoPaginacao(paginacaoInput);
+        Page<Imovel> page = repository.findAllByGrupoId(SecurityUtils.extractGrupoId(request), pesquisa, montarPaginacaoPageRequest(paginacaoInput));
+
+        List<ProcessoListagemSimplificadoResponse> processos = new ArrayList<>();
+
+        page.getContent().forEach(imovel -> {
+            ImovelResponse imovelResponse = ImovelMapper.INSTANCE.toResponse(imovel);
+
+            processos.add(
+                    new ProcessoListagemSimplificadoResponse(
+                            FichaImovelResponse.builder()
+                                    .id(imovel.getId())
+                                    .inscricaoImobiliaria(imovel.getInscricaoImobiliaria())
+                                    .informacaoImovel(imovelResponse.getInformacaoImovel())
+                                    .caracterizacaoImovel(imovelResponse.getCaracterizacaoImovel())
+                                    .geometria(imovelResponse.getGeometria())
+                                    .processo(montaFichaProcesso(imovel.getProcesso().getId()))
+                                    .representantes(montaRepresentantesPeloImovel(imovel))
+                                    .build()
+                    )
+            );
+        });
+
+        return new Paginacao.PaginacaoOutput<>(processos, page);
+    }
 
     @Transactional
     public ProcessoResponse cadastrar(ProcessoImovelRequest input) {
@@ -67,13 +99,34 @@ public class ImovelService {
                 .caracterizacaoImovel(caracterizacaoImovel)
                 .inscricaoImobiliaria(montaInscricaoImobiliaria(caracterizacaoImovel))
                 .build());
+
+        notificacaoService.cadastrar(imovel.getId());
+
+        return new ProcessoResponse(processo.getId(), processo.getProtocolo(), ImovelMapper.INSTANCE.toResponse(imovel));
+    }
+
+    @Transactional
+    public ProcessoResponse editar(UUID processoId, ProcessoImovelRequest input) {
+        Processo processo = processoService.editar(processoId, input.idGrupo());
+        Imovel imovel = buscarImovelPeloProcessoId(processoId);
+
+        List<Representante> representantes = representanteService.cadastrar(input.imovel().getRepresentantes());
+        InformacaoImovel informacaoImovel = informacaoImovelService.cadastrar(input.imovel().getInformacaoImovel());
+        CaracterizacaoImovel caracterizacaoImovel = caracterizacaoImovelService.cadastrar(input.imovel().getCaracterizacaoImovel());
+
+        imovel.setGeometria(input.imovel().getGeorreferenciamento().getGeometria());
+        imovel.setRepresentantes(representantes);
+        imovel.setInformacaoImovel(informacaoImovel);
+        imovel.setCaracterizacaoImovel(caracterizacaoImovel);
+        imovel.setInscricaoImobiliaria(montaInscricaoImobiliaria(caracterizacaoImovel));
+
+        notificacaoService.cadastrar(imovel.getId());
+
         return new ProcessoResponse(processo.getId(), processo.getProtocolo(), ImovelMapper.INSTANCE.toResponse(imovel));
     }
 
     public FichaImovelResponse fichaImovel(UUID processoId) {
-        Imovel imovel = repository.findByProcessoId(processoId).orElseThrow(
-                () -> new ValidatorException("Imóvel vinculado ao processo " + processoId + NOT_FOUND, HttpStatus.NOT_FOUND)
-        );
+        Imovel imovel = buscarImovelPeloProcessoId(processoId);
 
         ImovelResponse imovelResponse = ImovelMapper.INSTANCE.toResponse(imovel);
 
@@ -89,52 +142,60 @@ public class ImovelService {
                 .build();
     }
 
-    public ByteArrayResource fichaImovelImprimir(UUID processoId) {
-        String outputFile = APPLICATION_DEFINITIVE_UPLOAD + File.separator + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")) + File.separator + processoId + ".pdf";
-        File file = new File(outputFile);
-        try {
-            //   if (!file.exists()) {
-            String html = parseThymeleafTemplate(processoId);
+    public FichaImovelAnalistaResponse fichaImovelAnalista(UUID processoId) {
+        Imovel imovel = buscarImovelPeloProcessoId(processoId);
 
-            final var definitivePath = new File(APPLICATION_DEFINITIVE_UPLOAD + File.separator + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
-            log.info("Definitive Path {}", definitivePath);
-            if (!definitivePath.exists() && definitivePath.mkdir()) {
-                log.info("Create Definitive Path");
-            }
-            OutputStream outputStream = new FileOutputStream(outputFile);
+        ImovelResponse imovelResponse = ImovelMapper.INSTANCE.toResponse(imovel);
 
-//            ITextRenderer renderer = new ITextRenderer();
-//            renderer.setDocumentFromString(html);
-//            renderer.layout();
-//            renderer.createPDF(outputStream);
+        return FichaImovelAnalistaResponse.builder()
+                .id(imovel.getId())
+                .inscricaoImobiliaria(imovel.getInscricaoImobiliaria())
+                .informacaoImovel(imovelResponse.getInformacaoImovel())
+                .caracterizacaoImovel(imovelResponse.getCaracterizacaoImovel())
+                .geometria(imovelResponse.getGeometria())
+                .processo(montaFichaProcesso(processoId))
+                .representantes(montaRepresentantesPeloImovel(imovel))
+                .documentosEnviados(documentoService.buscarDocumentoEnviadoPeloProcesso(processoId))
+                .historicos(historicoAnotacaoConsideracaoTecnicaService.historicoPorProcessoId(processoId))
+                .build();
 
-            outputStream.close();
-
-            //   }
-            return new ByteArrayResource(Files.readAllBytes(Path.of(outputFile)));
-        } catch (IOException e) {
-            throw new BadRequestException(e.getMessage());
-        }
     }
 
-    private String parseThymeleafTemplate(UUID processoId) throws IOException {
-        Locale local = new Locale("pt", "BR");
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd 'de' MMMM 'de' yyyy", local);
+    public ByteArrayResource fichaImovelImprimir(UUID processoId, HttpServletRequest request) {
+        ParamsRequest data = prepararParametrosPDF(processoId, request);
+        byte[] pdfBytes = wkhtmlService.pdf(data);
 
-        InputStream inputStream = new ClassPathResource("static/images/logo_vallengeo.png").getInputStream();
-        byte[] bytes = StreamUtils.copyToByteArray(inputStream);
-        String logoPlataforma = "data:image/png;base64," + Base64.getEncoder()
-                .encodeToString(bytes);
-//        Processo processo = processoRepository.findById(processoId).orElseThrow(
-//                () -> new ValidatorException("Processo " + processoId + NOT_FOUND, HttpStatus.NOT_FOUND));
+        return new ByteArrayResource(pdfBytes);
+    }
 
-        // CONTEXT
+    public ModelAndView fichaImovelModelAndView(UUID processoId) {
+        FichaImovelResponse ficha = fichaImovel(processoId);
 
-        Context context = new Context();
-       context.setVariable("basePath", "/css");
-        context.setVariable("logo_plataforma", logoPlataforma);
-        return templateEngine.process("ficha/main.html", context);
+        ModelAndView modelAndView = new ModelAndView();
 
+        /* visao geral */
+        modelAndView.addObject("protocolo", ficha.getProcesso().getProtocolo());
+        modelAndView.addObject("inscricaoImobiliaria", ficha.getInscricaoImobiliaria());
+        modelAndView.addObject("ultimaAtualizacao", ficha.getProcesso().getUltimaAtualizacaoFormatada());
+        modelAndView.addObject("situacao", ficha.getProcesso().getSituacao());
+
+        /* geometria */
+        modelAndView.addObject("geometria", new GeometryJSON(15).toString(ficha.getGeometria()));
+
+        /* representantes */
+        modelAndView.addObject("representantes", ficha.getRepresentantes());
+
+        /* caracterização */
+        modelAndView.addObject("caracterizacaoImovel", ficha.getCaracterizacaoImovel());
+
+        modelAndView.setViewName("ficha/main");
+        return modelAndView;
+    }
+
+    private Imovel buscarImovelPeloProcessoId(UUID processoId) {
+        return repository.findByProcessoId(processoId).orElseThrow(
+                () -> new ValidatorException("Imóvel vinculado ao processo " + processoId + NOT_FOUND, HttpStatus.NOT_FOUND)
+        );
     }
 
     private String montaInscricaoImobiliaria(CaracterizacaoImovel caracterizacaoImovel) {
@@ -171,5 +232,67 @@ public class ImovelService {
         }));
 
         return response;
+    }
+
+    private ParamsRequest prepararParametrosPDF(UUID processoId, HttpServletRequest request) {
+        String header = getHtmlHeader();
+        String headerDir = "/tmp/header";
+        String headerPath = headerDir + "/titulo.html";
+
+        ParamsHtmlRequest paramsHtmlDTOHeader = ParamsHtmlRequest.builder()
+                .html(header)
+                .path(headerDir)
+                .type("/titulo.html")
+                .build();
+
+        wkhtmlService.saveHtml(paramsHtmlDTOHeader);
+
+        LinkedHashMap<String, Object> options = new LinkedHashMap<>();
+        options.put("--custom-header", "Authorization Bearer " + getJwtToken(request));
+        options.put("--orientation", "Portrait");
+        options.put("--footer-spacing", 10);
+        options.put("--header-html", headerPath);
+        options.put("--cache-dir", "/tmp/");
+        options.put("--run-script", "window.setInterval(function(){finalizarPdf();},70000);");
+
+        ParamsRequest params = new ParamsRequest();
+        params.setUrl(SERVER_URL + "/ficha-imobiliaria-html?id=" + processoId);
+        params.setOptions(options);
+
+        return params;
+
+    }
+
+    private String getHtmlHeader() {
+        return "<!DOCTYPE html>" +
+               "<html lang=\"en\">" +
+               "<head>" +
+               "    <meta charset=\"UTF-8\">" +
+               "    <title>Title</title>" +
+               "  <style>\n" +
+               "    .header {" +
+               "      width: 100%;" +
+               "      height: 40px;" +
+               "    }" +
+               "  </style>" +
+               "</head>" +
+               "<body>" +
+               "  <div class=\"header\">" +
+               "  </div>" +
+               "</body>" +
+               "</html>";
+    }
+
+    private static void identificarOrdenacaoPaginacao(Paginacao.PaginacaoInput paginacaoInput) {
+        String ordenacao = paginacaoInput.getOrdernarPor();
+        if (Objects.isNull(ordenacao)) {
+            paginacaoInput.setOrdernarPor("p.data_cadastro");
+            return;
+        }
+
+        if (ordenacao.equalsIgnoreCase("data_cadastro")) {
+            paginacaoInput.setOrdernarPor("p.data_cadastro");
+        }
+
     }
 }

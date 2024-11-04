@@ -12,7 +12,7 @@ public enum SituacaoProcessoEnum implements EnumConverter<Long> {
     EM_ANALISE(5L),
     APROVADO(6L),
     REPROVADO(7L),
-    CANCELADO(8L);
+    ARQUIVADO(8L);
 
     private final Long codigo;
 

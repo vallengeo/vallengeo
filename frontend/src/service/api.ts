@@ -5,6 +5,7 @@ import {
   UNAUTHORIZED_STATUS_CODE
 } from '@/constants/auth';
 import { actionLogout } from './authService';
+import Cookies from 'js-cookie'
 
 const Api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/`,
@@ -15,7 +16,7 @@ const Api = axios.create({
 
 Api.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    const token = localStorage.getItem(ACCESS_TOKEN)
+    const token = Cookies.get(ACCESS_TOKEN);
 
     if (config.headers === undefined) {
       config.headers = {}
@@ -48,14 +49,14 @@ Api.interceptors.response.use(
       (error.response.status === UNAUTHORIZED_STATUS_CODE ||
       error.response.status === FORBIDDEN_STATUS_CODE)
     ) {
-       actionLogout();
+      actionLogout();
     }
     return Promise.reject(error);
   }
 );
 
 const setRefreshToken = async (token: string) => {
-  localStorage.setItem(ACCESS_TOKEN, token);
+  Cookies.set(ACCESS_TOKEN, token);
 };
 
 export default Api;

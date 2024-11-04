@@ -24,7 +24,7 @@ import java.util.Objects;
 @Slf4j
 @Component
 public class WkhtmlService {
-public byte[] pdf(@RequestBody ParamsRequest paramsDTO) {
+    public byte[] pdf(@RequestBody ParamsRequest paramsDTO) {
         Pdf pdf = new Pdf();
         if (Objects.nonNull(paramsDTO.getHtml())) {
             addPdfFromString(paramsDTO, pdf);
@@ -96,7 +96,7 @@ public byte[] pdf(@RequestBody ParamsRequest paramsDTO) {
         }
     }
 
-    public ResponseEntity<String> save(@RequestBody ParamsHtmlRequest paramsHtmlDTO) {
+    public void saveHtml(@RequestBody ParamsHtmlRequest paramsHtmlDTO) {
         String text = paramsHtmlDTO.getHtml();
         BufferedWriter output = null;
         try {
@@ -118,7 +118,6 @@ public byte[] pdf(@RequestBody ParamsRequest paramsDTO) {
                 }
             }
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     public ResponseEntity<String> clean(@RequestBody ParamsHtmlRequest paramsHtmlDTO) {

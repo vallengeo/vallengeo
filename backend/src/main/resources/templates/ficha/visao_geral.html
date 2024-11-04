@@ -3,33 +3,38 @@
 <header th:fragment="visao-geral" class="visao-geral">
     <div class="card">
         <h2>Visão Geral</h2>
-        <div class="row">
-            <div class="col">
-                <h4>Número de protocolo</h4>
-                <p th:if="${protocolo != null}" th:text="${protocolo}"></p>
-                <p th:if="${protocolo == null}">-</p>
-            </div>
 
-            <div class="col">
-                <h4>Inscrição imobiliária</h4>
-                <p th:if="${inscricaoImobiliaria != null}" th:text="${inscricaoImobiliaria}"></p>
-                <p th:if="${inscricaoImobiliaria == null}">-</p>
-            </div>
+        <table class="tabela-visao-geral">
+            <tr>
+                <td>
+                    <h4>Número de protocolo</h4>
+                    <p th:if="${protocolo != null}" th:text="${protocolo}"></p>
+                    <p th:if="${protocolo == null}">-</p>
+                </td>
+                <td>
+                    <h4>Inscrição imobiliária</h4>
+                    <p th:if="${inscricaoImobiliaria != null}" th:text="${inscricaoImobiliaria}"></p>
+                    <p th:if="${inscricaoImobiliaria == null}">-</p>
+                </td>
 
-            <div class="col">
-                <h4>Última atualização</h4>
-                <p th:if="${ultimaAtualizacao != null}" th:text="${ultimaAtualizacao}"></p>
-                <p th:if="${ultimaAtualizacao == null}">-</p>
-            </div>
+                <td>
+                    <h4>Última atualização</h4>
+                    <p th:if="${ultimaAtualizacao != null}" th:text="${ultimaAtualizacao}"></p>
+                    <p th:if="${ultimaAtualizacao == null}">-</p>
+                </td>
+                <td>
+                    <div class="col" style="text-align: center;">
+                        <h4>Situação</h4>
+                        <div class="button">
+                            <p th:if="${situacao != null}" th:text="${situacao}"></p>
+                            <p th:if="${situacao == null}">-</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
 
-            <div class="col" style="align-items: center">
-                <h4>Situação</h4>
-                <div class="button">
-                    <p th:if="${situacao != null}" th:text="${situacao}"></p>
-                    <p th:if="${situacao == null}">-</p>
-                </div>
-            </div>
-        </div>
+        </table>
+
     </div>
 </header>
 </html>
