@@ -4,7 +4,6 @@ import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.cidadao.enumeration.SituacaoProcessoEnum;
 import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.model.RelGrupoTipoDocumento;
-import com.vallengeo.cidadao.payload.request.ProcessoDocumentoRequest;
 import com.vallengeo.cidadao.repository.DocumentoRepository;
 import com.vallengeo.cidadao.repository.RelGrupoTipoDocumentoRepository;
 import com.vallengeo.cidadao.repository.RelProcessoSituacaoProcessoRepository;
@@ -18,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,25 +71,20 @@ class ProcessoServiceTest extends AbstractIntegrationTest {
     @Test @Order(3)
     @DisplayName("Integration Test - Dado idProcesso Nao Cadastrado Quando validacaoPosCadastrarDocumento() Deve Lancar ValidatorException")
     void testDadoIdProcessoNaoCadastrado_QuandoValidacaoPosCadastrarDocumento_DeveLancarValidatorException() {
-        var request = new ProcessoDocumentoRequest();
-        request.setIdProcesso(UUID.randomUUID().toString());
+        var idProcesso = UUID.randomUUID();
 
         var actual = assertThrows(
                 ValidatorException.class,
-                () -> processoService.validacaoPosCadastrarDocumento(request));
+                () -> processoService.validacaoPosCadastrarDocumento(idProcesso));
 
         assertEquals(HttpStatus.NOT_FOUND, actual.getStatus());
-        assertEquals(String.format("Processo %s não encontrado!", request.getIdProcesso()), actual.getMessage());
+        assertEquals(String.format("Processo %s não encontrado!", idProcesso), actual.getMessage());
     }
 
     @Test @Order(4)
     @DisplayName("Integration Test - Dado Documentos Obrigatorios Nao Cadastrados Quando validacaoPosCadastrarDocumento() Deve Retornar Void")
     void testDadoDocumentosObrigatoriosNaoCadastrados_QuandoValidacaoPosCadastrarDocumento_DeveAlterStatus() {
-        var request = new ProcessoDocumentoRequest();
-        request.setIdProcesso(processoCadastrado.getId().toString());
-        request.setDocumentos(new ArrayList<>());
-
-        processoService.validacaoPosCadastrarDocumento(request);
+        processoService.validacaoPosCadastrarDocumento(processoCadastrado.getId());
         var actual = processoSituacaoProcessoRepository
                 .findAllByProcessoIdAndAtivoIsTrue(processoCadastrado.getId()).stream().findFirst().orElse(null);
 
@@ -110,11 +103,7 @@ class ProcessoServiceTest extends AbstractIntegrationTest {
                     .getDocumentoByTipoDocumento(processoCadastrado, relGrupoTipoDocumento.getTipoDocumento()));
         }
 
-        var request = new ProcessoDocumentoRequest();
-        request.setIdProcesso(processoCadastrado.getId().toString());
-        request.setDocumentos(new ArrayList<>());
-
-        processoService.validacaoPosCadastrarDocumento(request);
+        processoService.validacaoPosCadastrarDocumento(processoCadastrado.getId());
         var actual = processoSituacaoProcessoRepository
                 .findAllByProcessoIdAndAtivoIsTrue(processoCadastrado.getId()).stream().findFirst().orElse(null);
 

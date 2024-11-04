@@ -54,10 +54,9 @@ public class DocumentoTestUtils {
     public static ProcessoDocumentoRequest getProcessoDocumentoRequest(
             List<DocumentoTemporarioRequest> documentos, String idProcesso
     ) {
-        var request = new ProcessoDocumentoRequest();
-        request.setDocumentos(documentos);
-        request.setIdProcesso(idProcesso);
-
-        return request;
+        return ProcessoDocumentoRequest.builder()
+                .idProcesso(idProcesso)
+                .documentos(documentos)
+                .build();
     }
 }

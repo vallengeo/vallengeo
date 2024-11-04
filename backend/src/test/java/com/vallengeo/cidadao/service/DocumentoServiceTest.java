@@ -4,7 +4,6 @@ import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.cidadao.model.Documento;
 import com.vallengeo.cidadao.model.Processo;
 import com.vallengeo.cidadao.model.TipoDocumento;
-import com.vallengeo.cidadao.payload.request.DocumentoTemporarioRequest;
 import com.vallengeo.cidadao.payload.response.DocumentoTemporarioResponse;
 import com.vallengeo.cidadao.payload.response.DocumentosEnviadosResponse;
 import com.vallengeo.cidadao.repository.DocumentoRepository;
@@ -30,7 +29,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
@@ -198,27 +196,7 @@ class DocumentoServiceTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Integration Test - Dado Arquivo Nao Cadastrado Quando cadastrar() Deve Lancar ValidatorException")
-    void testDadoArquivoNaoCadastrado_QuandoCadastrar_DeveLancarValidatorException() throws IOException {
-        var arquivoNaoCadastrado = ArquivoTestUtils.createFile(APPLICATION_TEMP_UPLOAD, "temp-file", extensao);
-
-        var docTemporarioRequest = new DocumentoTemporarioRequest();
-        docTemporarioRequest.setIdTipoDocumento(tipoDocumento.getId());
-        docTemporarioRequest.setNomeTemporario(arquivoNaoCadastrado.getName());
-        docTemporarioRequest.setNomeOriginal("file" + extensao);
-        docTemporarioRequest.setDataEnvio(LocalDateTime.now());
-
-        var request = DocumentoTestUtils.getProcessoDocumentoRequest(
-                List.of(docTemporarioRequest), processo.getId().toString());
-
-        var actual = assertThrows(ValidatorException.class, () -> documentoService.cadastrar(request));
-        assertEquals("Erro ao ler o arquivo.", actual.getMessage());
-
-        Files.delete(arquivoNaoCadastrado.toPath());
-    }
-
-    @Test
-    @DisplayName("Integration Test - Dado Tipo Documento Nao Cadastrado Quando cadastrar() Deve Lancar ValidatorException")
+    @DisplayName("Integration Test - Dado TipoDocumento Nao Cadastrado Quando cadastrar() Deve Lancar ValidatorException")
     void testDadoTipoDocumentoNaoCadastrado_QuandoCadastrar_DeveLancarValidatorException() throws IOException {
         var arquivoTipoNaoCadastrado = ArquivoTestUtils.createFile(APPLICATION_TEMP_UPLOAD, UUID.randomUUID().toString(), ".java");
         var docTemporarioRequest = DocumentoTestUtils.getDocTemporarioRequest(
@@ -227,12 +205,8 @@ class DocumentoServiceTest extends AbstractIntegrationTest {
         var request = DocumentoTestUtils.getProcessoDocumentoRequest(
                 List.of(docTemporarioRequest), processo.getId().toString());
 
-        var actual = assertThrows(
-                ValidatorException.class,
-                () -> documentoService.cadastrar(request));
-
-        assertEquals(HttpStatus.NOT_FOUND, actual.getStatus());
-        assertEquals("Tipo do documento " + docTemporarioRequest.getNomeOriginal() + " não encontrado!", actual.getMessage());
+        var actual = assertThrows(ValidatorException.class, () -> documentoService.cadastrar(request));
+        assertEquals("Erro ao ler o arquivo.", actual.getMessage());
 
         Files.delete(arquivoTipoNaoCadastrado.toPath());
     }

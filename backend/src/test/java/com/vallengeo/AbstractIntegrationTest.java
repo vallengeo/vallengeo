@@ -2,6 +2,7 @@ package com.vallengeo;
 
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,15 @@ import java.util.stream.Stream;
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
 @ContextConfiguration(initializers = AbstractIntegrationTest.Initializer.class)
 public abstract class AbstractIntegrationTest {
+
+    @Value("${server.port}")
+    protected int serverPort;
+    @Value("${api.security.token.secret}")
+    protected String secretKey;
+    @Value("${api.security.token.expiration}")
+    protected Long expiration;
+    @Value("${api.security.token.algorithm}")
+    protected String algorithm;
 
     private static final DockerImageName POSTGIS_IMAGE_NAME = DockerImageName.parse("postgis/postgis:14-3.2")
             .asCompatibleSubstituteFor("postgres:14");
