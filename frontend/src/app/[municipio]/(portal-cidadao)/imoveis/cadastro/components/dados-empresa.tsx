@@ -1,60 +1,49 @@
 import { useFormContext } from "react-hook-form"
 import { dadosEmpresaData } from "@/validation/imovel/representante"
+import { getCep } from "@/service/localidadeService"
 import { ufOptions, convertUFToState } from "@/validation/estados";
-import { formatarCampo, consultarCep } from "@/lib/utils";
-
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-
-import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import InputMask from "react-input-mask";
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-
-import { Info as LucideInfo } from "lucide-react";
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function DadosEmpresa() {
+  const { toast } = useToast();
   const { control, setValue } = useFormContext<dadosEmpresaData>()
 
-  async function handleChangeCEP(e: React.ChangeEvent<HTMLInputElement>): Promise<any> {
-    const rawValue = e.target.value
-    const formattedValue = formatarCampo(rawValue, 'CEP')
-
-    setValue('cep_empresa', formattedValue)
-
-    if (formattedValue.length === 9) {
-      try {
-        const response = await consultarCep(formattedValue)
-
-        if (response.erro) {
-          return
-        }
-
-        setValue('endereco_empresa', response.logradouro)
-        setValue('complemento_empresa', response.complemento)
-        setValue('bairro_empresa', response.bairro)
-        setValue('cidade_empresa', response.localidade)
-        setValue('uf_empresa', response.uf)
-      } catch (error) {
-        console.error('Erro ao consultar CEP:', error)
+  const consultarCep = async (value: string) => {
+    try {
+      const cep = value.replace(/\D/g, '');
+      if (cep.length <= 7) {
+        return;
       }
+
+      const response = await getCep(cep);
+      const { logradouro, complemento, bairro, municipio, error } = response.data;
+
+      if (error) {
+        toast({
+          'description': 'CEP não encontrado',
+          'variant': 'destructive',
+        });
+        return;
+      }
+
+      setValue('endereco_empresa', logradouro);
+      setValue('complemento_empresa', complemento);
+      setValue('bairro_empresa', bairro);
+      setValue('cidade_empresa', municipio.estado.nome);
+      setValue('uf_empresa', municipio.estado.uf);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message;
+
+      toast({
+        'description': errorMessage,
+        'variant': 'destructive',
+      });
     }
   }
 
@@ -87,7 +76,13 @@ export function DadosEmpresa() {
             <FormItem className="w-1/2">
               <FormLabel>CNPJ*</FormLabel>
               <FormControl>
-                <Input type="tel" {...field} />
+                <InputMask
+                  mask="99.999.999/9999-99"
+                  value={field.value}
+                  onChange={field.onChange}
+                >
+                  {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                </InputMask>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -115,23 +110,18 @@ export function DadosEmpresa() {
           name="cep_empresa"
           render={({ field }) => (
             <FormItem className="w-1/5">
-              <div className="flex items-center gap-1.5">
-                <FormLabel className="leading-6">CEP*</FormLabel>
-                <TooltipProvider delayDuration={200}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button type="button" variant="no-style" size="no-style">
-                        <LucideInfo size={16} />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Insira o CEP para preenchimento automático do endereço.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+              <FormLabel className="leading-6">CEP*</FormLabel>
               <FormControl>
-                <Input type="tel" {...field} onChange={handleChangeCEP} />
+                <InputMask
+                  mask="99999-999"
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                    consultarCep(e.target.value);
+                  }}
+                >
+                  {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                </InputMask>
               </FormControl>
               <FormMessage />
             </FormItem>

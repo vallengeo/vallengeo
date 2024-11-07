@@ -2,6 +2,7 @@ import { dadosPessoaisData } from "@/validation/imovel/representante";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { ufOptions, convertUFToState } from "@/validation/estados";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
+import { getCep } from "@/service/localidadeService";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -9,17 +10,52 @@ import { Select, SelectContent, SelectTrigger, SelectValue } from "@/components/
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip"
 import { X as LucideX } from "lucide-react";
 import { Aviso } from "./aviso";
+import { useToast } from "@/components/ui/use-toast";
 import InputMask from "react-input-mask";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function CadastroRepresentantes() {
-  const { control, watch, formState: { errors } } = useFormContext<dadosPessoaisData>()
+  const { toast } = useToast();
+  const { control, watch, setValue, formState: { errors } } = useFormContext<dadosPessoaisData>()
 
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'representantes',
   })
+
+  const consultarCep = async (index: number, value: string) => {
+    try {
+      const cep = value.replace(/\D/g, '');
+      if (cep.length < 8) {
+        return;
+      }
+
+      const response = await getCep(cep);
+      const { logradouro, complemento, bairro, municipio, error } = response.data;
+
+      if (error) {
+        toast({
+          'description': 'CEP não encontrado',
+          'variant': 'destructive',
+        });
+        return;
+      }
+
+      setValue(`representantes.${index}.endereco`, logradouro);
+      setValue(`representantes.${index}.complemento`, complemento);
+      setValue(`representantes.${index}.bairro`, bairro);
+      setValue(`representantes.${index}.cidade`, municipio.estado.nome);
+      setValue(`representantes.${index}.uf`, municipio.estado.uf);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message;
+
+      toast({
+        'description': errorMessage,
+        'variant': 'destructive',
+      });
+    }
+  }
 
   return (
     <>
@@ -157,6 +193,9 @@ export function CadastroRepresentantes() {
                           mask="99999-999"
                           value={field.value}
                           onChange={field.onChange}
+                          onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                            consultarCep(index, e.target.value);
+                          }}
                         >
                           {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
                         </InputMask>

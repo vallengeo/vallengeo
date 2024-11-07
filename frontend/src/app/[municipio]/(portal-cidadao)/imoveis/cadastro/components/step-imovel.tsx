@@ -5,6 +5,7 @@ import { mapearEstados } from "@/validation/estados";
 import { imovelFormData, imovelFormSchema, mapearGrupos } from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { getCep } from "@/service/localidadeService";
 import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { Button } from "@/components/ui/button";
@@ -14,12 +15,14 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
+import { useToast } from "@/components/ui/use-toast";
 import Mapa from "./mapa";
 import InputMask from "react-input-mask";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function CadastroImovel() {
+  const { toast } = useToast();
   const { onHandleBack, onHandleNext, setFormData, formData } = useFormState();
 
   const form = useForm<imovelFormData>({
@@ -29,7 +32,7 @@ export function CadastroImovel() {
     defaultValues: formData,
   })
 
-  const { formState: { isValid } } = form
+  const { setValue, formState: { isValid } } = form
 
   const onSubmit: SubmitHandler<imovelFormData> = (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
@@ -48,6 +51,39 @@ export function CadastroImovel() {
       {label}
     </SelectItem>
   ))
+
+  const consultarCep = async (value: string) => {
+    try {
+      const cep = value.replace(/\D/g, '');
+      if (cep.length < 8) {
+        return;
+      }
+
+      const response = await getCep(cep);
+      const { logradouro, complemento, bairro, municipio, error } = response.data;
+
+      if (error) {
+        toast({
+          'description': 'CEP não encontrado',
+          'variant': 'destructive',
+        });
+        return;
+      }
+
+      setValue('endereco', logradouro);
+      setValue('complemento', complemento);
+      setValue('bairro', bairro);
+      setValue('cidade', municipio.estado.nome);
+      setValue('uf', municipio.estado.uf);
+    } catch (error: any) {
+      const errorMessage = error.response?.data?.message || error.message;
+
+      toast({
+        'description': errorMessage,
+        'variant': 'destructive',
+      });
+    }
+  }
 
   return (
     <Form {...form}>
@@ -101,7 +137,7 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="imovel_cep"
+                name="cep"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[30%]">
                     <FormLabel>CEP*</FormLabel>
@@ -110,6 +146,9 @@ export function CadastroImovel() {
                         mask="99999-999"
                         value={field.value}
                         onChange={field.onChange}
+                        onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+                          consultarCep(e.target.value);
+                        }}
                       >
                         {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
                       </InputMask>
@@ -121,12 +160,12 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="imovel_endereco"
+                name="endereco"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Endereço*</FormLabel>
                     <FormControl>
-                      <Input type="text" className="max-w-none" {...field} />
+                      <Input type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -137,7 +176,7 @@ export function CadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="imovel_numero"
+                name="numero"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Número*</FormLabel>
@@ -151,7 +190,7 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="imovel_complemento"
+                name="complemento"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Complemento</FormLabel>
@@ -164,7 +203,7 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="imovel_bairro"
+                name="bairro"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Bairro*</FormLabel>
@@ -178,7 +217,7 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="imovel_uf"
+                name="uf"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>UF*</FormLabel>
@@ -201,12 +240,12 @@ export function CadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="imovel_cidade"
+                name="cidade"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/2">
                     <FormLabel>Cidade*</FormLabel>
                     <FormControl>
-                      <Input type="text" className="max-w-none" {...field} />
+                      <Input type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

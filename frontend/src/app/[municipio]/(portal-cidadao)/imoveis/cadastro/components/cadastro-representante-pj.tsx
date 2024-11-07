@@ -13,9 +13,13 @@ export function CadastroRepresentantePJ() {
   const { onHandleNext, setFormData, formData } = useFormState()
 
   const form = useForm<dadosEmpresaData>({
+    mode: 'all',
+    criteriaMode: 'all',
     resolver: zodResolver(dadosEmpresaSchema),
     defaultValues: formData
   })
+
+  const { formState: { isValid } } = form
 
   const onSubmit: SubmitHandler<dadosEmpresaData> = (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
@@ -24,17 +28,14 @@ export function CadastroRepresentantePJ() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
           <DadosEmpresa />
           <CadastroRepresentantes />
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button type="submit">Avançar</Button>
+          <Button type="submit" disabled={!isValid}>Avançar</Button>
         </div>
       </form>
     </Form>

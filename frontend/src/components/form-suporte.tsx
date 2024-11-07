@@ -4,7 +4,6 @@ import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { suporteFormSchema, suporteFormData } from "@/validation/usuario/suporte";
-import { formatarCampo } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import { Form } from "@/components/ui/form";
@@ -12,6 +11,9 @@ import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/comp
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { useToast } from "./ui/use-toast";
+import InputMask from "react-input-mask";
+
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function FormSuporte() {
   const { toast } = useToast()
@@ -41,12 +43,6 @@ export function FormSuporte() {
     /**
      * TODO: integrar ao back
      */
-  }
-
-  function handleChangeTelefone(e: React.ChangeEvent<HTMLInputElement>) {
-    const rawValue = e.target.value;
-    const formattedValue = formatarCampo(rawValue, 'Telefone');
-    form.setValue('telefone', formattedValue);
   }
 
   return (
@@ -103,12 +99,13 @@ export function FormSuporte() {
                     <FormItem>
                       <FormLabel className="font-normal">Telefone*</FormLabel>
                       <FormControl>
-                        <Input
-                          type="tel"
-                          maxLength={15}
-                          {...field}
-                          onChange={handleChangeTelefone}
-                        />
+                        <InputMask
+                          mask="(99) 99999-9999"
+                          value={field.value}
+                          onChange={field.onChange}
+                        >
+                          {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        </InputMask>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
