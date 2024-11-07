@@ -10,7 +10,7 @@ import {
   BreadcrumbPage
 } from "@/components/ui/breadcrumb"
 
-export const metada: Metadata = {
+export const metadata: Metadata = {
   title: 'Cadastro de imóvel',
 }
 
