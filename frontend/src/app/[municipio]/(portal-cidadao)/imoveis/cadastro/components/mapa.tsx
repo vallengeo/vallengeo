@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import L, { FeatureGroup, Map } from 'leaflet';
 import { GeoJsonObject } from 'geojson';
 import 'leaflet/dist/leaflet.css';
-import '@/lib/mapa/leaflet-zoominfo/Control.Zoominfo'
+import '@/lib/mapa/leaflet-zoominfo/Control.Zoominfo.scss'
 import UploadBox from './uploadBox';
 import IIntersectGeo from '@/interfaces/IIntersectGeo';
 import IErrorUpload from '@/interfaces/IErrorUpload';
-import IGeometry from '@/interfaces/IGeometry';
+import Geometria from '@/interfaces/IGeometry'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
@@ -15,8 +15,6 @@ import {
     TILE_LAYER_CONFIG
 } from '@/lib/mapa/mapa.config'
 
-// Importe o controle de coordenadas
-// import { CoordinatesControl } from '@/lib/mapa/Control.Zoominfo'
 
 type Props = IProps
 
@@ -25,8 +23,8 @@ type IProps = {
     setGeometryUpload: (value: GeoJsonObject[] | undefined) => void
     errorUpload: IErrorUpload
     setErrorUpload: (value: IErrorUpload) => void
-    georreferenciamento: IGeometry
-    setGeorreferenciamento: (value: IGeometry) => void
+    georreferenciamento: Geometria
+    setGeorreferenciamento: (value: Geometria) => void
     setLoading: (value: boolean) => void
 }
 

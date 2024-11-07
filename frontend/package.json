@@ -32,9 +32,6 @@
     "date-fns": "^3.2.0",
     "js-cookie": "^3.0.5",
     "leaflet": "^1.9.4",
-    "leaflet-draw": "^1.0.4",
-    "leaflet-easybutton": "^2.4.0",
-    "leaflet.fullscreen": "^3.0.2",
     "lucide-react": "^0.288.0",
     "next": "^13.5.5",
     "react": "^18.2.0",
@@ -53,6 +50,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/leaflet-draw": "^1.0.11",
     "@types/leaflet.fullscreen": "^3.0.2",
     "@types/node": "^20.8.6",

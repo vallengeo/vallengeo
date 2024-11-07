@@ -3,7 +3,7 @@ import { Header } from "@/components/header";
 import { CurrentStepForm } from "../components/current-step-form";
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 
-export const metada: Metadata = {
+export const metadata: Metadata = {
   title: 'Cadastro de imóvel',
 }
 

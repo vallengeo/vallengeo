@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.UUID;
 
 import static com.vallengeo.core.util.Constants.*;
 
@@ -49,6 +50,22 @@ public class UsuarioController {
     public ResponseEntity<List<UsuarioResponse>> usuarios() {
         log.info("Listando todos os usuários cadastrados");
         return ResponseEntity.ok().body(usuarioService.buscaTodos());
+    }
+
+    @Operation(summary = "Buscar usuário cadastrado pelo identificador")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),
+            @ApiResponse(responseCode = "403", description = FORBIDDEN_ERROR),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR),
+            @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
+    })
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UsuarioResponse> buscaPorId(@PathVariable UUID id) {
+        log.info("Buscar pessoa cadastrada pelo identificador {}", id);
+        return usuarioService.buscarPorId(id)
+                .map(usuario -> ResponseEntity.ok().body(usuario))
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @SecurityRequirement(name = "bearerAuth")
