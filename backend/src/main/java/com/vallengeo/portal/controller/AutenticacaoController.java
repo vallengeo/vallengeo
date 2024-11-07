@@ -41,7 +41,8 @@ public class AutenticacaoController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> authenticate(@RequestBody @Validated LoginRequest input) {
         UserDetails authenticatedUser = authenticationService.authenticate(input);
-        LoginResponse loginResponse = jwtService.generateLogin(authenticatedUser, input.idGrupo());
+
+        LoginResponse loginResponse = jwtService.generateLogin(authenticatedUser, input.idMunicipio());
         return ResponseEntity.ok(loginResponse);
     }
 

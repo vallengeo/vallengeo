@@ -26,7 +26,7 @@ public class AuthenticationService {
         );
 
         UserDetails userDetails = authorizationService.loadUserByUsername(input.email());
-        if (userDetails instanceof Usuario usuario && (usuario.getGrupos().stream().anyMatch(grupo -> grupo.getId().equals(UUID.fromString(input.idGrupo()))))) {
+        if (userDetails instanceof Usuario usuario && (usuario.getGrupos().stream().anyMatch(grupo -> grupo.getMunicipio().getId().equals(input.idMunicipio())))) {
                 return userDetails;
 
         }

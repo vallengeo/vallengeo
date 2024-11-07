@@ -37,7 +37,7 @@ export function FormLogin({ municipio }: IFormLogin) {
     const user: IUserLogin = {
       email: data.email,
       senha: data.password,
-      idGrupo: "4d3c1497-af40-4ddf-8b06-d8f40c8df139"
+      idMunicipio: 3513405
     };
 
     await login(user)
