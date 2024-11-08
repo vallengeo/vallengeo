@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SubmitHandler, useForm, useFieldArray } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useFormState } from "@/contexts/Imovel/FormContext";
 import { documentosFormData, documentosFormSchema } from "@/validation/imovel/documentos";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,7 @@ import { tipoDocumento } from "@/service/documentoService";
 import ITipoDocumento from "@/interfaces/ITipoDocumento";
 
 export function CadastroDocumentos() {
+  const [files, setFiles] = useState<Record<number, File | undefined>>({});
   const [documentos, setDocumentos] = useState<ITipoDocumento[]>([]);
   const { toast } = useToast()
 
@@ -52,7 +53,7 @@ export function CadastroDocumentos() {
             <p>Anexe os documentos no campo abaixo. Os arquivos aceitos são  shape, dwg, kml e PDF.</p>
           </div>
 
-          {documentos && documentos.map(documento => {
+          {documentos && documentos.map((documento, index) => {
             const accept = documento.formatos.join(",");
 
             return (
@@ -63,13 +64,13 @@ export function CadastroDocumentos() {
 
                 <FormField
                   control={form.control}
-                  name="tipo_documento"
+                  name={`documentos.${index}.idTipoDocumento`}
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
                         <div className="flex items-center justify-between w-full">
-                          {field.value?.[0].name ? (
-                            <span className="text-primary underline font-bold">{field.value?.[0].name}</span>
+                          {files[index]?.name ? (
+                            <span className="text-primary underline font-bold">{files[index]?.name}</span>
                           ) : (
                             <>
                               <span>nenhum documento informado</span>
@@ -87,7 +88,9 @@ export function CadastroDocumentos() {
                             name={field.name}
                             onBlur={field.onBlur}
                             onChange={(e) => {
-                              field.onChange(e.target.files);
+                              const file = e.target.files ? e.target.files[0] : undefined;
+                              setFiles(prev => ({ ...prev, [index]: file }));
+                              field.onChange(file ? file.name : "");
                             }}
                             ref={field.ref}
                             className="hidden"
@@ -99,7 +102,7 @@ export function CadastroDocumentos() {
                   )}
                 />
               </div>
-            )
+            );
           })}
         </div>
 

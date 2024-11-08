@@ -414,9 +414,15 @@ export function CadastroImovel() {
           </div>
         </fieldset>
 
-        <div className="flex justify-end items-center flex-wrap gap-4">
+        <div className="flex justify-between items-center flex-wrap gap-4">
           <Button variant="secondary" onClick={onHandleBack}>Voltar</Button>
-          <Button type="submit" disabled={!isValid}>Avançar</Button>
+
+          <div className="space-x-4">
+            <Button type="button" variant="secondary" disabled={!isValid}>
+              Continuar depois
+            </Button>
+            <Button type="submit" disabled={!isValid}>Avançar</Button>
+          </div>
         </div>
       </form>
     </Form>

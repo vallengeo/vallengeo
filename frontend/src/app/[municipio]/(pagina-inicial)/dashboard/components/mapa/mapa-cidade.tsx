@@ -37,7 +37,7 @@ export function Mapa() {
     const [camadasGeo, setCamadasGeo] = useState<FeatureGroup | null>(null)
     const defaultBaseLayer = BASE_LAYERS_CONFIG[defaultBaseLayerName];
     const [tileLayer, setTileLayer] = useState<L.TileLayer>(defaultBaseLayer);
-    
+
 
     const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
