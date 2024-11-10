@@ -1,89 +1,119 @@
-"use client"
+"use client";
 
-import { useFormState } from "@/contexts/Imovel/FormContext";
+import { usePathname } from "next/navigation";
+import { useFormState } from "@/contexts/formCadastroPFContext";
 import { mapearEstados } from "@/validation/estados";
-import { imovelFormData, imovelFormSchema, mapearGrupos } from "@/validation/imovel/imovel";
+import {
+  imovelFormData,
+  imovelFormSchema,
+  mapearGrupos,
+} from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { getCep } from "@/service/localidadeService";
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { handlePreviousStep, handleNextStep } from "./navigate";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import Mapa from "./mapa";
+import Mapa from "../../../_components/mapa";
 import InputMask from "react-input-mask";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export function CadastroImovel() {
+export function FormCadastroImovel() {
+  const pathname = usePathname();
+  const municipio = pathname.split("/")[1];
   const { toast } = useToast();
-  const { onHandleBack, onHandleNext, setFormData, formData } = useFormState();
+  const { formData, setFormData } = useFormState();
 
   const form = useForm<imovelFormData>({
-    mode: 'all',
-    criteriaMode: 'all',
+    mode: "all",
+    criteriaMode: "all",
     resolver: zodResolver(imovelFormSchema),
     defaultValues: formData,
-  })
+  });
 
-  const { setValue, formState: { isValid } } = form
+  const {
+    setValue,
+    formState: { isValid },
+  } = form;
 
-  const onSubmit: SubmitHandler<imovelFormData> = (data) => {
+  const onSubmit: SubmitHandler<imovelFormData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
-    onHandleNext();
-    console.log(formData)
-  }
+    console.log(formData);
+
+    await handleNextStep(municipio);
+  };
 
   const grupoOptions = Object.entries(mapearGrupos).map(([value, label]) => (
     <SelectItem value={value} key={value}>
       {label}
     </SelectItem>
-  ))
+  ));
 
   const ufOptions = Object.entries(mapearEstados).map(([value, label]) => (
     <SelectItem value={value} key={value}>
       {label}
     </SelectItem>
-  ))
+  ));
 
   const consultarCep = async (value: string) => {
     try {
-      const cep = value.replace(/\D/g, '');
+      const cep = value.replace(/\D/g, "");
       if (cep.length < 8) {
         return;
       }
 
       const response = await getCep(cep);
-      const { logradouro, complemento, bairro, municipio, error } = response.data;
+      const { logradouro, complemento, bairro, municipio, error } =
+        response.data;
 
       if (error) {
         toast({
-          'description': 'CEP não encontrado',
-          'variant': 'destructive',
+          description: "CEP não encontrado",
+          variant: "destructive",
         });
         return;
       }
 
-      setValue('endereco', logradouro);
-      setValue('complemento', complemento);
-      setValue('bairro', bairro);
-      setValue('cidade', municipio.estado.nome);
-      setValue('uf', municipio.estado.uf);
+      setValue("endereco", logradouro);
+      setValue("complemento", complemento);
+      setValue("bairro", bairro);
+      setValue("cidade", municipio.estado.nome);
+      setValue("uf", municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
       toast({
-        'description': errorMessage,
-        'variant': 'destructive',
+        description: errorMessage,
+        variant: "destructive",
       });
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -98,7 +128,10 @@ export function CadastroImovel() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-medium">Informações do imóvel</h2>
-              <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
+              <p>
+                Informe todos os dados para continuar o processo de
+                cadastramento de imóvel.
+              </p>
             </div>
 
             <Button
@@ -125,9 +158,7 @@ export function CadastroImovel() {
                         <SelectTrigger {...field}>
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>
-                          {grupoOptions}
-                        </SelectContent>
+                        <SelectContent>{grupoOptions}</SelectContent>
                       </Select>
                     </FormControl>
                     <FormMessage />
@@ -150,7 +181,9 @@ export function CadastroImovel() {
                           consultarCep(e.target.value);
                         }}
                       >
-                        {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        {(inputProps: InputProps) => (
+                          <Input type="tel" {...inputProps} />
+                        )}
                       </InputMask>
                     </FormControl>
                     <FormMessage />
@@ -226,9 +259,7 @@ export function CadastroImovel() {
                         <SelectTrigger {...field}>
                           <SelectValue placeholder={field.value} />
                         </SelectTrigger>
-                        <SelectContent>
-                          {ufOptions}
-                        </SelectContent>
+                        <SelectContent>{ufOptions}</SelectContent>
                       </Select>
                     </FormControl>
                     <FormMessage />
@@ -259,7 +290,10 @@ export function CadastroImovel() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-medium">Caracterização do imóvel</h2>
-              <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
+              <p>
+                Informe todos os dados para continuar o processo de
+                cadastramento de imóvel.
+              </p>
             </div>
 
             <Button
@@ -354,10 +388,7 @@ export function CadastroImovel() {
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Testada principal*</FormLabel>
                     <FormControl>
-                      <Input
-                        type="text"
-                        {...field}
-                      />
+                      <Input type="text" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -394,7 +425,11 @@ export function CadastroImovel() {
                             className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP", { locale: ptBR }) : <span>Selecione a data</span>}
+                            {field.value ? (
+                              format(field.value, "PPP", { locale: ptBR })
+                            ) : (
+                              <span>Selecione a data</span>
+                            )}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -415,16 +450,24 @@ export function CadastroImovel() {
         </fieldset>
 
         <div className="flex justify-between items-center flex-wrap gap-4">
-          <Button variant="secondary" onClick={onHandleBack}>Voltar</Button>
+          <Button
+            type="button"
+            onClick={async () => await handlePreviousStep(municipio)}
+            variant="secondary"
+          >
+            Voltar
+          </Button>
 
           <div className="space-x-4">
             <Button type="button" variant="secondary" disabled={!isValid}>
               Continuar depois
             </Button>
-            <Button type="submit" disabled={!isValid}>Avançar</Button>
+            <Button type="submit" disabled={!isValid}>
+              Avançar
+            </Button>
           </div>
         </div>
       </form>
     </Form>
-  )
+  );
 }
