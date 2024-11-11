@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { useFormState } from "@/contexts/formCadastroPFContext";
-import { mapearEstados } from "@/validation/estados";
+import { mapearEstados, convertUFToState } from "@/validation/estados";
 import {
   imovelFormData,
   imovelFormSchema,
@@ -100,11 +100,12 @@ export function FormCadastroImovel() {
         return;
       }
 
-      setValue("endereco", logradouro);
-      setValue("complemento", complemento);
-      setValue("bairro", bairro);
-      setValue("cidade", municipio.estado.nome);
-      setValue("uf", municipio.estado.uf);
+      setValue("informacaoImovel.endereco.logradouro", logradouro);
+      setValue("informacaoImovel.endereco.complemento", complemento);
+      setValue("informacaoImovel.endereco.bairro", bairro);
+      setValue("informacaoImovel.endereco.idMunicipio", municipio.id);
+      setValue("informacaoImovel.endereco.cidade", municipio.estado.nome);
+      setValue("informacaoImovel.endereco.uf", municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -149,7 +150,7 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="grupo"
+                name="informacaoImovel.tipoUso"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Tipo de grupo ou ocupação/uso*</FormLabel>
@@ -168,7 +169,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="cep"
+                name="informacaoImovel.endereco.cep"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[30%]">
                     <FormLabel>CEP*</FormLabel>
@@ -193,7 +194,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="endereco"
+                name="informacaoImovel.endereco.logradouro"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Endereço*</FormLabel>
@@ -209,7 +210,7 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="numero"
+                name="informacaoImovel.endereco.numero"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Número*</FormLabel>
@@ -223,7 +224,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="complemento"
+                name="informacaoImovel.endereco.complemento"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Complemento</FormLabel>
@@ -236,7 +237,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="bairro"
+                name="informacaoImovel.endereco.bairro"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Bairro*</FormLabel>
@@ -250,18 +251,23 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="uf"
+                name="informacaoImovel.endereco.uf"
                 render={({ field }) => (
-                  <FormItem className="w-full md:w-1/4">
+                  <FormItem className="w-full md:w-1/5">
                     <FormLabel>UF*</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange}>
-                        <SelectTrigger {...field}>
-                          <SelectValue placeholder={field.value} />
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue
+                            placeholder={field.value ? convertUFToState(field.value) : "Selecione um estado"}
+                          />
                         </SelectTrigger>
-                        <SelectContent>{ufOptions}</SelectContent>
-                      </Select>
-                    </FormControl>
+                      </FormControl>
+                      <SelectContent>{ufOptions}</SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -271,7 +277,7 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="cidade"
+                name="informacaoImovel.endereco.cidade"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/2">
                     <FormLabel>Cidade*</FormLabel>
@@ -311,7 +317,7 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="setor"
+                name="caracterizacaoImovel.setor"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Setor*</FormLabel>
@@ -325,7 +331,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="quadra"
+                name="caracterizacaoImovel.quadra"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Quadra*</FormLabel>
@@ -339,7 +345,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="lote"
+                name="caracterizacaoImovel.lote"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Lote*</FormLabel>
@@ -355,7 +361,7 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="unidade"
+                name="caracterizacaoImovel.unidade"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/2">
                     <FormLabel>Unidade</FormLabel>
@@ -369,7 +375,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="area_terreno"
+                name="caracterizacaoImovel.areaTerreno"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Área do terreno*</FormLabel>
@@ -383,7 +389,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="testada"
+                name="caracterizacaoImovel.testadaPrincipal"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Testada principal*</FormLabel>
@@ -399,7 +405,7 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="fracao"
+                name="caracterizacaoImovel.fracaoIdeal"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/2">
                     <FormLabel>Fração ideal</FormLabel>
@@ -413,7 +419,7 @@ export function FormCadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="data_inclusao"
+                name="caracterizacaoImovel.dataInclusao"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-2/5">
                     <FormLabel>Data de inclusão*</FormLabel>

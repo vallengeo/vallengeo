@@ -49,6 +49,8 @@ export function FormCadastroRepresentantes() {
   const { formData, setFormData } = useFormState();
 
   const form = useForm<dadosEmpresaData>({
+    mode: 'all',
+    criteriaMode: 'all',
     resolver: zodResolver(dadosEmpresaSchema),
     defaultValues: formData,
   });
@@ -91,11 +93,15 @@ export function FormCadastroRepresentantes() {
         return;
       }
 
-      setValue(`representantes.${index}.endereco`, logradouro);
-      setValue(`representantes.${index}.complemento`, complemento);
-      setValue(`representantes.${index}.bairro`, bairro);
-      setValue(`representantes.${index}.cidade`, municipio.estado.nome);
-      setValue(`representantes.${index}.uf`, municipio.estado.uf);
+      setValue(`representantes.${index}.endereco.logradouro`, logradouro);
+      setValue(`representantes.${index}.endereco.complemento`, complemento);
+      setValue(`representantes.${index}.endereco.bairro`, bairro);
+      setValue(`representantes.${index}.endereco.idMunicipio`, municipio.id);
+      setValue(
+        `representantes.${index}.endereco.cidade`,
+        municipio.estado.nome
+      );
+      setValue(`representantes.${index}.endereco.uf`, municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -122,7 +128,7 @@ export function FormCadastroRepresentantes() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={control}
-                name="razao_social"
+                name="razaoSocial"
                 render={({ field }) => (
                   <FormItem className="w-1/2">
                     <FormLabel>Razão Social da empresa*</FormLabel>
@@ -160,7 +166,7 @@ export function FormCadastroRepresentantes() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={control}
-                name="email_empresa"
+                name="responsavel.email"
                 render={({ field }) => (
                   <FormItem className="w-[40%]">
                     <FormLabel>E-mail*</FormLabel>
@@ -174,7 +180,7 @@ export function FormCadastroRepresentantes() {
 
               <FormField
                 control={control}
-                name="cep_empresa"
+                name="responsavel.endereco.cep"
                 render={({ field }) => (
                   <FormItem className="w-1/5">
                     <FormLabel className="leading-6">CEP*</FormLabel>
@@ -196,7 +202,7 @@ export function FormCadastroRepresentantes() {
 
               <FormField
                 control={control}
-                name="endereco_empresa"
+                name="responsavel.endereco.logradouro"
                 render={({ field }) => (
                   <FormItem className="w-[40%]">
                     <FormLabel>Endereço*</FormLabel>
@@ -212,7 +218,7 @@ export function FormCadastroRepresentantes() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={control}
-                name="numero_empresa"
+                name="responsavel.endereco.numero"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/5">
                     <FormLabel>Número*</FormLabel>
@@ -226,7 +232,7 @@ export function FormCadastroRepresentantes() {
 
               <FormField
                 control={control}
-                name="complemento_empresa"
+                name="responsavel.endereco.complemento"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/5">
                     <FormLabel>Complemento</FormLabel>
@@ -240,7 +246,7 @@ export function FormCadastroRepresentantes() {
 
               <FormField
                 control={control}
-                name="bairro_empresa"
+                name="responsavel.endereco.bairro"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/5">
                     <FormLabel>Bairro*</FormLabel>
@@ -254,7 +260,7 @@ export function FormCadastroRepresentantes() {
 
               <FormField
                 control={control}
-                name="cidade_empresa"
+                name="responsavel.endereco.cidade"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/5">
                     <FormLabel>Cidade*</FormLabel>
@@ -268,7 +274,7 @@ export function FormCadastroRepresentantes() {
 
               <FormField
                 control={control}
-                name="uf_empresa"
+                name="responsavel.endereco.uf"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/5">
                     <FormLabel>UF*</FormLabel>
@@ -279,7 +285,11 @@ export function FormCadastroRepresentantes() {
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue
-                            placeholder={convertUFToState(field.value)}
+                            placeholder={
+                              field.value
+                                ? convertUFToState(field.value)
+                                : "Selecione um estado"
+                            }
                           />
                         </SelectTrigger>
                       </FormControl>
@@ -293,7 +303,7 @@ export function FormCadastroRepresentantes() {
           </fieldset>
 
           {fields.map((field, index) => {
-            const tipoContato = watch(`representantes.${index}.tipo_contato`);
+            const tipoContato = watch(`representantes.${index}.contato.tipo`);
 
             return (
               <div key={field.id} className="space-y-6">
@@ -428,7 +438,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.cep`}
+                      name={`representantes.${index}.endereco.cep`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-1/5">
                           <FormLabel className="leading-6">CEP*</FormLabel>
@@ -455,7 +465,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.endereco`}
+                      name={`representantes.${index}.endereco.logradouro`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-[45%]">
                           <FormLabel>Endereço*</FormLabel>
@@ -471,7 +481,7 @@ export function FormCadastroRepresentantes() {
                   <div className="flex items-start gap-6 flex-col md:flex-row">
                     <FormField
                       control={control}
-                      name={`representantes.${index}.numero`}
+                      name={`representantes.${index}.endereco.numero`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-1/5">
                           <FormLabel>Número*</FormLabel>
@@ -485,7 +495,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.complemento`}
+                      name={`representantes.${index}.endereco.complemento`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-1/5">
                           <FormLabel>Complemento</FormLabel>
@@ -498,7 +508,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.bairro`}
+                      name={`representantes.${index}.endereco.bairro`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-1/5">
                           <FormLabel>Bairro*</FormLabel>
@@ -512,7 +522,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.cidade`}
+                      name={`representantes.${index}.endereco.cidade`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-1/5">
                           <FormLabel>Cidade*</FormLabel>
@@ -526,7 +536,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.uf`}
+                      name={`representantes.${index}.endereco.uf`}
                       render={({ field }) => (
                         <FormItem className="w-full md:w-1/5">
                           <FormLabel>UF*</FormLabel>
@@ -537,7 +547,11 @@ export function FormCadastroRepresentantes() {
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue
-                                  placeholder={convertUFToState(field.value)}
+                                  placeholder={
+                                    field.value
+                                      ? convertUFToState(field.value)
+                                      : "Selecione um estado"
+                                  }
                                 />
                               </SelectTrigger>
                             </FormControl>
@@ -558,7 +572,7 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.tipo_contato`}
+                      name={`representantes.${index}.contato.tipo`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
@@ -598,9 +612,9 @@ export function FormCadastroRepresentantes() {
                     />
                   </div>
 
-                  {errors.representantes?.[index]?.tipo_contato && (
+                  {errors.representantes?.[index]?.contato?.tipo && (
                     <p>
-                      {errors.representantes?.[index]?.tipo_contato?.message}
+                      {errors.representantes?.[index]?.contato?.tipo?.message}
                     </p>
                   )}
 
@@ -617,7 +631,7 @@ export function FormCadastroRepresentantes() {
                       <div className="grid grid-cols-4 gap-6">
                         <FormField
                           control={control}
-                          name={`representantes.${index}.nome_contato`}
+                          name={`representantes.${index}.contato.nome`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Nome completo*</FormLabel>
@@ -631,7 +645,7 @@ export function FormCadastroRepresentantes() {
 
                         <FormField
                           control={control}
-                          name={`representantes.${index}.email_contato`}
+                          name={`representantes.${index}.contato.email`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>E-mail*</FormLabel>
@@ -645,7 +659,7 @@ export function FormCadastroRepresentantes() {
 
                         <FormField
                           control={control}
-                          name={`representantes.${index}.telefone_contato`}
+                          name={`representantes.${index}.contato.telefone`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Telefone*</FormLabel>
@@ -667,7 +681,7 @@ export function FormCadastroRepresentantes() {
 
                         <FormField
                           control={control}
-                          name={`representantes.${index}.documento`}
+                          name={`representantes.${index}.contato.documento`}
                           render={({ field }) => (
                             <FormItem>
                               <FormLabel>Documento*</FormLabel>
@@ -697,23 +711,28 @@ export function FormCadastroRepresentantes() {
                 variant="default"
                 onClick={() =>
                   append({
-                    nome: "",
-                    cpf: "",
-                    rg: "",
-                    telefone: "",
                     email: "",
-                    cep: "",
-                    endereco: "",
-                    numero: "",
-                    complemento: "",
-                    bairro: "",
-                    cidade: "",
-                    uf: "",
-                    tipo_contato: "responsavel",
-                    nome_contato: "",
-                    email_contato: "",
-                    telefone_contato: "",
-                    documento: "",
+                    telefone: "",
+                    tipoPessoa: "FISICA",
+                    nome: "",
+                    rg: "",
+                    cpf: "",
+                    endereco: {
+                      cep: "",
+                      logradouro: "",
+                      bairro: "",
+                      numero: "",
+                      cidade: "",
+                      uf: "",
+                      idMunicipio: 0,
+                    },
+                    contato: {
+                      tipo: "representante",
+                      nome: "",
+                      email: "",
+                      telefone: "",
+                      documento: "",
+                    },
                   })
                 }
               >

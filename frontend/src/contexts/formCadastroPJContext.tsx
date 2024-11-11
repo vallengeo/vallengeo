@@ -1,19 +1,106 @@
+"use client";
+
+import { z } from "zod";
 import {
   Dispatch,
   SetStateAction,
   createContext,
   useContext,
   useState,
+  useEffect,
 } from "react";
+import { dadosEmpresaSchema } from "@/validation/imovel/representante";
+import { imovelFormSchema } from "@/validation/imovel/imovel";
+
+const LOCAL_STORAGE_KEY = "cadastro-imovel-pj";
+
+const formCadastroPJSchema = dadosEmpresaSchema.merge(imovelFormSchema);
+
+export type formCadastroPJData = z.infer<typeof formCadastroPJSchema>;
+
+const initialFormData: formCadastroPJData = {
+  cnpj: "",
+  razaoSocial: "",
+  responsavel: {
+    cpf: "",
+    email: "",
+    endereco: {
+      cep: "",
+      logradouro: "",
+      bairro: "",
+      numero: "",
+      complemento: "",
+      cidade: "",
+      uf: "",
+      idMunicipio: 0,
+    },
+    nome: "",
+    rg: "",
+    tipoPessoa: "FISICA",
+    telefone: ""
+  },
+  representantes: [
+    {
+      email: "",
+      telefone: "",
+      tipoPessoa: "FISICA",
+      endereco: {
+        cep: "",
+        logradouro: "",
+        bairro: "",
+        numero: "",
+        complemento: "",
+        cidade: "",
+        uf: "",
+        idMunicipio: 0,
+      },
+      contato: {
+        tipo: "representante",
+        nome: "",
+        email: "",
+        telefone: "",
+        documento: "",
+      },
+      nome: "",
+      cpf: "",
+      rg: "",
+    },
+  ],
+  informacaoImovel: {
+    tipoUso: "",
+    endereco: {
+      cep: "",
+      logradouro: "",
+      bairro: "",
+      numero: "",
+      complemento: "",
+      cidade: "",
+      uf: "",
+      idMunicipio: 0,
+    },
+  },
+  caracterizacaoImovel: {
+    setor: "",
+    areaTerreno: "",
+    dataInclusao: new Date(),
+    lote: "",
+    quadra: "",
+    testadaPrincipal: "",
+    fracaoIdeal: "",
+    unidade: "",
+  },
+};
 
 interface IFormCadastroPJContext {
-  formData: any;
-  setFormData: Dispatch<SetStateAction<any>>;
+  formData: formCadastroPJData;
+  setFormData: Dispatch<SetStateAction<formCadastroPJData>>;
+  clearFormData: () => void
 }
 
 const FormCadastroPJContext = createContext<IFormCadastroPJContext>({
-  formData: {},
+  formData: initialFormData,
   setFormData: () => {},
+  clearFormData: () => {}
 });
 
 interface IFormCadastroPJProvider {
@@ -21,49 +108,31 @@ interface IFormCadastroPJProvider {
 }
 
 export function FormCadastroPJProvider({ children }: IFormCadastroPJProvider) {
-  const [formData, setFormData] = useState({
-    representantes: [
-      {
-        nome: "",
-        cpf: "",
-        rg: "",
-        telefone: "",
-        email: "",
-        cep: "",
-        endereco: "",
-        numero: "",
-        complemento: "",
-        bairro: "",
-        cidade: "",
-        uf: "",
-        tipo_contato: "",
-        nome_contato: "",
-        email_contato: "",
-        telefone_contato: "",
-        documento: "",
-      },
-    ],
-    grupo: "",
-    imovel_cep: "",
-    imovel_endereco: "",
-    imovel_numero: "",
-    imovel_complemento: "",
-    imovel_bairro: "",
-    imovel_cidade: "",
-    imovel_uf: "",
-    setor: "",
-    quadra: "",
-    lote: "",
-    unidade: "",
-    area_terreno: "",
-    testada: "",
-    fracao: "",
-    data_inclusao: "",
-    observacao: "",
-  });
+  const loadFormData = (): formCadastroPJData => {
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return savedData ? JSON.parse(savedData) : initialFormData;
+    }
+    return initialFormData;
+  };
+
+  const [formData, setFormData] = useState<formCadastroPJData>(loadFormData);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+    }
+  }, [formData]);
+
+  const clearFormData = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+    }
+    setFormData(initialFormData);
+  };
 
   return (
-    <FormCadastroPJContext.Provider value={{ formData, setFormData }}>
+    <FormCadastroPJContext.Provider value={{ formData, setFormData, clearFormData }}>
       {children}
     </FormCadastroPJContext.Provider>
   );

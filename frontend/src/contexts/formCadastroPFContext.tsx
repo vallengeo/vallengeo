@@ -1,19 +1,86 @@
+'use client'
+
+import { z } from "zod";
 import {
   Dispatch,
   SetStateAction,
   createContext,
   useContext,
   useState,
+  useEffect
 } from "react";
+import { dadosPessoaisSchema } from "@/validation/imovel/representante";
+import { imovelFormSchema } from "@/validation/imovel/imovel";
+
+const LOCAL_STORAGE_KEY = 'cadastro-imovel-pf';
+
+const formCadastroPFSchema = dadosPessoaisSchema.merge(imovelFormSchema);
+
+export type formCadastroPFData = z.infer<typeof formCadastroPFSchema>;
+
+const initialFormData: formCadastroPFData = {
+  representantes: [
+    {
+      email: "",
+      telefone: "",
+      tipoPessoa: "FISICA",
+      endereco: {
+        cep: "",
+        logradouro: "",
+        bairro: "",
+        numero: "",
+        complemento: "",
+        cidade: "",
+        uf: "",
+        idMunicipio: 0,
+      },
+      contato: {
+        tipo: "representante",
+        nome: "",
+        email: "",
+        telefone: "",
+        documento: "",
+      },
+      nome: "",
+      cpf: "",
+      rg: "",
+    },
+  ],
+  informacaoImovel: {
+    tipoUso: "",
+    endereco: {
+      cep: "",
+      logradouro: "",
+      bairro: "",
+      numero: "",
+      complemento: "",
+      cidade: "",
+      uf: "",
+      idMunicipio: 0,
+    },
+  },
+  caracterizacaoImovel: {
+    setor: "",
+    areaTerreno: "",
+    dataInclusao: new Date(),
+    lote: "",
+    quadra: "",
+    testadaPrincipal: "",
+    fracaoIdeal: "",
+    unidade: ""
+  },
+};
 
 interface IFormCadastroPFContext {
-  formData: any;
-  setFormData: Dispatch<SetStateAction<any>>;
+  formData: formCadastroPFData;
+  setFormData: Dispatch<SetStateAction<formCadastroPFData>>;
+  clearFormData: () => void
 }
 
 const FormCadastroPFContext = createContext<IFormCadastroPFContext>({
-  formData: {},
+  formData: initialFormData,
   setFormData: () => {},
+  clearFormData: () => {}
 });
 
 interface IFormCadastroPFProvider {
@@ -21,49 +88,31 @@ interface IFormCadastroPFProvider {
 }
 
 export function FormCadastroPFProvider({ children }: IFormCadastroPFProvider) {
-  const [formData, setFormData] = useState({
-    representantes: [
-      {
-        nome: "",
-        cpf: "",
-        rg: "",
-        telefone: "",
-        email: "",
-        cep: "",
-        endereco: "",
-        numero: "",
-        complemento: "",
-        bairro: "",
-        cidade: "",
-        uf: "",
-        tipo_contato: "",
-        nome_contato: "",
-        email_contato: "",
-        telefone_contato: "",
-        documento: "",
-      },
-    ],
-    grupo: "",
-    imovel_cep: "",
-    imovel_endereco: "",
-    imovel_numero: "",
-    imovel_complemento: "",
-    imovel_bairro: "",
-    imovel_cidade: "",
-    imovel_uf: "",
-    setor: "",
-    quadra: "",
-    lote: "",
-    unidade: "",
-    area_terreno: "",
-    testada: "",
-    fracao: "",
-    data_inclusao: "",
-    observacao: "",
-  });
+  const loadFormData = (): formCadastroPFData => {
+    if (typeof window !== "undefined") {
+      const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+      return savedData ? JSON.parse(savedData) : initialFormData;
+    }
+    return initialFormData;
+  };
+
+  const [formData, setFormData] = useState<formCadastroPFData>(loadFormData);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
+    }
+  }, [formData]);
+
+  const clearFormData = () => {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(LOCAL_STORAGE_KEY);
+    }
+    setFormData(initialFormData);
+  };
 
   return (
-    <FormCadastroPFContext.Provider value={{ formData, setFormData }}>
+    <FormCadastroPFContext.Provider value={{ formData, setFormData, clearFormData }}>
       {children}
     </FormCadastroPFContext.Provider>
   );
