@@ -2,10 +2,12 @@ package com.vallengeo.cidadao.payload.response;
 
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.InformacaoImovelResponse;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
+@NoArgsConstructor
 public class ProcessoListagemSimplificadoResponse implements Serializable {
     private Long id;
     private String inscricaoImobiliaria;

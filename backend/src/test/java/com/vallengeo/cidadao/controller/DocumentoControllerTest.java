@@ -1,7 +1,5 @@
 package com.vallengeo.cidadao.controller;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.cidadao.model.Documento;
 import com.vallengeo.cidadao.model.Processo;
@@ -18,7 +16,6 @@ import com.vallengeo.core.exceptions.ApiExceptionCustom;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.Constants;
 import com.vallengeo.global.model.Arquivo;
-import com.vallengeo.global.repository.ArquivoRepository;
 import com.vallengeo.portal.model.Grupo;
 import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.repository.GrupoRepository;
@@ -71,9 +68,6 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
     @Autowired
     private ProcessoRepository processoRepository;
     @Autowired
-    @SuppressWarnings("unused")
-    private ArquivoRepository arquivoRepository;
-    @Autowired
     private DocumentoRepository documentoRepository;
     @Autowired
     private TipoDocumentoRepository tipoDocumentoRepository;
@@ -101,11 +95,7 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
                 admin, UsuarioTestUtils.GRUPO_ID.toString(), secretKey, expiration, algorithm);
 
         RestAssured.config = RestAssuredConfig.config().objectMapperConfig(new ObjectMapperConfig().jackson2ObjectMapperFactory(
-                (cls, charset) -> {
-                    ObjectMapper om = new ObjectMapper().findAndRegisterModules();
-                    om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    return om;
-                }
+                (cls, charset) -> MAPPER
         ));
 
         specification = new RequestSpecBuilder()

@@ -42,6 +42,7 @@ public class Paginacao {
     }
 
     @Data
+    @NoArgsConstructor
     public static class PaginacaoOutput<T> {
         private List<T> conteudo;
         private Long total;

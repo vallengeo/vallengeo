@@ -1,5 +1,7 @@
 package com.vallengeo;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +39,10 @@ public abstract class AbstractIntegrationTest {
     protected Long expiration;
     @Value("${api.security.token.algorithm}")
     protected String algorithm;
+
+    protected static final ObjectMapper MAPPER = new ObjectMapper()
+            .findAndRegisterModules()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     private static final DockerImageName POSTGIS_IMAGE_NAME = DockerImageName.parse("postgis/postgis:14-3.2")
             .asCompatibleSubstituteFor("postgres:14");
