@@ -136,8 +136,8 @@ class LocalidadeControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @DisplayName("Integration Test - Dado UF Quando buscarEstadoPorUf() Deve Retornar NotFound (404)")
-    void testDadoUF_QuandoBuscarEstadoPorUf_DeveRetornarNotFound() {
+    @DisplayName("Integration Test - Dado UF Quando buscarEstadoPorUf() Deve Retornar EstadoResponse")
+    void testDadoUF_QuandoBuscarEstadoPorUf_DeveRetornarEstadoResponse() {
         var uf = "SP";
 
         ResponseOptions<?> response = given().spec(specification)
