@@ -1,5 +1,50 @@
 import { z } from "zod";
-import { estados } from "@/validation/estados";
+
+const estadoSchema = z.object({
+  id: z
+    .number({ required_error: "ID do estado é obrigatório" })
+    .int({ message: "ID do estado deve ser um número inteiro" }),
+  nome: z.string({ required_error: "Nome do estado é obrigatório" }),
+  uf: z
+    .string({ required_error: "UF do estado é obrigatório" })
+    .length(2, { message: "UF deve ter exatamente 2 caracteres" })
+    .toUpperCase(),
+});
+
+const municipioSchema = z.object({
+  id: z
+    .number({ required_error: "ID do município é obrigatório" })
+    .int({ message: "ID do município deve ser um número inteiro" }),
+  nome: z.string({ required_error: "Nome do município é obrigatório" }),
+  estado: estadoSchema,
+});
+
+const enderecoSchema = z.object({
+  cep: z
+    .string({ required_error: "CEP é obrigatório" })
+    .min(1, { message: "CEP é obrigatório" }),
+  logradouro: z
+    .string({ required_error: "Endereço é obrigatório" })
+    .min(1, { message: "Endereço é obrigatório" }),
+  bairro: z
+    .string({ required_error: "Bairro é obrigatório" })
+    .min(1, { message: "Bairro é obrigatório" }),
+  numero: z
+    .string({ required_error: "Número é obrigatório" })
+    .min(1, { message: "Número é obrigatório" }),
+  complemento: z.string().optional(),
+  municipio: municipioSchema,
+});
+
+const contatoSchema = z.object({
+  nome: z.string().optional(),
+  email: z.string().optional(),
+  telefone: z.string().optional(),
+  documento: z.string().optional(),
+  responsavelTecnico: z.boolean().optional(),
+  representanteLegal: z.boolean().optional(),
+  outro: z.boolean().optional(),
+});
 
 const representanteSchema = z.array(
   z
@@ -11,35 +56,8 @@ const representanteSchema = z.array(
         .string({ required_error: "Telefone é obrigatório" })
         .min(1, { message: "Telefone é obrigatório" }),
       tipoPessoa: z.enum(["FISICA", "JURIDICA"]),
-      endereco: z.object({
-        cep: z
-          .string({ required_error: "CEP é obrigatório" })
-          .min(1, { message: "CEP é obrigatório" }),
-        logradouro: z
-          .string({ required_error: "Endereço é obrigatório" })
-          .min(1, { message: "Endereço é obrigatório" }),
-        bairro: z
-          .string({ required_error: "Bairro é obrigatório" })
-          .min(1, { message: "Bairro é obrigatório" }),
-        numero: z
-          .string({ required_error: "Número é obrigatório" })
-          .min(1, { message: "Número é obrigatório" }),
-        complemento: z.string().optional(),
-        cidade: z
-          .string({ required_error: "Cidade é obrigatório" })
-          .min(1, { message: "Cidade é obrigatório" }),
-        uf: z.enum(['', ...estados], {
-          errorMap: () => ({ message: "Estado é obrigatório" }),
-        }),
-        idMunicipio: z.number(),
-      }),
-      contato: z.object({
-        tipo: z.enum(["representante", "responsavel", "outro"]),
-        nome: z.string().optional(),
-        email: z.string().optional(),
-        telefone: z.string().optional(),
-        documento: z.string().optional(),
-      }),
+      endereco: enderecoSchema,
+      contato: contatoSchema,
       nome: z
         .string({ required_error: "Nome é obrigatório" })
         .min(1, { message: "Nome é obrigatório" }),
@@ -52,7 +70,7 @@ const representanteSchema = z.array(
     })
     .refine(
       (data) => {
-        if (data.contato.tipo === "representante") {
+        if (data.contato.representanteLegal) {
           return true;
         } else {
           return (
@@ -76,12 +94,13 @@ const representanteSchema = z.array(
 );
 
 export const dadosPessoaisSchema = z.object({
+  idGrupo: z.string(),
   representantes: representanteSchema,
 });
 
-export type dadosPessoaisData = z.infer<typeof dadosPessoaisSchema>;
-
 export const dadosEmpresaSchema = z.object({
+  idGrupo: z.string(),
+  representantes: representanteSchema,
   razaoSocial: z
     .string({ required_error: "Razão social é obrigatório" })
     .min(1, { message: "Razão social é obrigatório" }),
@@ -96,28 +115,7 @@ export const dadosEmpresaSchema = z.object({
       .string({ required_error: "Telefone é obrigatório" })
       .min(1, { message: "Telefone é obrigatório" }),
     tipoPessoa: z.enum(["FISICA", "JURIDICA"]),
-    endereco: z.object({
-      cep: z
-        .string({ required_error: "CEP é obrigatório" })
-        .min(1, { message: "CEP é obrigatório" }),
-      logradouro: z
-        .string({ required_error: "Endereço é obrigatório" })
-        .min(1, { message: "Endereço é obrigatório" }),
-      numero: z
-        .string({ required_error: "Número é obrigatório" })
-        .min(1, { message: "Número é obrigatório" }),
-      complemento: z.string().optional(),
-      bairro: z
-        .string({ required_error: "Bairro é obrigatório" })
-        .min(1, { message: "Bairro é obrigatório" }),
-      cidade: z
-        .string({ required_error: "Cidade é obrigatório" })
-        .min(1, { message: "Cidade é obrigatório" }),
-      uf: z.enum(['', ...estados], {
-        errorMap: () => ({ message: "Estado é obrigatório" }),
-      }),
-      idMunicipio: z.number(),
-    }),
+    endereco: enderecoSchema,
     nome: z
       .string({ required_error: "Nome é obrigatório" })
       .min(1, { message: "Nome é obrigatório" }),
@@ -128,7 +126,7 @@ export const dadosEmpresaSchema = z.object({
       .string({ required_error: "RG é obrigatório" })
       .min(1, { message: "RG é obrigatório" }),
   }),
-  representantes: representanteSchema,
 });
 
+export type dadosPessoaisData = z.infer<typeof dadosPessoaisSchema>;
 export type dadosEmpresaData = z.infer<typeof dadosEmpresaSchema>;

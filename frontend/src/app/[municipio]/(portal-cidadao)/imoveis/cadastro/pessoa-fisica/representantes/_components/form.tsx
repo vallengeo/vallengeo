@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -10,7 +11,6 @@ import {
 import { useFormState } from "@/contexts/formCadastroPFContext";
 import { Form } from "@/components/ui/form";
 import { useFieldArray } from "react-hook-form";
-import { ufOptions, convertUFToState } from "@/validation/estados";
 import {
   FormField,
   FormItem,
@@ -24,12 +24,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
-  Select,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
@@ -39,18 +33,22 @@ import { X as LucideX } from "lucide-react";
 import { Aviso } from "../../../_components/aviso";
 import { useToast } from "@/components/ui/use-toast";
 import InputMask from "react-input-mask";
+import { Loader } from "@/components/loader";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function FormCadastroRepresentantes() {
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
+
   const { toast } = useToast();
   const { formData, setFormData } = useFormState();
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const form = useForm<dadosPessoaisData>({
-    mode: 'all',
-    criteriaMode: 'all',
+    mode: "all",
+    criteriaMode: "all",
     resolver: zodResolver(dadosPessoaisSchema),
     defaultValues: formData,
   });
@@ -65,6 +63,8 @@ export function FormCadastroRepresentantes() {
   const onSubmit: SubmitHandler<dadosPessoaisData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
     console.log(data);
+
+    setLoading(true);
 
     await handleNextStep(municipio);
   };
@@ -96,12 +96,23 @@ export function FormCadastroRepresentantes() {
       setValue(`representantes.${index}.endereco.logradouro`, logradouro);
       setValue(`representantes.${index}.endereco.complemento`, complemento);
       setValue(`representantes.${index}.endereco.bairro`, bairro);
-      setValue(`representantes.${index}.endereco.idMunicipio`, municipio.id);
+      setValue(`representantes.${index}.endereco.municipio.id`, municipio.id);
       setValue(
-        `representantes.${index}.endereco.cidade`,
+        `representantes.${index}.endereco.municipio.nome`,
+        municipio.nome
+      );
+      setValue(
+        `representantes.${index}.endereco.municipio.estado.id`,
+        municipio.estado.id
+      );
+      setValue(
+        `representantes.${index}.endereco.municipio.estado.nome`,
         municipio.estado.nome
       );
-      setValue(`representantes.${index}.endereco.uf`, municipio.estado.uf);
+      setValue(
+        `representantes.${index}.endereco.municipio.estado.uf`,
+        municipio.estado.uf
+      );
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -117,8 +128,6 @@ export function FormCadastroRepresentantes() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="space-y-6">
           {fields.map((field, index) => {
-            const tipoContato = watch(`representantes.${index}.contato.tipo`);
-
             return (
               <div key={field.id} className="space-y-6">
                 <div className="bg-white border border-input rounded-2xl p-6 space-y-6 relative overflow-hidden">
@@ -154,6 +163,8 @@ export function FormCadastroRepresentantes() {
                   </div>
 
                   <div className="flex items-start gap-6 flex-col md:flex-row">
+                    <Input type="hidden" name={`representantes.${index}.id`} value={index} />
+
                     <FormField
                       control={control}
                       name={`representantes.${index}.nome`}
@@ -333,44 +344,6 @@ export function FormCadastroRepresentantes() {
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={control}
-                      name={`representantes.${index}.endereco.cidade`}
-                      render={({ field }) => (
-                        <FormItem className="w-full md:w-1/5">
-                          <FormLabel>Cidade*</FormLabel>
-                          <FormControl>
-                            <Input type="text" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={control}
-                      name={`representantes.${index}.endereco.uf`}
-                      render={({ field }) => (
-                        <FormItem className="w-full md:w-1/5">
-                          <FormLabel>UF*</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue
-                                  placeholder={field.value ? convertUFToState(field.value) : "Selecione um estado"}
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>{ufOptions}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </div>
 
@@ -382,18 +355,28 @@ export function FormCadastroRepresentantes() {
 
                     <FormField
                       control={control}
-                      name={`representantes.${index}.contato.tipo`}
+                      name={`representantes.${index}.contato`}
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
                             <RadioGroup
-                              onValueChange={field.onChange}
-                              {...field}
+                              onValueChange={(value) => {
+                                field.onChange({
+                                  representanteLegal: value === "representante",
+                                  responsavelTecnico: value === "responsavel",
+                                  outro: value === "outro",
+                                });
+                              }}
                               className="flex items-center flex-wrap gap-4"
                             >
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
-                                  <RadioGroupItem value="representante" />
+                                  <RadioGroupItem
+                                    value="representante"
+                                    checked={
+                                      field.value?.representanteLegal || false
+                                    }
+                                  />
                                 </FormControl>
                                 <FormLabel className="text-base font-normal">
                                   Representante do imóvel
@@ -401,7 +384,12 @@ export function FormCadastroRepresentantes() {
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
-                                  <RadioGroupItem value="responsavel" />
+                                  <RadioGroupItem
+                                    value="responsavel"
+                                    checked={
+                                      field.value?.responsavelTecnico || false
+                                    }
+                                  />
                                 </FormControl>
                                 <FormLabel className="text-base font-normal">
                                   Responsável legal
@@ -409,7 +397,10 @@ export function FormCadastroRepresentantes() {
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0">
                                 <FormControl>
-                                  <RadioGroupItem value="outro" />
+                                  <RadioGroupItem
+                                    value="outro"
+                                    checked={field.value?.outro || false}
+                                  />
                                 </FormControl>
                                 <FormLabel className="text-base font-normal">
                                   Outro
@@ -422,14 +413,16 @@ export function FormCadastroRepresentantes() {
                     />
                   </div>
 
-                  {errors.representantes?.[index]?.contato?.tipo && (
+                  {errors.representantes?.[index]?.contato && (
                     <p>
-                      {errors.representantes?.[index]?.contato?.tipo?.message}
+                      {errors.representantes?.[index]?.contato.message}
                     </p>
                   )}
 
-                  {(tipoContato === "responsavel" ||
-                    tipoContato === "outro") && (
+                  {(watch(
+                    `representantes.${index}.contato.responsavelTecnico`
+                  ) ||
+                    watch(`representantes.${index}.contato.outro`)) && (
                     <div className="space-y-6 mt-6">
                       <Aviso
                         type="warning"
@@ -448,7 +441,12 @@ export function FormCadastroRepresentantes() {
                               <FormControl>
                                 <Input type="text" {...field} />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage>
+                                {
+                                  errors.representantes?.[index]
+                                    ?.contato?.nome?.message
+                                }
+                              </FormMessage>
                             </FormItem>
                           )}
                         />
@@ -462,7 +460,12 @@ export function FormCadastroRepresentantes() {
                               <FormControl>
                                 <Input type="email" {...field} />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage>
+                                {
+                                  errors.representantes?.[index]
+                                    ?.contato?.email?.message
+                                }
+                              </FormMessage>
                             </FormItem>
                           )}
                         />
@@ -484,7 +487,12 @@ export function FormCadastroRepresentantes() {
                                   )}
                                 </InputMask>
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage>
+                                {
+                                  errors.representantes?.[index]
+                                    ?.contato?.telefone?.message
+                                }
+                              </FormMessage>
                             </FormItem>
                           )}
                         />
@@ -496,9 +504,14 @@ export function FormCadastroRepresentantes() {
                             <FormItem>
                               <FormLabel>Documento*</FormLabel>
                               <FormControl>
-                                <Input type="tel" {...field} />
+                                <Input type="text" {...field} />
                               </FormControl>
-                              <FormMessage />
+                              <FormMessage>
+                                {
+                                  errors.representantes?.[index]
+                                    ?.contato?.documento?.message
+                                }
+                              </FormMessage>
                             </FormItem>
                           )}
                         />
@@ -532,16 +545,24 @@ export function FormCadastroRepresentantes() {
                       logradouro: "",
                       bairro: "",
                       numero: "",
-                      cidade: "",
-                      uf: "",
-                      idMunicipio: 0,
+                      municipio: {
+                        id: 0,
+                        nome: "",
+                        estado: {
+                          id: 0,
+                          nome: "",
+                          uf: "",
+                        },
+                      },
                     },
                     contato: {
-                      tipo: "representante",
                       nome: "",
                       email: "",
                       telefone: "",
                       documento: "",
+                      responsavelTecnico: false,
+                      representanteLegal: false,
+                      outro: false,
                     },
                   })
                 }
@@ -553,8 +574,12 @@ export function FormCadastroRepresentantes() {
         </div>
 
         <div className="flex justify-end mt-6">
-          <Button type="submit" disabled={!isValid}>
-            Avançar
+          <Button
+            type="submit"
+            disabled={!isValid}
+            className={`w-40 h-10 ${loading ? "pointer-events-none" : ""}`}
+          >
+            {loading ? <Loader /> : "Avançar"}
           </Button>
         </div>
       </form>

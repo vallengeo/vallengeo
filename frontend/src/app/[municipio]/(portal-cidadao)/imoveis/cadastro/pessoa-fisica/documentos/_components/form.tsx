@@ -23,14 +23,19 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { tipoDocumento } from "@/service/documentoService";
 import ITipoDocumento from "@/interfaces/ITipoDocumento";
+import { Loader } from "@/components/loader";
+import { cadastro } from "@/service/imovelService";
+import ICadastroImovel from "@/interfaces/ICadastroImovel";
 
 export function FormCadastroDocumentos() {
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
+
   const [files, setFiles] = useState<Record<number, File | undefined>>({});
   const [documentos, setDocumentos] = useState<ITipoDocumento[]>([]);
-  const { toast } = useToast();
+  const [loadingContinuarDepois, setLoadingContinuarDepois] = useState<boolean>(false);
 
+  const { toast } = useToast();
   const { formData, setFormData } = useFormState();
 
   const form = useForm<documentosFormData>({
@@ -44,6 +49,59 @@ export function FormCadastroDocumentos() {
     toast({
       description: "Dados enviados com sucesso!",
     });
+  };
+
+  const onSubmitContinuarDepois = async (data: any) => {
+    setLoadingContinuarDepois(true);
+
+    const sendData: ICadastroImovel = {
+      idGrupo: data.idGrupo,
+      imovel: {
+        representantes: [...data.representantes],
+        informacaoImovel: {
+          ...data.informacaoImovel
+        },
+        caracterizacaoImovel: {
+          ...data.caracterizacaoImovel
+        },
+        // TODO - verificar dados validos
+        georreferenciamento: {
+          geoJson: {
+            geometry: {
+              coordinates: [
+                [
+                  [-44.96611868173562, -22.559061809666048],
+                  [-44.966143985139496, -22.55902409240122],
+                  [-44.96592970837085, -22.558902617586],
+                  [-44.96590601936282, -22.558941882174288],
+                  [-44.96611868173562, -22.559061809666048],
+                ],
+              ],
+              type: "Polygon",
+            },
+            type: "Feature",
+            properties: {},
+          },
+        },
+      }
+    }
+
+    try {
+      const response = await cadastro(sendData);
+
+      console.log(response);
+
+      toast({
+        description: "Dados enviados com sucesso!",
+      });
+    } catch(error: any) {
+      setLoadingContinuarDepois(false);
+
+      toast({
+        description: error.message,
+        variant: "destructive"
+      });
+    }
   };
 
   useEffect(() => {
@@ -132,7 +190,7 @@ export function FormCadastroDocumentos() {
             })}
         </div>
 
-        <div className="flex justify-end items-center flex-wrap gap-4 mt-6">
+        <div className="flex justify-between items-center flex-wrap gap-4 mt-6">
           <Button
             type="button"
             onClick={async () => await handlePreviousStep(municipio)}
@@ -141,7 +199,21 @@ export function FormCadastroDocumentos() {
             Voltar
           </Button>
 
-          <Button type="submit">Finalizar</Button>
+          <div className="space-x-4">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => await onSubmitContinuarDepois(formData)}
+            >
+              {loadingContinuarDepois ? (
+                <Loader />
+              ) : (
+                "Continuar depois"
+              )}
+            </Button>
+
+            <Button type="submit">Finalizar</Button>
+          </div>
         </div>
       </form>
     </Form>

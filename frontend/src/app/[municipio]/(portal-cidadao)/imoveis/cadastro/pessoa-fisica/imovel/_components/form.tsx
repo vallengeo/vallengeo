@@ -1,13 +1,9 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { useFormState } from "@/contexts/formCadastroPFContext";
-import { mapearEstados, convertUFToState } from "@/validation/estados";
-import {
-  imovelFormData,
-  imovelFormSchema,
-  mapearGrupos,
-} from "@/validation/imovel/imovel";
+import { imovelFormSchema, imovelFormData } from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { getCep } from "@/service/localidadeService";
@@ -41,14 +37,27 @@ import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Mapa from "../../../_components/mapa";
 import InputMask from "react-input-mask";
+import { TipoUso } from "@/interfaces/ITipoUso";
+import { tipoUso } from "@/service/imovelService";
+import { Loader } from "@/components/loader";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 export function FormCadastroImovel() {
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
+
+  const [editarInformacaoImovel, setEditarInformacaoImovel] =
+    useState<boolean>(false);
+  const [editarCaracterizacaoImovel, setEditarCaracterizacaoImovel] =
+    useState<boolean>(false);
+  const [grupos, setGrupos] = useState<TipoUso[]>([]);
+  const [loading, setLoading] = useState<boolean>(false)
+
   const { toast } = useToast();
   const { formData, setFormData } = useFormState();
+
+  console.log(formData);
 
   const form = useForm<imovelFormData>({
     mode: "all",
@@ -66,20 +75,10 @@ export function FormCadastroImovel() {
     setFormData((prev: any) => ({ ...prev, ...data }));
     console.log(formData);
 
+    setLoading(true);
+
     await handleNextStep(municipio);
   };
-
-  const grupoOptions = Object.entries(mapearGrupos).map(([value, label]) => (
-    <SelectItem value={value} key={value}>
-      {label}
-    </SelectItem>
-  ));
-
-  const ufOptions = Object.entries(mapearEstados).map(([value, label]) => (
-    <SelectItem value={value} key={value}>
-      {label}
-    </SelectItem>
-  ));
 
   const consultarCep = async (value: string) => {
     try {
@@ -104,8 +103,6 @@ export function FormCadastroImovel() {
       setValue("informacaoImovel.endereco.complemento", complemento);
       setValue("informacaoImovel.endereco.bairro", bairro);
       setValue("informacaoImovel.endereco.idMunicipio", municipio.id);
-      setValue("informacaoImovel.endereco.cidade", municipio.estado.nome);
-      setValue("informacaoImovel.endereco.uf", municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -115,6 +112,30 @@ export function FormCadastroImovel() {
       });
     }
   };
+
+  const handleEditarInformacaoImovel = () => {
+    setEditarInformacaoImovel(!editarInformacaoImovel);
+  };
+
+  const handleEditarCaracterizacaoImovel = () => {
+    setEditarCaracterizacaoImovel(!editarCaracterizacaoImovel);
+  };
+
+  useEffect(() => {
+    const obterGrupos = async () => {
+      try {
+        const response = await tipoUso();
+        setGrupos(response.data);
+      } catch (error) {
+        toast({
+          description: `Erro ao obter os grupos: ${error}`,
+          variant: "destructive",
+        });
+      }
+    };
+
+    obterGrupos();
+  }, []);
 
   return (
     <Form {...form}>
@@ -139,6 +160,7 @@ export function FormCadastroImovel() {
               type="button"
               variant="no-style"
               size="no-style"
+              onClick={() => handleEditarInformacaoImovel()}
               className="text-lg inline-flex items-center gap-2"
             >
               <LucidePenSquare size={20} />
@@ -150,16 +172,30 @@ export function FormCadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="informacaoImovel.tipoUso"
+                name="informacaoImovel.tipoUso.id"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Tipo de grupo ou ocupação/uso*</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        disabled={editarInformacaoImovel}
+                      >
                         <SelectTrigger {...field}>
                           <SelectValue />
                         </SelectTrigger>
-                        <SelectContent>{grupoOptions}</SelectContent>
+                        <SelectContent>
+                          {grupos.map((grupo) => {
+                            return (
+                              <SelectItem
+                                value={String(grupo.id)}
+                                key={grupo.id}
+                              >
+                                {grupo.nome}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
                       </Select>
                     </FormControl>
                     <FormMessage />
@@ -181,9 +217,14 @@ export function FormCadastroImovel() {
                         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
                           consultarCep(e.target.value);
                         }}
+                        disabled={editarInformacaoImovel}
                       >
                         {(inputProps: InputProps) => (
-                          <Input type="tel" {...inputProps} />
+                          <Input
+                            type="tel"
+                            {...inputProps}
+                            disabled={editarInformacaoImovel}
+                          />
                         )}
                       </InputMask>
                     </FormControl>
@@ -199,7 +240,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Endereço*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -215,7 +260,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Número*</FormLabel>
                     <FormControl>
-                      <Input type="tel" {...field} />
+                      <Input
+                        type="tel"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -229,7 +278,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Complemento</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -242,47 +295,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Bairro*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="informacaoImovel.endereco.uf"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/5">
-                    <FormLabel>UF*</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={field.value ? convertUFToState(field.value) : "Selecione um estado"}
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>{ufOptions}</SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex items-start gap-6 flex-col md:flex-row">
-              <FormField
-                control={form.control}
-                name="informacaoImovel.endereco.cidade"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/2">
-                    <FormLabel>Cidade*</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -306,6 +323,7 @@ export function FormCadastroImovel() {
               type="button"
               variant="no-style"
               size="no-style"
+              onClick={() => handleEditarCaracterizacaoImovel()}
               className="text-lg inline-flex items-center gap-2"
             >
               <LucidePenSquare size={20} />
@@ -322,7 +340,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Setor*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -336,7 +358,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Quadra*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -350,7 +376,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Lote*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -366,7 +396,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/2">
                     <FormLabel>Unidade</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -380,7 +414,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Área do terreno*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -394,7 +432,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Testada principal*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -410,7 +452,11 @@ export function FormCadastroImovel() {
                   <FormItem className="w-full md:w-1/2">
                     <FormLabel>Fração ideal</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -428,7 +474,8 @@ export function FormCadastroImovel() {
                         <FormControl>
                           <Button
                             variant={"outline"}
-                            className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent"
+                            className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-transparent"
+                            disabled={editarCaracterizacaoImovel}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {field.value ? (
@@ -444,6 +491,7 @@ export function FormCadastroImovel() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
+                          disabled={editarCaracterizacaoImovel}
                         />
                       </PopoverContent>
                     </Popover>
@@ -464,14 +512,17 @@ export function FormCadastroImovel() {
             Voltar
           </Button>
 
-          <div className="space-x-4">
-            <Button type="button" variant="secondary" disabled={!isValid}>
-              Continuar depois
-            </Button>
-            <Button type="submit" disabled={!isValid}>
-              Avançar
-            </Button>
-          </div>
+          <Button
+            type="submit"
+            disabled={!isValid}
+            className={`w-40 h-10 ${loading ? 'pointer-events-none' : ''}`}
+          >
+            {loading ? (
+              <Loader />
+            ) : (
+              "Avançar"
+            )}
+          </Button>
         </div>
       </form>
     </Form>
