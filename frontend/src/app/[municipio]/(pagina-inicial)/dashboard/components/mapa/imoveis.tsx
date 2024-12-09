@@ -1,6 +1,6 @@
 import { MapaImovel } from '@/interfaces/IMapaImovel';
 import { imoveisCadastradosMapa } from '@/service/analista/analistaService';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import * as ReactDOMServer from 'react-dom/server';
 
 import { Home } from 'lucide-react';
@@ -11,11 +11,11 @@ import { Endereco } from '@/interfaces/IEndereco';
 import { TipoUso } from '@/interfaces/ITipoUso';
 
 interface MapaImoveisProps {
-    map: L.Map | null;
+    map: L.Map | null
+    imoveisLayers: FeatureGroup
 }
 
-const MapaImoveis: React.FC<MapaImoveisProps> = ({ map }) => {
-    const [imoveisLayers] = useState<FeatureGroup>(new L.FeatureGroup())
+const MapaImoveis: React.FC<MapaImoveisProps> = ({ map, imoveisLayers }) => {
 
     const addNonGroupLayers = (sourceLayer: any, featureGroup: FeatureGroup) => {
         if (sourceLayer instanceof L.LayerGroup) {

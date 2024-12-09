@@ -1,16 +1,14 @@
-import { BASE_LAYERS_CONFIG, GEOSERVER_URL } from "@/lib/mapa/mapa.config";
-import React, { useEffect, useRef, useState } from 'react';
-import L, { FeatureGroup } from 'leaflet';
+import React from 'react';
 
 import { cn } from '@/lib/utils'
 import { Inter } from 'next/font/google'
 
-import { buscarCamadasPeloGrupoId } from '@/service/camadaService'
 import Camada from "@/interfaces/ICamada";
 
-
 interface CamadaGrupoProps {
-    setCamadasGeo: (value: FeatureGroup) => void
+    selectedLayer: Camada[]
+    setSelectedLayer: (value: Camada[]) => void
+    camadas: Camada[]
 }
 
 export const inter = Inter({
@@ -18,25 +16,7 @@ export const inter = Inter({
     weight: ['300', '400', '500', '600', '700'],
 })
 
-const CamadasGrupo: React.FC<CamadaGrupoProps> = ({setCamadasGeo }) => {
-    // Referência para os WMS layers criados
-    const camadaLayersRef = useRef<{ [key: number]: L.Layer }>({});
-
-    const [selectedLayer, setSelectedLayer] = useState<Camada[]>([]);
-    const [camadas, setCamadas] = useState<Camada[]>([]);
-
-    const layers = useRef<FeatureGroup>(new FeatureGroup());
-
-    const buscarCamadas = async () => {
-        try {
-            const response = await buscarCamadasPeloGrupoId();
-            setCamadas(response);
-
-        } catch (error) {
-            console.error('Erro ao buscar as camadas do grupo:', error)
-        }
-    }
-
+const CamadasGrupo: React.FC<CamadaGrupoProps> = ({selectedLayer, setSelectedLayer, camadas }) => {
     const habilitarDesabilitarCamada = (camada: Camada) => {
         if (selectedLayer.find(layer => layer.id === camada.id)) {
             // Remove se existir
@@ -47,43 +27,6 @@ const CamadasGrupo: React.FC<CamadaGrupoProps> = ({setCamadasGeo }) => {
             setSelectedLayer([...selectedLayer, camada]);
         }
     };
-
-    useEffect(() => {
-        buscarCamadas();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    useEffect(() => {
-        console.log('setCamadaGeo');
-        setCamadasGeo(layers.current);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [layers])
-
-    useEffect(() => {
-        // Atualiza o mapa com base nas camadas selecionadas
-        selectedLayer.forEach(camada => {
-            // Verifica se a camada já existe, senão cria uma nova L.tileLayer.wms
-            if (!camadaLayersRef.current[camada.id]) {
-                camadaLayersRef.current[camada.id] = L.tileLayer.wms(GEOSERVER_URL, {
-                    layers: camada.codigo,
-                    format: 'image/png',
-                    transparent: true,
-                    attribution: camada.nome,
-                });
-            }
-            // Adiciona a camada ao mapa
-            layers.current.addLayer(camadaLayersRef.current[camada.id]);
-        });
-
-        // Remove as camadas que não estão mais em selectedLayer
-        Object.keys(camadaLayersRef.current).forEach((id) => {
-            const camadaId = Number(id);
-            if (!selectedLayer.find(layer => layer.id === camadaId)) {
-                layers.current.removeLayer(camadaLayersRef.current[camadaId]);
-            }
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedLayer]);
 
     return (
         <div className="pr-3">
