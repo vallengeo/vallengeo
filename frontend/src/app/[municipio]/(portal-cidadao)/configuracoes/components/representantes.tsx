@@ -1,5 +1,7 @@
-import Link from "next/link"
+'use client'
 
+import { usePathname } from "next/navigation"
+import Link from "next/link"
 import { Avatar } from "@/components/avatar"
 import { Button } from "@/components/ui/button"
 import { PenSquare } from "lucide-react"
@@ -13,6 +15,9 @@ import {
 import { FormRedefinirSenha } from '@/components/profile/form'
 
 export function Representantes() {
+  const pathname  = usePathname()
+  const idMunicipio = pathname.split('/')[1];
+
   return (
     <div className="bg-white border border-input rounded-2xl p-6 relative">
       <div className="space-y-6">
@@ -63,7 +68,7 @@ export function Representantes() {
           </div>
 
           <Link
-            href="/configuracoes/editar/1"
+            href={`/${idMunicipio}/configuracoes/editar/1`}
             className="text-lg inline-flex items-center gap-2"
           >
             <PenSquare size={20} />

@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm, SubmitHandler } from "react-hook-form";
 import { cadastroFormSchema, cadastroFormData } from "@/validation/autenticacao/cadastro"
-import { formatarCampo } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -28,18 +27,6 @@ export function CadastrarComGovbr({ municipio }: ICadastrarComGovbr) {
 
   const onSubmit: SubmitHandler<cadastroFormData> = (data) => {
     console.log(data);
-  }
-
-  function handleChangeCPF(e: React.ChangeEvent<HTMLInputElement>) {
-    const rawValue = e.target.value;
-    const formattedValue = formatarCampo(rawValue, 'CPF')
-    form.setValue('cpf', formattedValue)
-  }
-
-  function handleChangeTelefone(e: React.ChangeEvent<HTMLInputElement>) {
-    const rawValue = e.target.value;
-    const formattedValue = formatarCampo(rawValue, 'Telefone');
-    form.setValue('telefone', formattedValue);
   }
 
   return (
@@ -92,7 +79,6 @@ export function CadastrarComGovbr({ municipio }: ICadastrarComGovbr) {
                     maxLength={14}
                     autoComplete="off"
                     {...field}
-                    onChange={handleChangeCPF}
                   />
                 </FormControl>
                 <FormMessage />
@@ -111,7 +97,6 @@ export function CadastrarComGovbr({ municipio }: ICadastrarComGovbr) {
                     type="tel"
                     maxLength={15}
                     {...field}
-                    onChange={handleChangeTelefone}
                   />
                 </FormControl>
                 <FormMessage />

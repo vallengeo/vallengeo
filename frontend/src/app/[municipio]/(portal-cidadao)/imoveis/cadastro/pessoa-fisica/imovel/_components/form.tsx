@@ -1,89 +1,141 @@
-"use client"
+"use client";
 
-import { useFormState } from "@/contexts/Imovel/FormContext";
-import { mapearEstados } from "@/validation/estados";
-import { imovelFormData, imovelFormSchema, mapearGrupos } from "@/validation/imovel/imovel";
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useFormState } from "@/contexts/formCadastroPFContext";
+import { imovelFormSchema, imovelFormData } from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { getCep } from "@/service/localidadeService";
-import { format } from "date-fns"
-import { ptBR } from "date-fns/locale"
+import { handlePreviousStep, handleNextStep } from "./navigate";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import Mapa from "./mapa";
+import Mapa from "../../../_components/mapa";
 import InputMask from "react-input-mask";
+import { TipoUso } from "@/interfaces/ITipoUso";
+import { tipoUso } from "@/service/imovelService";
+import { Loader } from "@/components/loader";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export function CadastroImovel() {
+export function FormCadastroImovel() {
+  const pathname = usePathname();
+  const municipio = pathname.split("/")[1];
+
+  const [editarInformacaoImovel, setEditarInformacaoImovel] =
+    useState<boolean>(false);
+  const [editarCaracterizacaoImovel, setEditarCaracterizacaoImovel] =
+    useState<boolean>(false);
+  const [grupos, setGrupos] = useState<TipoUso[]>([]);
+  const [loading, setLoading] = useState<boolean>(false)
+
   const { toast } = useToast();
-  const { onHandleBack, onHandleNext, setFormData, formData } = useFormState();
+  const { formData, setFormData } = useFormState();
+
+  console.log(formData);
 
   const form = useForm<imovelFormData>({
-    mode: 'all',
-    criteriaMode: 'all',
+    mode: "all",
+    criteriaMode: "all",
     resolver: zodResolver(imovelFormSchema),
     defaultValues: formData,
-  })
+  });
 
-  const { setValue, formState: { isValid } } = form
+  const {
+    setValue,
+    formState: { isValid },
+  } = form;
 
-  const onSubmit: SubmitHandler<imovelFormData> = (data) => {
+  const onSubmit: SubmitHandler<imovelFormData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
-    onHandleNext();
-    console.log(formData)
-  }
+    console.log(formData);
 
-  const grupoOptions = Object.entries(mapearGrupos).map(([value, label]) => (
-    <SelectItem value={value} key={value}>
-      {label}
-    </SelectItem>
-  ))
+    setLoading(true);
 
-  const ufOptions = Object.entries(mapearEstados).map(([value, label]) => (
-    <SelectItem value={value} key={value}>
-      {label}
-    </SelectItem>
-  ))
+    await handleNextStep(municipio);
+  };
 
   const consultarCep = async (value: string) => {
     try {
-      const cep = value.replace(/\D/g, '');
+      const cep = value.replace(/\D/g, "");
       if (cep.length < 8) {
         return;
       }
 
       const response = await getCep(cep);
-      const { logradouro, complemento, bairro, municipio, error } = response.data;
+      const { logradouro, complemento, bairro, municipio, error } =
+        response.data;
 
       if (error) {
         toast({
-          'description': 'CEP não encontrado',
-          'variant': 'destructive',
+          description: "CEP não encontrado",
+          variant: "destructive",
         });
         return;
       }
 
-      setValue('endereco', logradouro);
-      setValue('complemento', complemento);
-      setValue('bairro', bairro);
-      setValue('cidade', municipio.estado.nome);
-      setValue('uf', municipio.estado.uf);
+      setValue("informacaoImovel.endereco.logradouro", logradouro);
+      setValue("informacaoImovel.endereco.complemento", complemento);
+      setValue("informacaoImovel.endereco.bairro", bairro);
+      setValue("informacaoImovel.endereco.idMunicipio", municipio.id);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
       toast({
-        'description': errorMessage,
-        'variant': 'destructive',
+        description: errorMessage,
+        variant: "destructive",
       });
     }
-  }
+  };
+
+  const handleEditarInformacaoImovel = () => {
+    setEditarInformacaoImovel(!editarInformacaoImovel);
+  };
+
+  const handleEditarCaracterizacaoImovel = () => {
+    setEditarCaracterizacaoImovel(!editarCaracterizacaoImovel);
+  };
+
+  useEffect(() => {
+    const obterGrupos = async () => {
+      try {
+        const response = await tipoUso();
+        setGrupos(response.data);
+      } catch (error) {
+        toast({
+          description: `Erro ao obter os grupos: ${error}`,
+          variant: "destructive",
+        });
+      }
+    };
+
+    obterGrupos();
+  }, []);
 
   return (
     <Form {...form}>
@@ -98,13 +150,17 @@ export function CadastroImovel() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-medium">Informações do imóvel</h2>
-              <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
+              <p>
+                Informe todos os dados para continuar o processo de
+                cadastramento de imóvel.
+              </p>
             </div>
 
             <Button
               type="button"
               variant="no-style"
               size="no-style"
+              onClick={() => handleEditarInformacaoImovel()}
               className="text-lg inline-flex items-center gap-2"
             >
               <LucidePenSquare size={20} />
@@ -116,17 +172,29 @@ export function CadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="grupo"
+                name="informacaoImovel.tipoUso.id"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Tipo de grupo ou ocupação/uso*</FormLabel>
                     <FormControl>
-                      <Select onValueChange={field.onChange}>
+                      <Select
+                        onValueChange={field.onChange}
+                        disabled={editarInformacaoImovel}
+                      >
                         <SelectTrigger {...field}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {grupoOptions}
+                          {grupos.map((grupo) => {
+                            return (
+                              <SelectItem
+                                value={String(grupo.id)}
+                                key={grupo.id}
+                              >
+                                {grupo.nome}
+                              </SelectItem>
+                            );
+                          })}
                         </SelectContent>
                       </Select>
                     </FormControl>
@@ -137,7 +205,7 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="cep"
+                name="informacaoImovel.endereco.cep"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[30%]">
                     <FormLabel>CEP*</FormLabel>
@@ -149,8 +217,15 @@ export function CadastroImovel() {
                         onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
                           consultarCep(e.target.value);
                         }}
+                        disabled={editarInformacaoImovel}
                       >
-                        {(inputProps: InputProps) => <Input type="tel" {...inputProps} />}
+                        {(inputProps: InputProps) => (
+                          <Input
+                            type="tel"
+                            {...inputProps}
+                            disabled={editarInformacaoImovel}
+                          />
+                        )}
                       </InputMask>
                     </FormControl>
                     <FormMessage />
@@ -160,12 +235,16 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="endereco"
+                name="informacaoImovel.endereco.logradouro"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-[35%]">
                     <FormLabel>Endereço*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -176,12 +255,16 @@ export function CadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="numero"
+                name="informacaoImovel.endereco.numero"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Número*</FormLabel>
                     <FormControl>
-                      <Input type="tel" {...field} />
+                      <Input
+                        type="tel"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -190,12 +273,16 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="complemento"
+                name="informacaoImovel.endereco.complemento"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Complemento</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -203,49 +290,16 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="bairro"
+                name="informacaoImovel.endereco.bairro"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Bairro*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="uf"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/4">
-                    <FormLabel>UF*</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange}>
-                        <SelectTrigger {...field}>
-                          <SelectValue placeholder={field.value} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {ufOptions}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex items-start gap-6 flex-col md:flex-row">
-              <FormField
-                control={form.control}
-                name="cidade"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/2">
-                    <FormLabel>Cidade*</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarInformacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -259,13 +313,17 @@ export function CadastroImovel() {
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xl font-medium">Caracterização do imóvel</h2>
-              <p>Informe todos os dados para continuar o processo de cadastramento de imóvel.</p>
+              <p>
+                Informe todos os dados para continuar o processo de
+                cadastramento de imóvel.
+              </p>
             </div>
 
             <Button
               type="button"
               variant="no-style"
               size="no-style"
+              onClick={() => handleEditarCaracterizacaoImovel()}
               className="text-lg inline-flex items-center gap-2"
             >
               <LucidePenSquare size={20} />
@@ -277,12 +335,16 @@ export function CadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="setor"
+                name="caracterizacaoImovel.setor"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Setor*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -291,12 +353,16 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="quadra"
+                name="caracterizacaoImovel.quadra"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Quadra*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -305,58 +371,15 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="lote"
+                name="caracterizacaoImovel.lote"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/3">
                     <FormLabel>Lote*</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex items-start gap-6 flex-col md:flex-row">
-              <FormField
-                control={form.control}
-                name="unidade"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/2">
-                    <FormLabel>Unidade</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="area_terreno"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/4">
-                    <FormLabel>Área do terreno*</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="testada"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/4">
-                    <FormLabel>Testada principal*</FormLabel>
-                    <FormControl>
                       <Input
                         type="text"
                         {...field}
+                        disabled={editarCaracterizacaoImovel}
                       />
                     </FormControl>
                     <FormMessage />
@@ -368,12 +391,16 @@ export function CadastroImovel() {
             <div className="flex items-start gap-6 flex-col md:flex-row">
               <FormField
                 control={form.control}
-                name="fracao"
+                name="caracterizacaoImovel.unidade"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/2">
-                    <FormLabel>Fração ideal</FormLabel>
+                    <FormLabel>Unidade</FormLabel>
                     <FormControl>
-                      <Input type="text" {...field} />
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -382,7 +409,63 @@ export function CadastroImovel() {
 
               <FormField
                 control={form.control}
-                name="data_inclusao"
+                name="caracterizacaoImovel.areaTerreno"
+                render={({ field }) => (
+                  <FormItem className="w-full md:w-1/4">
+                    <FormLabel>Área do terreno*</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="caracterizacaoImovel.testadaPrincipal"
+                render={({ field }) => (
+                  <FormItem className="w-full md:w-1/4">
+                    <FormLabel>Testada principal*</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex items-start gap-6 flex-col md:flex-row">
+              <FormField
+                control={form.control}
+                name="caracterizacaoImovel.fracaoIdeal"
+                render={({ field }) => (
+                  <FormItem className="w-full md:w-1/2">
+                    <FormLabel>Fração ideal</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        {...field}
+                        disabled={editarCaracterizacaoImovel}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="caracterizacaoImovel.dataInclusao"
                 render={({ field }) => (
                   <FormItem className="w-full md:w-2/5">
                     <FormLabel>Data de inclusão*</FormLabel>
@@ -391,10 +474,15 @@ export function CadastroImovel() {
                         <FormControl>
                           <Button
                             variant={"outline"}
-                            className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent"
+                            className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-transparent"
+                            disabled={editarCaracterizacaoImovel}
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
-                            {field.value ? format(field.value, "PPP", { locale: ptBR }) : <span>Selecione a data</span>}
+                            {field.value ? (
+                              format(field.value, "PPP", { locale: ptBR })
+                            ) : (
+                              <span>Selecione a data</span>
+                            )}
                           </Button>
                         </FormControl>
                       </PopoverTrigger>
@@ -403,6 +491,7 @@ export function CadastroImovel() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
+                          disabled={editarCaracterizacaoImovel}
                         />
                       </PopoverContent>
                     </Popover>
@@ -414,11 +503,28 @@ export function CadastroImovel() {
           </div>
         </fieldset>
 
-        <div className="flex justify-end items-center flex-wrap gap-4">
-          <Button variant="secondary" onClick={onHandleBack}>Voltar</Button>
-          <Button type="submit" disabled={!isValid}>Avançar</Button>
+        <div className="flex justify-between items-center flex-wrap gap-4">
+          <Button
+            type="button"
+            onClick={async () => await handlePreviousStep(municipio)}
+            variant="secondary"
+          >
+            Voltar
+          </Button>
+
+          <Button
+            type="submit"
+            disabled={!isValid}
+            className={`w-40 h-10 ${loading ? 'pointer-events-none' : ''}`}
+          >
+            {loading ? (
+              <Loader />
+            ) : (
+              "Avançar"
+            )}
+          </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }
