@@ -181,6 +181,7 @@ public class ImovelService {
     }
 
     public ByteArrayResource fichaImovelImprimir(UUID processoId, HttpServletRequest request) {
+        buscarImovelPeloProcessoId(processoId);
         ParamsRequest data = prepararParametrosPDF(processoId, request);
         byte[] pdfBytes = wkhtmlService.pdf(data);
 
