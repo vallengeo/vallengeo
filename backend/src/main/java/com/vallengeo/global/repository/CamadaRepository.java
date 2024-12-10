@@ -4,7 +4,12 @@ import com.vallengeo.global.model.Camada;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,7 +18,7 @@ import java.util.UUID;
 public interface CamadaRepository extends JpaRepository<Camada, Long> {
     @Query(nativeQuery = true,
             value = """
-                    SELECT c.id, c.nome, c.codigo, c.ordem, c.id_camada_categoria, c.cor_preenchimento, c.cor_borda                    
+                    SELECT c.*
                     FROM dado_global.camada c
                     INNER JOIN dado_global.camada_grupo cg ON cg.id_camada = c.id
                     WHERE cg.id_grupo =:grupoId
