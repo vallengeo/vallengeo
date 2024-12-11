@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #EFEFEF;
+    --background-secondary: #F5F5F5;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: #8DFA61;
+    --primary-hover: #0E8164;
+    --primary-foreground: #1D1D1D;
+    --primary-foreground-hover: #FFFFFF;
+
+    --secondary: #FFFFFF;
+    --secondary-foreground: #434141;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: #BABABA;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 0 84.2% 60.2%;
+    --success-foreground: 210 40% 98%;
+
+    --gov-br: 34 83 174;
+    --gov-br-hover: 24 65 141;
+    --gov-br-foreground: 255 255 255;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: #E8E1E1;
+    --input-secondary: #FCFCFC;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --amarelo: #FACF61;
+    --link: #0056F9;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .triangle-to-top {
+    @apply w-0 h-0 border-solid border-t-0 border-x-8 border-b-[16px] border-t-transparent border-x-transparent border-b-white;
+  }
+}

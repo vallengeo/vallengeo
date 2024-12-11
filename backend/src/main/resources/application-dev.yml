@@ -1,0 +1,35 @@
+# ===============================
+# = PORTA
+# ===============================
+server:
+  port: ${API_PORT}
+  url: http://localhost:${API_PORT}
+
+spring:
+  config:
+    import: optional:file:./docker/vallengeo/.env[.properties]
+  
+  ## ===============================
+  ## = BANCO DE DADOS
+  ## ===============================
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+        enable_lazy_load_no_trans: true
+        temp:
+          use_jdbc_metadata_defaults: false
+        type: trace
+    show-sql: true
+
+  ## ===============================
+  ## = FLYWAY
+  ## ===============================
+  flyway:
+    enabled: true
+    schemas: public
+    url: ${DATABASE_URL}
+    user: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+
+geoserver-url: http://localhost:9001/geoserver/vallengeo
