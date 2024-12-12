@@ -80,3 +80,27 @@ docker-compose.yml
 # Docker
 backend/docker/vallengeo/.env
 frontend/package-lock.json
+
+# Terraform
+# Local .terraform directories
+**/.terraform/*
+
+# Terraform lockfile
+.terraform.lock.hcl
+
+# Crash log files
+terraform/crash.log
+
+*.tfvars
+
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc
+
+#ignore Key files 
+.pem
