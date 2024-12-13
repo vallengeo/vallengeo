@@ -39,7 +39,7 @@ jobs:
     - name: Acessar a instância Frontend
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@18.231.250.52 << 'EOF'
-        cd /mnt/ebs/homolog/vallengeo
+        cd /mnt/ebs/vallengeo
         sudo git pull origin homolog || exit 1
         cd frontend
         sudo npm install || exit 1
