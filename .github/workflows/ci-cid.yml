@@ -20,9 +20,9 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@54.232.129.154 << 'EOF'
         cd /mnt/ebs/homolog/vallengeo
-        git pull origin homolog || exit 1
+        sudo git pull origin homolog || exit 1
         cd backend
-        mvn clean package || exit 1
+        sudo mvn clean package || exit 1
         sudo systemctl restart vallengeo.service
         EOF
 
@@ -40,9 +40,9 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@18.231.250.52 << 'EOF'
         cd /mnt/ebs/homolog/vallengeo
-        git pull origin homolog || exit 1
+        sudo git pull origin homolog || exit 1
         cd frontend
-        npm install || exit 1
-        npm run build || exit 1
+        sudo npm install || exit 1
+        sudo npm run build || exit 1
         sudo systemctl restart frontend.service
         EOF
