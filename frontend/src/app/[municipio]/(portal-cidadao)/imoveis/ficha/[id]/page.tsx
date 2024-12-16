@@ -1,8 +1,6 @@
 import Link from "next/link";
-
 import { Header } from "@/components/header";
-import { Download, PenSquare } from "lucide-react";
-
+import { PenSquare } from "lucide-react";
 import { DownloadFicha } from "./components/download-ficha";
 import { VisaoGeral } from "./components/visao-geral";
 import { InformacoesContato } from "./components/informacoes-contato";
@@ -12,6 +10,14 @@ import { Observacoes } from "./components/observacoes";
 import { DocumentosEnviados } from "./components/documentos-enviados";
 import { Historico } from "./components/historico";
 import { RepresentantesImovel } from "./components/representantes";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
 
 export default function FichaImovelPage({
   params
@@ -31,17 +37,25 @@ export default function FichaImovelPage({
           title="Ficha de imóvel"
           linkBack={`/${params.municipio}/imoveis`}
         >
-          <div className="flex items-center gap-1">
-            <Link href={`/${params.municipio}/imoveis`}>Imóveis</Link>
-            <span>/</span>
-            <span>Ficha de imóvel</span>
-            <span>/</span>
-            <strong>{params.id}</strong>
-          </div>
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={`/${params.municipio}/imoveis`}>Imóveis</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-normal">Ficha de imóvel</BreadcrumbPage>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator>/</BreadcrumbSeparator>
+              <BreadcrumbItem>
+                <BreadcrumbPage className="font-normal">{params.id}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
         </Header>
 
         <Link
-          href={`/imoveis/editar/${params.id}`}
+          href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica/editar/${params.id}`}
           className="flex items-center gap-0.5"
         >
           <PenSquare size={20} />
