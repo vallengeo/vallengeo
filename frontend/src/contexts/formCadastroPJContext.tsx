@@ -9,10 +9,12 @@ import {
   useState,
   useEffect,
 } from "react";
+import Cookies from "js-cookie";
+import { GRUPO_ID } from "@/constants/auth";
 import { dadosEmpresaSchema } from "@/validation/imovel/representante";
 import { imovelFormSchema } from "@/validation/imovel/imovel";
 
-const LOCAL_STORAGE_KEY = "cadastro-imovel-pj";
+const idGrupo = Cookies.get(GRUPO_ID);
 
 const formCadastroPJSchema = dadosEmpresaSchema.merge(imovelFormSchema);
 
@@ -25,82 +27,94 @@ const initialFormData: formCadastroPJData = {
     cpf: "",
     email: "",
     endereco: {
-      cep: "",
-      logradouro: "",
-      bairro: "",
-      numero: "",
+      cep: "12302-244",
+      logradouro: "Rua Francisco Vichi",
+      bairro: "Residencial Santa Paula",
+      numero: "107",
       complemento: "",
-      cidade: "",
-      uf: "",
-      idMunicipio: 0,
+      municipio: {
+        id: 3524402,
+        nome: "Jacareí",
+        estado: {
+          id: 35,
+          nome: "São Paulo",
+          uf: "SP",
+        },
+      },
     },
     nome: "",
     rg: "",
     tipoPessoa: "FISICA",
     telefone: ""
   },
+  idGrupo: String(idGrupo),
   representantes: [
     {
-      email: "",
-      telefone: "",
-      tipoPessoa: "FISICA",
+      email: "stefanysophielopes@heinrich.com.br",
+      telefone: "(12) 3590-2293",
       endereco: {
-        cep: "",
-        logradouro: "",
-        bairro: "",
-        numero: "",
+        cep: "12302-244",
+        logradouro: "Rua Francisco Vichi",
+        bairro: "Residencial Santa Paula",
+        numero: "107",
         complemento: "",
-        cidade: "",
-        uf: "",
-        idMunicipio: 0,
+        municipio: {
+          id: 3524402,
+          nome: "Jacareí",
+          estado: {
+            id: 35,
+            nome: "São Paulo",
+            uf: "SP",
+          },
+        },
       },
+      nome: "Stefany Sophie Lopes",
+      cpf: "73017117006",
+      rg: "298442619",
+      tipoPessoa: "FISICA",
       contato: {
-        tipo: "representante",
-        nome: "",
-        email: "",
-        telefone: "",
-        documento: "",
+        nome: "Maria Julia Joana Gonçalves",
+        email: "maria.julia.goncalves@avantii.com.br",
+        telefone: "(11) 99907-6092",
+        responsavelTecnico: false,
+        representanteLegal: false,
+        outro: true,
+        documento: "045.999.111-23",
       },
-      nome: "",
-      cpf: "",
-      rg: "",
     },
   ],
   informacaoImovel: {
-    tipoUso: "",
+    tipoUso: {
+      id: "1",
+    },
     endereco: {
-      cep: "",
-      logradouro: "",
-      bairro: "",
-      numero: "",
-      complemento: "",
-      cidade: "",
-      uf: "",
-      idMunicipio: 0,
+      cep: "12711610",
+      logradouro: "Rua  DARIO ANTUNES DE OLIVEIRA",
+      bairro: "VILA LOYELO",
+      numero: "650",
+      idMunicipio: 3513405,
     },
   },
   caracterizacaoImovel: {
-    setor: "",
-    areaTerreno: "",
+    setor: "3",
+    quadra: "189",
+    lote: "0170",
+    unidade: "001",
+    areaTerreno: "268",
+    testadaPrincipal: "8",
+    fracaoIdeal: "0",
     dataInclusao: new Date(),
-    lote: "",
-    quadra: "",
-    testadaPrincipal: "",
-    fracaoIdeal: "",
-    unidade: "",
   },
 };
 
 interface IFormCadastroPJContext {
   formData: formCadastroPJData;
   setFormData: Dispatch<SetStateAction<formCadastroPJData>>;
-  clearFormData: () => void
 }
 
 const FormCadastroPJContext = createContext<IFormCadastroPJContext>({
   formData: initialFormData,
   setFormData: () => {},
-  clearFormData: () => {}
 });
 
 interface IFormCadastroPJProvider {
@@ -108,31 +122,10 @@ interface IFormCadastroPJProvider {
 }
 
 export function FormCadastroPJProvider({ children }: IFormCadastroPJProvider) {
-  const loadFormData = (): formCadastroPJData => {
-    if (typeof window !== "undefined") {
-      const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-      return savedData ? JSON.parse(savedData) : initialFormData;
-    }
-    return initialFormData;
-  };
-
-  const [formData, setFormData] = useState<formCadastroPJData>(loadFormData);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(formData));
-    }
-  }, [formData]);
-
-  const clearFormData = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-    }
-    setFormData(initialFormData);
-  };
+  const [formData, setFormData] = useState<formCadastroPJData>(initialFormData);
 
   return (
-    <FormCadastroPJContext.Provider value={{ formData, setFormData, clearFormData }}>
+    <FormCadastroPJContext.Provider value={{ formData, setFormData }}>
       {children}
     </FormCadastroPJContext.Provider>
   );

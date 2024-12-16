@@ -96,12 +96,6 @@ export function FormCadastroRepresentantes() {
       setValue(`representantes.${index}.endereco.logradouro`, logradouro);
       setValue(`representantes.${index}.endereco.complemento`, complemento);
       setValue(`representantes.${index}.endereco.bairro`, bairro);
-      setValue(`representantes.${index}.endereco.idMunicipio`, municipio.id);
-      setValue(
-        `representantes.${index}.endereco.cidade`,
-        municipio.estado.nome
-      );
-      setValue(`representantes.${index}.endereco.uf`, municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -257,54 +251,10 @@ export function FormCadastroRepresentantes() {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                control={control}
-                name="responsavel.endereco.cidade"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/5">
-                    <FormLabel>Cidade*</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={control}
-                name="responsavel.endereco.uf"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/5">
-                    <FormLabel>UF*</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={
-                              field.value
-                                ? convertUFToState(field.value)
-                                : "Selecione um estado"
-                            }
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>{ufOptions}</SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </fieldset>
 
           {fields.map((field, index) => {
-            const tipoContato = watch(`representantes.${index}.contato.tipo`);
-
             return (
               <div key={field.id} className="space-y-6">
                 <div className="bg-white border border-input rounded-2xl p-6 space-y-6 relative overflow-hidden">
@@ -519,48 +469,6 @@ export function FormCadastroRepresentantes() {
                         </FormItem>
                       )}
                     />
-
-                    <FormField
-                      control={control}
-                      name={`representantes.${index}.endereco.cidade`}
-                      render={({ field }) => (
-                        <FormItem className="w-full md:w-1/5">
-                          <FormLabel>Cidade*</FormLabel>
-                          <FormControl>
-                            <Input type="text" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={control}
-                      name={`representantes.${index}.endereco.uf`}
-                      render={({ field }) => (
-                        <FormItem className="w-full md:w-1/5">
-                          <FormLabel>UF*</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue
-                                  placeholder={
-                                    field.value
-                                      ? convertUFToState(field.value)
-                                      : "Selecione um estado"
-                                  }
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>{ufOptions}</SelectContent>
-                          </Select>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                   </div>
                 </div>
 
@@ -569,132 +477,7 @@ export function FormCadastroRepresentantes() {
                     <h2 className="text-xl font-semibold">
                       Informação de contato:
                     </h2>
-
-                    <FormField
-                      control={control}
-                      name={`representantes.${index}.contato.tipo`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <RadioGroup
-                              onValueChange={field.onChange}
-                              {...field}
-                              className="flex items-center flex-wrap gap-4"
-                            >
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="representante" />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal">
-                                  Representante do imóvel
-                                </FormLabel>
-                              </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="responsavel" />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal">
-                                  Responsável legal
-                                </FormLabel>
-                              </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0">
-                                <FormControl>
-                                  <RadioGroupItem value="outro" />
-                                </FormControl>
-                                <FormLabel className="text-base font-normal">
-                                  Outro
-                                </FormLabel>
-                              </FormItem>
-                            </RadioGroup>
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
                   </div>
-
-                  {errors.representantes?.[index]?.contato?.tipo && (
-                    <p>
-                      {errors.representantes?.[index]?.contato?.tipo?.message}
-                    </p>
-                  )}
-
-                  {(tipoContato === "responsavel" ||
-                    tipoContato === "outro") && (
-                    <div className="space-y-6 mt-6">
-                      <Aviso
-                        type="warning"
-                        message="Na seção de documentos, é imprescindível anexar a procuração, podendo esta ser simples ou autenticada."
-                        size={24}
-                        className="justify-start"
-                      />
-
-                      <div className="grid grid-cols-4 gap-6">
-                        <FormField
-                          control={control}
-                          name={`representantes.${index}.contato.nome`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Nome completo*</FormLabel>
-                              <FormControl>
-                                <Input type="text" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={control}
-                          name={`representantes.${index}.contato.email`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>E-mail*</FormLabel>
-                              <FormControl>
-                                <Input type="email" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={control}
-                          name={`representantes.${index}.contato.telefone`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Telefone*</FormLabel>
-                              <FormControl>
-                                <InputMask
-                                  mask="(99) 99999-9999"
-                                  value={field.value}
-                                  onChange={field.onChange}
-                                >
-                                  {(inputProps: InputProps) => (
-                                    <Input type="tel" {...inputProps} />
-                                  )}
-                                </InputMask>
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={control}
-                          name={`representantes.${index}.contato.documento`}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Documento*</FormLabel>
-                              <FormControl>
-                                <Input type="tel" {...field} />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-                  )}
                 </div>
               </div>
             );
@@ -709,32 +492,6 @@ export function FormCadastroRepresentantes() {
               <Button
                 type="button"
                 variant="default"
-                onClick={() =>
-                  append({
-                    email: "",
-                    telefone: "",
-                    tipoPessoa: "FISICA",
-                    nome: "",
-                    rg: "",
-                    cpf: "",
-                    endereco: {
-                      cep: "",
-                      logradouro: "",
-                      bairro: "",
-                      numero: "",
-                      cidade: "",
-                      uf: "",
-                      idMunicipio: 0,
-                    },
-                    contato: {
-                      tipo: "representante",
-                      nome: "",
-                      email: "",
-                      telefone: "",
-                      documento: "",
-                    },
-                  })
-                }
               >
                 Adicionar
               </Button>

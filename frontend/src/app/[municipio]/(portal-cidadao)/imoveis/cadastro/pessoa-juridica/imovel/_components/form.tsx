@@ -6,7 +6,6 @@ import { mapearEstados, convertUFToState } from "@/validation/estados";
 import {
   imovelFormData,
   imovelFormSchema,
-  mapearGrupos,
 } from "@/validation/imovel/imovel";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -69,12 +68,6 @@ export function FormCadastroImovel() {
     await handleNextStep(municipio);
   };
 
-  const grupoOptions = Object.entries(mapearGrupos).map(([value, label]) => (
-    <SelectItem value={value} key={value}>
-      {label}
-    </SelectItem>
-  ));
-
   const ufOptions = Object.entries(mapearEstados).map(([value, label]) => (
     <SelectItem value={value} key={value}>
       {label}
@@ -104,8 +97,6 @@ export function FormCadastroImovel() {
       setValue("informacaoImovel.endereco.complemento", complemento);
       setValue("informacaoImovel.endereco.bairro", bairro);
       setValue("informacaoImovel.endereco.idMunicipio", municipio.id);
-      setValue("informacaoImovel.endereco.cidade", municipio.estado.nome);
-      setValue("informacaoImovel.endereco.uf", municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -148,25 +139,6 @@ export function FormCadastroImovel() {
 
           <div className="space-y-6 mt-6">
             <div className="flex items-start gap-6 flex-col md:flex-row">
-              <FormField
-                control={form.control}
-                name="informacaoImovel.tipoUso"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-[35%]">
-                    <FormLabel>Tipo de grupo ou ocupação/uso*</FormLabel>
-                    <FormControl>
-                      <Select onValueChange={field.onChange}>
-                        <SelectTrigger {...field}>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>{grupoOptions}</SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
               <FormField
                 control={form.control}
                 name="informacaoImovel.endereco.cep"
@@ -241,50 +213,6 @@ export function FormCadastroImovel() {
                 render={({ field }) => (
                   <FormItem className="w-full md:w-1/4">
                     <FormLabel>Bairro*</FormLabel>
-                    <FormControl>
-                      <Input type="text" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="informacaoImovel.endereco.uf"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/5">
-                    <FormLabel>UF*</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue
-                            placeholder={
-                              field.value
-                                ? convertUFToState(field.value)
-                                : "Selecione um estado"
-                            }
-                          />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>{ufOptions}</SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="flex items-start gap-6 flex-col md:flex-row">
-              <FormField
-                control={form.control}
-                name="informacaoImovel.endereco.cidade"
-                render={({ field }) => (
-                  <FormItem className="w-full md:w-1/2">
-                    <FormLabel>Cidade*</FormLabel>
                     <FormControl>
                       <Input type="text" {...field} />
                     </FormControl>
