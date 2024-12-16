@@ -11,6 +11,7 @@ import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.service.ImovelService;
 import com.vallengeo.core.exceptions.ApiExceptionCustom;
+import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.Constants;
 import com.vallengeo.core.util.Paginacao;
 import com.vallengeo.portal.model.Usuario;
@@ -222,6 +223,7 @@ class ImovelControllerTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatus());
         assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), actual.getError());
+        assertEquals(ValidatorException.class.getName(), actual.getException());
         assertEquals("Imóvel vinculado ao processo " + idProcessoNaoCadastrado + Constants.NOT_FOUND, actual.getMessage());
     }
 
@@ -276,6 +278,7 @@ class ImovelControllerTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatus());
         assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), actual.getError());
+        assertEquals(ValidatorException.class.getName(), actual.getException());
         assertEquals("Imóvel vinculado ao processo " + idProcessoNaoCadastrado + Constants.NOT_FOUND, actual.getMessage());
     }
 
@@ -429,6 +432,7 @@ class ImovelControllerTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertEquals(HttpStatus.NOT_FOUND.value(), actual.getStatus());
         assertEquals(HttpStatus.NOT_FOUND.getReasonPhrase(), actual.getError());
+        assertEquals(ValidatorException.class.getName(), actual.getException());
         assertEquals("Processo " + idProcessoNaoCadastrado + Constants.NOT_FOUND, actual.getMessage());
     }
 

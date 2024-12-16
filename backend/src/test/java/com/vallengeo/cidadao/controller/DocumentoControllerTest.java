@@ -223,7 +223,6 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
     @Test @Order(6)
     @DisplayName("Integration Test - Dado tipoDocumentoId & Arquivo Quando uploadTemp() Deve Retornar DocumentoTemporarioResponse")
     void testDadoTipoDocumentoIdEArquivo_QuandoUploadTemp_DeveRetornarDocumentoTemporarioResponse() throws IOException {
-        // var mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ResponseOptions<?> response = given().spec(specification)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .contentType(ContentType.MULTIPART)
