@@ -9,7 +9,7 @@ import { Notificacoes } from "./components/notificacoes";
 import { Welcome } from "./components/welcome";
 import { ResumoImoveis } from "./components/resumo-imoveis";
 import type { Metadata } from 'next'
-import { Mapa } from './components/mapa/mapa-cidade'
+import { Mapa } from './components/mapa'
 
 export const metadata: Metadata = {
   title: 'Página Inicial - VallenGeo',

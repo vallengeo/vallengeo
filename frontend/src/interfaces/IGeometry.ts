@@ -1,5 +1,4 @@
-import { Feature } from "geojson"
-
-export default interface IGeometry {
-    geometry: Feature | L.GeoJSON
-  }
+import { Feature } from "geojson";
+export default interface Geometria {
+  geometria: Feature;
+}

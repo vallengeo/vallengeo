@@ -2,10 +2,12 @@ import axios, { AxiosRequestConfig } from 'axios';
 import {
   ACCESS_TOKEN,
   FORBIDDEN_STATUS_CODE,
+  GRUPO_ID,
   UNAUTHORIZED_STATUS_CODE
 } from '@/constants/auth';
 import { actionLogout } from './authService';
 import Cookies from 'js-cookie'
+import { cookies } from '@/lib/utils';
 
 const Api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/`,
@@ -38,7 +40,7 @@ Api.interceptors.request.use(
 Api.interceptors.response.use(
   response => {
     if (response.data && response.data['accessToken']) {
-      setRefreshToken(response.data['accessToken']);
+      setRefreshToken(response.data);
     }
 
     return response;
@@ -55,8 +57,9 @@ Api.interceptors.response.use(
   }
 );
 
-const setRefreshToken = async (token: string) => {
-  Cookies.set(ACCESS_TOKEN, token);
+const setRefreshToken = async (data: any) => {
+  Cookies.set(ACCESS_TOKEN, data['accessToken']);
+  Cookies.set(GRUPO_ID, data['idGrupo']);
 };
 
 export default Api;

@@ -3,6 +3,7 @@ package com.vallengeo.portal.service;
 import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.portal.payload.request.autenticacao.LoginRequest;
+import com.vallengeo.utils.UsuarioTestUtils;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,8 +11,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +37,7 @@ class AuthenticationServiceTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Dado Senha Incorreta Quando authenticate() Deve Lancar BadCredentialsException")
     void testDadoSenhaIncorreta_QuandoAuthenticate_DeveLancarBadCredentialsException() {
         var loginRequest = new LoginRequest(
-                "vallengeo.dev@gmail.com", "senhaIncorreta@123", null);
+                UsuarioTestUtils.DEFAULT_DEV_EMAIL, "senhaIncorreta@123", UsuarioTestUtils.MUNICIPIO_ID);
 
         assertThrows(
                 BadCredentialsException.class,
@@ -50,7 +49,7 @@ class AuthenticationServiceTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Dado Grupo Invalido Quando authenticate() Deve Lancar UnauthorizedException")
     void testDadoGrupoInvalido_QuandoAuthenticate_DeveLancarUnauthorizedException() {
         var loginRequest = new LoginRequest(
-                "vallengeo.dev@gmail.com", "123456", UUID.randomUUID().toString());
+                UsuarioTestUtils.DEFAULT_DEV_EMAIL, UsuarioTestUtils.DEFAULT_DEV_PASSWORD, null);
 
         var actual = assertThrows(
                 UnauthorizedException.class,
@@ -63,7 +62,7 @@ class AuthenticationServiceTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Dado LoginRequest Quando authenticate() Deve Retornar UserDetails")
     void testDadoLoginRequest_QuandoAuthenticate_DeveRetornarUserDetails() {
         var loginRequest = new LoginRequest(
-                "vallengeo.dev@gmail.com", "123456", "4d3c1497-af40-4ddf-8b06-d8f40c8df139");
+                UsuarioTestUtils.DEFAULT_DEV_EMAIL, UsuarioTestUtils.DEFAULT_DEV_PASSWORD, UsuarioTestUtils.MUNICIPIO_ID);
 
         var actual = authenticationService.authenticate(loginRequest);
 

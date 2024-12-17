@@ -10,6 +10,7 @@ import java.util.UUID;
 
 public class UsuarioTestUtils {
     public static final String DEFAULT_PASSWORD = "vallengeo@123";
+    public static final Integer MUNICIPIO_ID = 3513405;
     public static final UUID GRUPO_ID = UUID.fromString("4d3c1497-af40-4ddf-8b06-d8f40c8df139");
     public static final String DEFAULT_DEV_EMAIL = "vallengeo.dev@gmail.com";
     public static final String EMAIL_SEM_PERFIL = "vallengeo.semperfil@gmail.com";

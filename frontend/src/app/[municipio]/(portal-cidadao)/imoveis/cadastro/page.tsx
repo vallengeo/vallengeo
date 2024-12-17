@@ -1,21 +1,26 @@
-import Link from "next/link"
+import Link from "next/link";
 import { Header } from "@/components/header";
-import { Metadata } from "next"
+import { Metadata } from "next";
 import { Button } from "@/components/ui/button";
-
 import {
-  Building,
-  User
-} from "lucide-react";
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+
+import { Building, User } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Cadastro de Imóvel | VallenGeo"
-}
+  title: "Cadastro de Imóvel | VallenGeo",
+};
 
 export default function CadastroImoveisPage({
-  params
+  params,
 }: {
-  params: { municipio: string }
+  params: { municipio: string };
 }) {
   return (
     <div className="container space-y-6 py-6">
@@ -23,13 +28,23 @@ export default function CadastroImoveisPage({
         title="Cadastro de imóvel"
         linkBack={`/${params.municipio}/imoveis`}
       >
-        <div className="flex items-center gap-1">
-          <Link href={`/${params.municipio}`}>Página Inicial</Link>
-          <span>/</span>
-          <Link href={`/${params.municipio}/imoveis`}>Imóveis</Link>
-          <span>/</span>
-          <strong>Cadastro de imóvel</strong>
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${params.municipio}`}>
+                Página Inicial
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbLink href={`/${params.municipio}/imoveis`}>Imóveis</BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator>/</BreadcrumbSeparator>
+            <BreadcrumbItem>
+              <BreadcrumbPage>Cadastro de Imóveis</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
       </Header>
 
       <main role="main">
@@ -38,10 +53,14 @@ export default function CadastroImoveisPage({
             <Building size={40} />
 
             <div className="flex-1 flex flex-col gap-8">
-              <h3 className="text-xl md:text-2xl font-medium">Cadastrar imóvel de Pessoa jurídica</h3>
+              <h3 className="text-xl md:text-2xl font-medium">
+                Cadastrar imóvel de Pessoa jurídica
+              </h3>
 
               <Button asChild variant="default" className="w-10/12 ml-4">
-                <Link href={`/${params.municipio}/imoveis/cadastro/pessoa-juridica`}>
+                <Link
+                  href={`/${params.municipio}/imoveis/cadastro/pessoa-juridica`}
+                >
                   Acessar
                 </Link>
               </Button>
@@ -52,10 +71,14 @@ export default function CadastroImoveisPage({
             <User size={40} />
 
             <div className="flex-1 flex flex-col gap-8">
-              <h3 className="text-xl md:text-2xl font-medium">Cadastrar imóvel de Pessoa Física</h3>
+              <h3 className="text-xl md:text-2xl font-medium">
+                Cadastrar imóvel de Pessoa Física
+              </h3>
 
               <Button variant="default" asChild className="w-10/12 ml-4">
-                <Link href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica`}>
+                <Link
+                  href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica`}
+                >
                   Acessar
                 </Link>
               </Button>
@@ -64,5 +87,5 @@ export default function CadastroImoveisPage({
         </div>
       </main>
     </div>
-  )
+  );
 }

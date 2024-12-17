@@ -7,12 +7,15 @@ public record UsuarioResponse(
         String email,
         Boolean ativo,
         List<Perfil> perfis,
+        List<Grupo> grupos,
         List<Tela> telas
 ) {
 
     public record Perfil(String codigo) {
     }
 
+    public record Grupo(String codigo) {
+    }
     public record Tela(String codigo, List<Permissao> permissoes) {
     }
 

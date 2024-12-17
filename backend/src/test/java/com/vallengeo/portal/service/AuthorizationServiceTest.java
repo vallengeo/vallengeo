@@ -2,8 +2,6 @@ package com.vallengeo.portal.service;
 
 import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.core.exceptions.custom.ForbiddenException;
-import com.vallengeo.portal.repository.PerfilRepository;
-import com.vallengeo.portal.repository.UsuarioRepository;
 import com.vallengeo.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +19,6 @@ class AuthorizationServiceTest extends AbstractIntegrationTest {
 
     @Autowired
     private AuthorizationService authorizationService;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private PerfilRepository perfilRepository;
     @Autowired
     private AuthenticationManager authManager;
 

@@ -2,6 +2,8 @@ package com.vallengeo.portal.model;
 
 import com.vallengeo.core.util.Schemas;
 import com.vallengeo.global.model.Camada;
+import com.vallengeo.global.model.Estado;
+import com.vallengeo.global.model.Municipio;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -33,6 +35,10 @@ public class Grupo implements Serializable {
     @NotNull
     @Column(name = "gera_protocolo")
     private Boolean geraProtocolo;
+    @ManyToOne
+    @JoinColumn(name="id_municipio", referencedColumnName = "id")
+    private Municipio municipio;
+
     @ManyToMany
     @JoinTable(schema = Schemas.PORTAL_SEGURANCA, name = "grupo_perfil",
             joinColumns = @JoinColumn(name = "id_grupo", updatable = false, nullable = false, insertable = false),

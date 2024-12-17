@@ -6,7 +6,8 @@ import { cn } from '@/lib/utils'
 import { Inter } from 'next/font/google'
 
 interface CamadasBaseProps {
-    map: L.Map | null;
+    tileLayerSelected: string
+    setTileLayer: (value: L.TileLayer) => void
 }
 
 export const inter = Inter({
@@ -16,21 +17,21 @@ export const inter = Inter({
 
 const listCamadasGeoServer: { [key: string]: L.TileLayer } = BASE_LAYERS_CONFIG;
 
-const CamadasBase: React.FC<CamadasBaseProps> = ({ map }) => {
-    const [selectedLayer, setSelectedLayer] = useState<string>("Google Satélite");
-
+const CamadasBase: React.FC<CamadasBaseProps> = ({ setTileLayer, tileLayerSelected }) => {
+    const [selectedLayer, setSelectedLayer] = useState<string>(tileLayerSelected);
+    const [tileLayer] = useState<L.TileLayer | null >(null);
 
     const habilitarDesabilitarCamada = (camadaName: string) => {
-        if (map && (selectedLayer !== camadaName)) {
+        if (selectedLayer !== camadaName) {
             // Remove a camada atual do mapa, se existir
             Object.values(listCamadasGeoServer).forEach((layer) => {
-                map.removeLayer(layer);
+                layer.remove();
             });
 
             // Aplica a nova camada selecionada
             const newLayer = listCamadasGeoServer[camadaName];
             if (newLayer) {
-                newLayer.addTo(map);
+                setTileLayer(newLayer);
             }
 
             setSelectedLayer(camadaName);
@@ -38,16 +39,16 @@ const CamadasBase: React.FC<CamadasBaseProps> = ({ map }) => {
     };
 
     useEffect(() => {
-        if (map) {
+        if (tileLayer) {
             if (selectedLayer) {
                 const initialLayer = listCamadasGeoServer[selectedLayer];
                 if (initialLayer) {
-                    initialLayer.addTo(map);
+                    setTileLayer(initialLayer);
                 }
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [map, selectedLayer]);
+    }, [tileLayer, selectedLayer]);
 
     return (
         <div className="pr-3">
@@ -61,7 +62,7 @@ const CamadasBase: React.FC<CamadasBaseProps> = ({ map }) => {
                             onChange={() => habilitarDesabilitarCamada(camadaName)} />
 
                         <span className={cn("text-xs text-gray-900 dark:text-gray-300 text-title", inter.className)}>{camadaName}</span>
-                        
+
                         <div className="ms-3 relative w-7 h-4 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all dark:border-gray-600 peer-checked:bg-teal-600"></div>
                     </div>
                 </label>

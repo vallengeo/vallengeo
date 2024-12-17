@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Data
 @Builder
 public class GeometriaPorAquivoResponse implements Serializable {
-   @JsonSerialize(using = GeometriySerializerUtil.class)
+    @JsonSerialize(using = GeometriySerializerUtil.class)
     private Geometry geometria;
- private final GeorreferenciamentoInformacoesImovelResponse informacoesImovel;
+    private final GeorreferenciamentoInformacoesImovelResponse informacoesImovel;
 }

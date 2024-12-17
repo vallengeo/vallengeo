@@ -4,6 +4,7 @@ import com.vallengeo.cidadao.model.*;
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
 import com.vallengeo.cidadao.payload.response.FichaImovelAnalistaResponse;
 import com.vallengeo.cidadao.payload.response.FichaImovelResponse;
+import com.vallengeo.cidadao.payload.response.MapaImovelResponse;
 import com.vallengeo.cidadao.payload.response.ProcessoListagemSimplificadoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.ImovelResponse;
@@ -80,6 +81,24 @@ public class ImovelService {
         });
 
         return new Paginacao.PaginacaoOutput<>(processos, page);
+    }
+
+    public List<MapaImovelResponse> buscarDadosMapaImovel(HttpServletRequest request) {
+        List<MapaImovelResponse> output = new ArrayList<>();
+
+        ImovelMapper.INSTANCE.toResponse(repository.findAllByGrupoId(SecurityUtils.extractGrupoId(request))).forEach(imovel -> {
+            output.add(MapaImovelResponse
+                    .builder()
+                    .id(imovel.getId())
+                    .inscricaoImobiliaria(imovel.getInscricaoImobiliaria())
+                    .informacaoImovel(imovel.getInformacaoImovel())
+                    .geometria(imovel.getGeometria())
+                    .build()
+            );
+        });
+
+
+        return output;
     }
 
     @Transactional
@@ -162,6 +181,7 @@ public class ImovelService {
     }
 
     public ByteArrayResource fichaImovelImprimir(UUID processoId, HttpServletRequest request) {
+        buscarImovelPeloProcessoId(processoId);
         ParamsRequest data = prepararParametrosPDF(processoId, request);
         byte[] pdfBytes = wkhtmlService.pdf(data);
 
@@ -200,9 +220,9 @@ public class ImovelService {
 
     private String montaInscricaoImobiliaria(CaracterizacaoImovel caracterizacaoImovel) {
         return caracterizacaoImovel.getSetor()
-               + "." + caracterizacaoImovel.getQuadra() +
-               "." + caracterizacaoImovel.getLote() +
-               "." + caracterizacaoImovel.getUnidade();
+                + "." + caracterizacaoImovel.getQuadra() +
+                "." + caracterizacaoImovel.getLote() +
+                "." + caracterizacaoImovel.getUnidade();
     }
 
     private FichaImovelResponse.Processo montaFichaProcesso(UUID processoId) {
@@ -265,22 +285,22 @@ public class ImovelService {
 
     private String getHtmlHeader() {
         return "<!DOCTYPE html>" +
-               "<html lang=\"en\">" +
-               "<head>" +
-               "    <meta charset=\"UTF-8\">" +
-               "    <title>Title</title>" +
-               "  <style>\n" +
-               "    .header {" +
-               "      width: 100%;" +
-               "      height: 40px;" +
-               "    }" +
-               "  </style>" +
-               "</head>" +
-               "<body>" +
-               "  <div class=\"header\">" +
-               "  </div>" +
-               "</body>" +
-               "</html>";
+                "<html lang=\"en\">" +
+                "<head>" +
+                "    <meta charset=\"UTF-8\">" +
+                "    <title>Title</title>" +
+                "  <style>\n" +
+                "    .header {" +
+                "      width: 100%;" +
+                "      height: 40px;" +
+                "    }" +
+                "  </style>" +
+                "</head>" +
+                "<body>" +
+                "  <div class=\"header\">" +
+                "  </div>" +
+                "</body>" +
+                "</html>";
     }
 
     private static void identificarOrdenacaoPaginacao(Paginacao.PaginacaoInput paginacaoInput) {

@@ -2,6 +2,7 @@ package com.vallengeo.portal.security.jwt;
 
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.core.util.SecurityUtils;
+import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.payload.response.LoginResponse;
 import com.vallengeo.portal.service.AuthorizationService;
 import io.jsonwebtoken.*;
@@ -37,15 +38,28 @@ public class JwtService {
 
     private final AuthorizationService authorizationService;
 
-    public LoginResponse generateLogin(UserDetails userDetails, String idGrupo) {
-        String token = generateToken(userDetails, idGrupo);
-        return new LoginResponse(token, generateRefreshToken(token), getExpirationTime());
+    public LoginResponse generateLogin(UserDetails userDetails, Integer idMunicipio) {
+        if (userDetails instanceof Usuario usuario &&
+                usuario.getGrupos().stream().anyMatch(grupo -> grupo.getMunicipio().getId().equals(idMunicipio))) {
+
+            String idGrupo = usuario.getGrupos().stream()
+                    .filter(grupo -> grupo.getMunicipio().getId().equals(idMunicipio))
+                    .findFirst()
+                    .get()
+                    .getId()
+                    .toString();
+
+            String token = generateToken(userDetails, idGrupo);
+            return new LoginResponse(token, generateRefreshToken(token, idGrupo), getExpirationTime(), idGrupo);
+        }
+
+        throw new UnauthorizedException("Usuário não possui permissão para o município especificado.");
     }
 
     public LoginResponse generateLogin(String requestRefreshToken, HttpServletRequest http) {
         UserDetails userDetails = authorizationService.loadUserByUsername(extractUsername(requestRefreshToken));
         String token = reniewToken(userDetails, requestRefreshToken, http);
-        return new LoginResponse(token, requestRefreshToken, getExpirationTime());
+        return new LoginResponse(token, requestRefreshToken, getExpirationTime(), SecurityUtils.getUserJwt(http).getIdGrupo());
     }
 
     public String generateToken(UserDetails userDetails, String idGrupo) {
@@ -63,14 +77,17 @@ public class JwtService {
     }
 
 
-    public String generateRefreshToken(String requestRefreshToken) {
+    public String generateRefreshToken(String requestRefreshToken, String idGrupo) {
         try {
+            HashMap<String, Object> claimGrupo = new HashMap<>();
+            claimGrupo.put("idGrupo", idGrupo);
 
             return Jwts
                     .builder()
                     .setSubject(this.extractUsername(requestRefreshToken))
                     .setIssuedAt(new Date(System.currentTimeMillis()))
                     .setExpiration(new Date(System.currentTimeMillis() + jwtRefreshExpiration))
+                    .addClaims(claimGrupo)
                     .signWith(getSignInKey(), SignatureAlgorithm.forName(jwtAlgorithm))
                     .compact();
 
@@ -114,9 +131,10 @@ public class JwtService {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token) && !isTokenRevoked(token);
     }
-     public void revokeToken(HttpServletRequest http) {
-      String tokenFull = recoverToken(http);
-      revokeToken(tokenFull);
+
+    public void revokeToken(HttpServletRequest http) {
+        String tokenFull = recoverToken(http);
+        revokeToken(tokenFull);
     }
 
     public void revokeToken(String token) {

@@ -25,9 +25,8 @@ VALUES ('1549a09f-f12d-4dfd-bcdc-edc2ccb39ce7', 'vallengeo.semperfil@gmail.com',
 
 -- ************************* GRUPO ***********************************
 INSERT INTO portal_seguranca.grupo
-    (id, nome, codigo)
-VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'Cruzeiro', 'CRUZEIRO');
-
+    (id, nome, codigo, id_municipio)
+VALUES ('4d3c1497-af40-4ddf-8b06-d8f40c8df139', 'Cruzeiro', 'CRUZEIRO', 3513405);
 -- ************************* PERFIL ************************************************************************
 INSERT INTO portal_seguranca.perfil
     (id, nome, codigo)

@@ -5,10 +5,16 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils'
 import { Inter } from 'next/font/google'
 import CamadasBase from "./camadasBase";
+import CamadasGrupo from "./camadasGrupo";
+import Camada from "@/interfaces/ICamada";
 
 interface CamadasToggleCardProps {
     isOpen: boolean;
-    map: L.Map | null;
+    tileLayerSelected: string
+    setTileLayer: (value: L.TileLayer) => void
+    selectedLayer: Camada[]
+    setSelectedLayer: (value: Camada[]) => void
+    camadas: Camada[]
 }
 
 export const inter = Inter({
@@ -16,7 +22,7 @@ export const inter = Inter({
     weight: ['300', '400', '500', '600', '700'],
 })
 
-const CamadasToggleCard: React.FC<CamadasToggleCardProps> = ({ isOpen, map }) => {
+const CamadasToggleCard: React.FC<CamadasToggleCardProps> = ({ isOpen, setTileLayer, tileLayerSelected, selectedLayer, setSelectedLayer, camadas }) => {
     const [toggleIsOpen, setToggleIsOpen] = useState(false);
 
     const toggleDiv = () => {
@@ -28,7 +34,7 @@ const CamadasToggleCard: React.FC<CamadasToggleCardProps> = ({ isOpen, map }) =>
         const camadasButtonDiv = document.querySelector('#camadas-button') as HTMLElement;
 
         if (isOpen && leafletRightDiv) {
-            leafletRightDiv.style.right = "265px";
+            leafletRightDiv.style.right = "305px";
         } else if (leafletRightDiv) {
             leafletRightDiv.style.right = "0px";
         }
@@ -54,7 +60,7 @@ const CamadasToggleCard: React.FC<CamadasToggleCardProps> = ({ isOpen, map }) =>
 
                             <div className="relative transition-all duration-700 pt-6">
                                 <div className="pb-6">
-                                    <CamadasBase map={map} />
+                                    <CamadasBase tileLayerSelected={tileLayerSelected} setTileLayer={setTileLayer} />
                                 </div>
                             </div>
                         </div>
@@ -69,7 +75,10 @@ const CamadasToggleCard: React.FC<CamadasToggleCardProps> = ({ isOpen, map }) =>
                             {toggleIsOpen && (
                                 <div className="relative transition-all duration-700 pt-6">
                                     <div className="pb-6">
-                                        <CamadasBase map={map} />
+                                        <CamadasGrupo
+                                            selectedLayer={selectedLayer}
+                                            setSelectedLayer={setSelectedLayer}
+                                            camadas={camadas} />
                                     </div>
                                 </div>
                             )}

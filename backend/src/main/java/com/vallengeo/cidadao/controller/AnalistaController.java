@@ -1,16 +1,14 @@
 package com.vallengeo.cidadao.controller;
 
 import com.vallengeo.cidadao.payload.request.ProcessoArquivarRequest;
-import com.vallengeo.cidadao.payload.response.FichaImovelAnalistaResponse;
-import com.vallengeo.cidadao.payload.response.NotificacaoNaoVisualizadaResponse;
-import com.vallengeo.cidadao.payload.response.TotalizadorProcessoResponse;
-import com.vallengeo.cidadao.payload.response.UltimoProcessoResponse;
+import com.vallengeo.cidadao.payload.response.*;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.service.ImovelService;
 import com.vallengeo.cidadao.service.NotificacaoService;
 import com.vallengeo.cidadao.service.NotificacaoVisualizadaService;
 import com.vallengeo.cidadao.service.ProcessoService;
 import com.vallengeo.core.util.Constants;
+import com.vallengeo.core.util.Paginacao;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -43,6 +41,32 @@ public class AnalistaController {
     private final ProcessoService processoService;
     private final NotificacaoService notificacaoService;
     private final NotificacaoVisualizadaService notificacaoVisualizadaService;
+
+    @Operation(summary = "Listagem dos imóveis cadastrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/imovel/cadastrados", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Paginacao.PaginacaoOutput<ProcessoListagemSimplificadoResponse>> buscarTodosCadastrados(@RequestParam(required = false) String pesquisa,
+                                                                                                                  @RequestParam(value = "pagina") int pagina,
+                                                                                                                  @RequestParam(value = "itens-por-pagina") int itensPorPagina,
+                                                                                                                  @RequestParam(value = "direcao", required = false) String direcao,
+                                                                                                                  @RequestParam(value = "ordenar-por", required = false) String ordenarPor) {
+        return ResponseEntity.ok(imovelService.buscarTodosCadastrados(pesquisa,
+                new Paginacao.PaginacaoInput(pagina, itensPorPagina, ordenarPor, direcao),
+                request));
+    }
+
+    @Operation(summary = "Geometria dos imóveis cadastrados")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/imovel/cadastrados/mapa", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<MapaImovelResponse>> buscarDadosMapa() {
+        return ResponseEntity.ok(imovelService.buscarDadosMapaImovel(request));
+    }
 
     @Operation(summary = "Serviço de arquivamento do imóvel")
     @ApiResponses(value = {

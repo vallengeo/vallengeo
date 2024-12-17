@@ -33,6 +33,15 @@ public class Camada implements Serializable {
     private String codigo;
     @Column(name = "ordem")
     private Integer ordem;
+    @Column(name = "cor_preenchimento")
+    @Size(max = 30)
+    private String corPreenchimento;
+    @Column(name = "cor_borda")
+    @Size(max = 30)
+    private String corBorda;
+    @Column(name = "referencia")
+    @Size(max = 300)
+    private String referencia;
 
     @ManyToOne
     @JoinColumn(name = "id_camada_categoria", referencedColumnName = "id", nullable = false)

@@ -37,6 +37,8 @@ public abstract class AbstractIntegrationTest {
     protected String secretKey;
     @Value("${api.security.token.expiration}")
     protected Long expiration;
+    @Value("${api.security.token.refresh}")
+    protected Long refreshTokenExpiration;
     @Value("${api.security.token.algorithm}")
     protected String algorithm;
 

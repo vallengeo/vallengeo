@@ -93,7 +93,8 @@ public final class SecurityUtils {
                 "/api/v1/autenticacao/logout/**",
                 "/api/v1/usuario/esqueci-minha-senha",
                 "/api/v1/usuario/recuperar-senha",
-                "/api/v1/localidade/**"
+                "/api/v1/localidade/**",
+                "/api/v1/camada/**"
 
 
         };

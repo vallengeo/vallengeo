@@ -43,29 +43,11 @@ public class UsuarioService {
     private long validadeCodigoAcesso;
 
     public List<UsuarioResponse> buscaTodos() {
-        return usuarioRepository.findAll().stream().map(usuario -> {
-            List<UsuarioResponse.Perfil> perfis = usuario.getPerfis().stream()
-                    .map(perfil -> new UsuarioResponse.Perfil(perfil.getCodigo()))
-                    .distinct().toList();
+        return usuarioRepository.findAll().stream().map(this::montaUsuarioResponse).toList();
+    }
 
-            var telas = usuario.getPermissoes().stream().map(Permissao::getTela).distinct()
-                    .map(tela -> new UsuarioResponse.Tela(
-                            tela.getCodigo(),
-                            usuario.getPermissoes().stream().filter(permissao -> permissao.getTela().getId().equals(tela.getId()))
-                                    .map(permissao -> new UsuarioResponse.Permissao(permissao.getCodigo()))
-                                    .distinct()
-                                    .toList()
-                    ))
-                    .distinct().toList();
-
-            return new UsuarioResponse(
-                    usuario.getId().toString(),
-                    usuario.getEmail(),
-                    usuario.getAtivo(),
-                    perfis,
-                    telas
-            );
-        }).toList();
+    public Optional<UsuarioResponse> buscarPorId(UUID id) {
+       return usuarioRepository.findById(id).map(this::montaUsuarioResponse);
     }
 
     public void cadastroSimplificado(CadastroSimplificadoRequest input) {
@@ -130,6 +112,35 @@ public class UsuarioService {
         }
     }
 
+    private UsuarioResponse montaUsuarioResponse(Usuario usuario){
+        List<UsuarioResponse.Perfil> perfis = usuario.getPerfis().stream()
+                .map(perfil -> new UsuarioResponse.Perfil(perfil.getCodigo()))
+                .distinct().toList();
+
+        List<UsuarioResponse.Grupo> grupos = usuario.getGrupos().stream()
+                .map(grupo -> new UsuarioResponse.Grupo(grupo.getCodigo()))
+                .distinct().toList();
+
+        var telas = usuario.getPermissoes().stream().map(Permissao::getTela).distinct()
+                .map(tela -> new UsuarioResponse.Tela(
+                        tela.getCodigo(),
+                        usuario.getPermissoes().stream().filter(permissao -> permissao.getTela().getId().equals(tela.getId()))
+                                .map(permissao -> new UsuarioResponse.Permissao(permissao.getCodigo()))
+                                .distinct()
+                                .toList()
+                ))
+                .distinct().toList();
+
+        return new UsuarioResponse(
+                usuario.getId().toString(),
+                usuario.getEmail(),
+                usuario.getAtivo(),
+                perfis,
+                grupos,
+                telas
+        );
+    }
+
     private List<Perfil> montaPerfil(List<CadastroSimplificadoRequest.Perfil> perfis) {
         return perfis.stream()
                 .map(p -> Perfil.builder().id(UUID.fromString(p.id())).build())
@@ -189,4 +200,6 @@ public class UsuarioService {
 
         return matcher.matches();
     }
+
+
 }

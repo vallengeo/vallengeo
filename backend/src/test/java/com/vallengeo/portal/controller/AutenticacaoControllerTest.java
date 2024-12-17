@@ -10,6 +10,7 @@ import com.vallengeo.portal.payload.response.LoginResponse;
 import com.vallengeo.portal.repository.UsuarioRepository;
 import com.vallengeo.utils.ExceptionTestUtils;
 import com.vallengeo.utils.JwtTestUtils;
+import com.vallengeo.utils.UsuarioTestUtils;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
@@ -17,7 +18,6 @@ import io.restassured.response.ResponseOptions;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,17 +42,6 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
     @Autowired
     private AutenticacaoController autenticacaoController;
 
-    @Value("${server.port}")
-    private int serverPort;
-    @Value("${api.security.token.secret}")
-    private String secretKey;
-    @Value("${api.security.token.refresh}")
-    private Long refreshTokenExpiration;
-    @Value("${api.security.token.expiration}")
-    private Long expiration;
-    @Value("${api.security.token.algorithm}")
-    private String algorithm;
-
     private static RequestSpecification specification;
     private static LoginResponse loginResponse;
     private static String expiredAccessToken;
@@ -76,7 +65,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
     @Test @Order(1)
     @DisplayName("Integration Test - Login quando Atributos Invalidos deve Retornar Bad Request (400)")
     void testLogin_QuandoAtributosInvalidos_DeveRetornarBadRequest() {
-        LoginRequest requestInvalido = new LoginRequest("email@invalido", "", null);
+        LoginRequest requestInvalido = new LoginRequest("email.invalido", "", null);
 
         ResponseOptions<?> response = given().spec(specification)
                 .body(requestInvalido)
@@ -93,14 +82,13 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
 
         assertEquals(Constants.EMAIL_INVALIDO, mapErros.get("email"));
         assertEquals(Constants.CAMPO_OBRIGATORIO, mapErros.get("senha"));
-        assertEquals(Constants.CAMPO_OBRIGATORIO, mapErros.get("idGrupo"));
+        assertEquals(Constants.CAMPO_OBRIGATORIO, mapErros.get("idMunicipio"));
     }
 
     @Test @Order(2)
     @DisplayName("Integration Test - Login quando Email Nao Cadastrado deve Retornar Forbidden (403)")
     void testLogin_QuandoEmailNaoCadastrado_DeveRetornarForbidden() {
-        LoginRequest request = new LoginRequest(
-                "naocadastrado@gmail.com", "123456", "4d3c1497-af40-4ddf-8b06-d8f40c8df139");
+        LoginRequest request = new LoginRequest("naocadastrado@gmail.com", "123456", 3513405);
 
         ResponseOptions<?> response = given().spec(specification)
                 .body(request)
@@ -119,7 +107,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Login quando Senha Incorreta deve Retornar Forbidden (403)")
     void testLogin_QuandoSenhaIncorreta_DeveRetornarForbidden() {
         LoginRequest request = new LoginRequest(
-                "vallengeo.dev@gmail.com", "senhaIncorreta", "4d3c1497-af40-4ddf-8b06-d8f40c8df139");
+                UsuarioTestUtils.DEFAULT_DEV_EMAIL, "senhaIncorreta", UsuarioTestUtils.MUNICIPIO_ID);
 
         ResponseOptions<?> response = given().spec(specification)
                 .body(request)
@@ -138,7 +126,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Login quando Sucesso deve Retornar OK (200)")
     void testLogin_QuandoSucesso_DeveRetornarOk() {
         LoginRequest request = new LoginRequest(
-                "vallengeo.dev@gmail.com", "123456", "4d3c1497-af40-4ddf-8b06-d8f40c8df139");
+                UsuarioTestUtils.DEFAULT_DEV_EMAIL, UsuarioTestUtils.DEFAULT_DEV_PASSWORD, UsuarioTestUtils.MUNICIPIO_ID);
 
         ResponseEntity<LoginResponse> actual = autenticacaoController.authenticate(request);
 
