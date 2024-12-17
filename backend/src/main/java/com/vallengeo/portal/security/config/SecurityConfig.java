@@ -68,7 +68,9 @@ public class SecurityConfig {
 
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration().applyPermitDefaultValues();
-        configuration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+        configuration.addAllowedOrigin("http://vallengeo.com.br"); // Permite a origem específica
+        configuration.addAllowedHeader("*"); // Permite todos os cabeçalhos
+        configuration.addAllowedMethod("*"); // Permite todos os métodos (GET, POST, etc.)
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
