@@ -128,10 +128,7 @@ export function FormCadastroImovel() {
         const response = await tipoUso();
         setGrupos(response.data);
       } catch (error) {
-        toast({
-          description: `Erro ao obter os grupos: ${error}`,
-          variant: "destructive",
-        });
+        console.error(`Erro ao obter os grupos: ${error}`);
       }
     };
 
