@@ -6,7 +6,11 @@ import com.vallengeo.core.util.Constants;
 import java.text.Normalizer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class StringHelpers {
     private StringHelpers() {
@@ -98,4 +102,21 @@ public class StringHelpers {
             return e.getMessage();
         }
     }
+
+    public static String capitalize(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            return texto;
+        }
+
+        // Lista de preposições que devem permanecer em minúsculo
+        Set<String> preposicoes = new HashSet<>(Arrays.asList(
+                "de", "da", "do", "das", "dos", "a", "e", "em", "para", "por", "com", "sem", "sob", "sobre", "entre", "até", "ante", "contra"));
+
+        return Arrays.stream(texto.trim().toLowerCase().split("\\s+")) // Remove espaços extras
+                .map(palavra -> preposicoes.contains(palavra) // Verifica se é preposição
+                        ? palavra // Mantém em minúsculo se for preposição
+                        : palavra.substring(0, 1).toUpperCase() + palavra.substring(1)) // Capitaliza se não for
+                .collect(Collectors.joining(" ")); // Junta as palavras novamente
+    }
 }
+

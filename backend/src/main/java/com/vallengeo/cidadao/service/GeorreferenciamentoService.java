@@ -1,10 +1,12 @@
 package com.vallengeo.cidadao.service;
 
+import com.google.common.base.Throwables;
 import com.vallengeo.cidadao.enumeration.CamadaCategoriaEnum;
 import com.vallengeo.cidadao.payload.response.GeometriaPorAquivoResponse;
 import com.vallengeo.cidadao.payload.response.GeorreferenciamentoInformacoesImovelResponse;
 import com.vallengeo.core.exceptions.InvalidFileException;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
+import com.vallengeo.core.helpers.StringHelpers;
 import com.vallengeo.core.util.Constants;
 import com.vallengeo.core.util.FeatureJsonUtil;
 import com.vallengeo.core.util.SecurityUtils;
@@ -70,7 +72,7 @@ public class GeorreferenciamentoService {
             }
 
             String primeiraGeometria = listGeometrias.get(0);
-            Geometry geometry = parseGeometria(primeiraGeometria);
+            Geometry geometry = FeatureJsonUtil.parseGeometria(primeiraGeometria);
 
             // verifica se está contido no grupo
             contidoNoGrupo(request, geometry);
@@ -88,57 +90,53 @@ public class GeorreferenciamentoService {
 
     private GeorreferenciamentoInformacoesImovelResponse montaGeorreferenciamentoInformacoesImovel(HttpServletRequest request, Geometry geometry) {
         GeorreferenciamentoInformacoesImovelResponse output = new GeorreferenciamentoInformacoesImovelResponse();
+        try {
+            buscaCamadasPeloGrupo(request)
+                    .stream().filter(camada ->
+                            camada.getCategoria().getCodigo().equals(CamadaCategoriaEnum.EDIFICACAO.name()))
+                    .forEach(camada -> geoserverService.buscaInterseccao(geometry, camada.getCodigo())
+                            .getFeatures()
+                            .stream()
+                            .findFirst().ifPresent(feature -> {
+                                GeorreferenciamentoFeatureColletionResponse.Feature.Propriedade properties = feature.getProperties();
 
-        buscaCamadasPeloGrupo(request)
-                .stream().filter(camada ->
-                        camada.getCategoria().getCodigo().equals(CamadaCategoriaEnum.EDIFICACAO.name()))
-                .forEach(camada -> geoserverService.buscaInterseccao(geometry, camada.getCodigo())
-                        .getFeatures()
-                        .stream()
-                        .findFirst().ifPresent(feature -> {
-                            GeorreferenciamentoFeatureColletionResponse.Feature.Propriedade properties = feature.getProperties();
+                                //INFORMACAO
+                                EnderecoViaCepResponse endereco = localidadeService.buscarViaCep(properties.getCd_cep());
 
-                            //INFORMACAO
-                            EnderecoViaCepResponse endereco = localidadeService.buscarViaCep(properties.getCd_cep());
+                                output.setInformacaoImovel(GeorreferenciamentoInformacoesImovelResponse.InformacaoImovel.builder()
+                                        .endereco(GeorreferenciamentoInformacoesImovelResponse.InformacaoImovel.Endereco.builder()
+                                                .cep(properties.getCd_cep())
+                                                .logradouro(Objects.nonNull(properties.getNm_endereco()) ? StringHelpers.capitalize(properties.getNm_endereco()) : endereco.logradouro())
+                                                .numero(properties.getCd_numero())
+                                                .bairro(Objects.nonNull(properties.getNm_bairro()) ? StringHelpers.capitalize(properties.getNm_bairro()) : endereco.bairro())
+                                                .idMunicipio(endereco.municipio().id())
+                                                .nomeMunicipio(endereco.municipio().nome())
+                                                .siglaUf(endereco.municipio().estado().uf())
+                                                .build())
+                                        .build()
+                                );
 
-                            output.setInformacaoImovel(GeorreferenciamentoInformacoesImovelResponse.InformacaoImovel.builder()
-                                    .endereco(GeorreferenciamentoInformacoesImovelResponse.InformacaoImovel.Endereco.builder()
-                                            .cep(properties.getCd_cep())
-                                            .logradouro(Objects.nonNull(properties.getNm_endereco()) ? properties.getNm_endereco() : endereco.logradouro())
-                                            .numero(properties.getCd_numero())
-                                            .bairro(Objects.nonNull(properties.getNm_bairro()) ? properties.getNm_bairro() : endereco.bairro())
-                                            .idMunicipio(endereco.municipio().id())
-                                            .nomeMunicipio(endereco.municipio().nome())
-                                            .siglaUf(endereco.municipio().estado().uf())
-                                            .build())
-                                    .build()
-                            );
+                                // CARACTERIZACAO
+                                String[] inscricao = properties.getCd_inscricao_unidade().split("\\.");
+                                GeorreferenciamentoInformacoesImovelResponse.CaracterizacaoImovel caracterizacaoImovel = new GeorreferenciamentoInformacoesImovelResponse.CaracterizacaoImovel();
 
-                            // CARACTERIZACAO
-                            String[] inscricao = properties.getCd_inscricao_unidade().split("\\.");
-                            GeorreferenciamentoInformacoesImovelResponse.CaracterizacaoImovel caracterizacaoImovel = new GeorreferenciamentoInformacoesImovelResponse.CaracterizacaoImovel();
+                                if (inscricao.length >= 3) {
+                                    caracterizacaoImovel.setSetor(Objects.nonNull(inscricao[0]) ? inscricao[0] : "");
+                                    caracterizacaoImovel.setQuadra(Objects.nonNull(inscricao[1]) ? inscricao[1] : "");
+                                    caracterizacaoImovel.setLote(Objects.nonNull(inscricao[2]) ? inscricao[2] : "");
+                                    caracterizacaoImovel.setUnidade(Objects.nonNull(inscricao[3]) ? inscricao[3] : "");
+                                }
+                                caracterizacaoImovel.setAreaTerreno(properties.getVl_area_terreno());
+                                caracterizacaoImovel.setTestadaPrincipal(properties.getVl_testada());
 
-                            if (inscricao.length >= 3) {
-                                caracterizacaoImovel.setSetor(Objects.nonNull(inscricao[0]) ? inscricao[0] : "");
-                                caracterizacaoImovel.setQuadra(Objects.nonNull(inscricao[1]) ? inscricao[1] : "");
-                                caracterizacaoImovel.setLote(Objects.nonNull(inscricao[2]) ? inscricao[2] : "");
-                                caracterizacaoImovel.setUnidade(Objects.nonNull(inscricao[3]) ? inscricao[3] : "");
-                            }
-                            caracterizacaoImovel.setAreaTerreno(properties.getVl_area_terreno());
-                            caracterizacaoImovel.setTestadaPrincipal(properties.getVl_testada());
-
-                            output.setCaracterizacaoImovel(caracterizacaoImovel);
-                        }));
+                                output.setCaracterizacaoImovel(caracterizacaoImovel);
+                            }));
+        } catch (Exception ex) {
+            log.error(Throwables.getStackTraceAsString(ex));
+        }
 
 
         return output;
-    }
-
-    private Geometry parseGeometria(String geometriaString) throws ParseException {
-        WKTReader reader = new WKTReader();
-        Geometry geometria = reader.read(geometriaString);
-        geometria.setSRID(4674);
-        return FeatureJsonUtil.checkAndConvertMultiPolygonToPolygon(geometria);
     }
 
     private List<String> handlerShapefile(MultipartFile file) throws IOException, FactoryException {

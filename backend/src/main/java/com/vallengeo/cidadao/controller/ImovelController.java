@@ -86,7 +86,7 @@ public class ImovelController {
             @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
     })
     @PreAuthorize("hasRole('IMOVEL_CADASTRAR')")
-    @PostMapping(value = "/georreferenciamento/obter-geometria-por-arquivo", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/obter-geometria-por-arquivo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<GeometriaPorAquivoResponse> buscarGeometriaPorShapeFile(@RequestPart MultipartFile file) {
         log.info("Buscando geometria(s) por arquivo");
         var response = georreferenciamentoService.obterGeometriaPorShapeFile(file, request);
@@ -104,7 +104,7 @@ public class ImovelController {
         return ResponseEntity.ok(imovelService.fichaImovel(processoId));
     }
 
-    @Operation(summary = "Informações referente a ficha imobiliária pelo identificador do processo.")
+    @Operation(summary = "Serviço de download ficha imobiliária pelo identificador do processo.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok"),
             @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)

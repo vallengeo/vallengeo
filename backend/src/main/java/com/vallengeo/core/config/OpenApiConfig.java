@@ -8,6 +8,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.GroupedOpenApi;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,9 +24,12 @@ import java.util.List;
 )
 public class OpenApiConfig {
 
+    @Value("${spring.profiles.active:dev}") // Obtém o perfil ativo, padrão é 'dev'
+    private String activeProfile;
+
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI()
+        OpenAPI openAPI = new OpenAPI()
                 .components(new Components())
                 .info(new Info()
                         .title("VallenGeo - Documentação da API")
@@ -34,12 +38,22 @@ public class OpenApiConfig {
                                 .url("http://vallenge.com.br/")
                                 .email("contato@vallenge.com.br"))
                         .version("1.0")
-                )
-                .servers(List.of(
-                        new Server().url("http://localhost:9000").description(""))
                 );
 
+        // Configura servidores com base no perfil ativo
+        if ("dev".equals(activeProfile)) {
+            openAPI.servers(List.of(
+                    new Server().url("http://localhost:9000").description("Desenvolvimento")
+            ));
+        } else {
+            openAPI.servers(List.of(
+                    new Server().url("http://54.232.129.154:9000").description("Homologação")
+            ));
+        }
+
+        return openAPI;
     }
+
 
     @Bean
     public GroupedOpenApi publicApi() {
