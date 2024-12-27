@@ -1,15 +1,16 @@
 import { Header } from "@/components/header";
-import { TotalCadastros } from "./components/total-cadastros";
-import { NovosCadastros } from "./components/novos-cadastros";
-import { EmAndamento } from "./components/em-andamento";
-import { ProcessosFinalizados } from "./components/processos-finalizados";
 import { UltimosProcessos } from "./components/ultimos-processos";
 import { HistoricoProcessos } from "./components/historico-processos";
 import { Notificacoes } from "./components/notificacoes";
 import { Welcome } from "./components/welcome";
 import { ResumoImoveis } from "./components/resumo-imoveis";
 import type { Metadata } from 'next'
+import { Suspense } from "react";
+import { TotalizadoresProcessoSkeleton } from "./components/totalizadores-processo-skeleton";
+import { TotalizadoresProcesso } from "./components/totalizadores-processo";
 import { Mapa } from './components/mapa'
+import { UltimosProcessosSkeleton } from "./components/ultimos-processos-skeleton";
+import { HistoricoProcessosSkeleton } from "./components/historico-processos-skeleton";
 
 export const metadata: Metadata = {
   title: 'Página Inicial - VallenGeo',
@@ -30,16 +31,17 @@ export default function HomePage({
           <Notificacoes/>
         </div>
 
-        <div className="grid grid-cols-4 gap-5 max-md:grid-cols-2 max-[400px]:grid-cols-1">
-          <TotalCadastros/>
-          <NovosCadastros/>
-          <EmAndamento/>
-          <ProcessosFinalizados/>
-        </div>
+        <Suspense fallback={<TotalizadoresProcessoSkeleton />}>
+          <TotalizadoresProcesso />
+        </Suspense>
 
-        <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1 justify-center">
-          <UltimosProcessos municipio={params.municipio} />
-          <HistoricoProcessos municipio={params.municipio} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 justify-center">
+          <Suspense fallback={<UltimosProcessosSkeleton />}>
+            <UltimosProcessos />
+          </Suspense>
+          <Suspense fallback={<HistoricoProcessosSkeleton />}>
+            <HistoricoProcessos />
+          </Suspense>
         </div>
 
         <div className="bg-white border border-input rounded-3xl p-4">
