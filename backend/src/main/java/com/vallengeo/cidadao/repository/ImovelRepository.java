@@ -20,8 +20,12 @@ public interface ImovelRepository extends JpaRepository<Imovel, Long> {
                     SELECT i.id, i.inscricao_imobiliaria, i.id_informacao_imovel, i.id_caracterizacao_imovel, i.id_processo, i.geometria
                     FROM cidadao.imovel i
                     INNER JOIN cidadao.processo p ON i.id_processo = p.id
+                    INNER JOIN cidadao.informacao_imovel ii ON ii.id = i.id_informacao_imovel
+                    INNER JOIN dado_global.endereco e ON e.id = ii.id_endereco
                     WHERE p.id_grupo = :grupoId
                     AND (REPLACE(unaccent(i.inscricao_imobiliaria),'.','') ilike REPLACE(unaccent(concat('%', :pesquisa, '%')),'.',''))
+                    OR (REPLACE(unaccent(p.protocolo),'-','') ilike REPLACE(unaccent(concat('%', :pesquisa, '%')),'-',''))
+                    OR (unaccent(e.logradouro) ilike REPLACE(unaccent(concat('%', :pesquisa, '%')),'.',''))
             """)
     Page<Imovel> findAllByGrupoId(@Param("grupoId") UUID grupoId, @Param("pesquisa") String pesquisa, Pageable pageable);
 

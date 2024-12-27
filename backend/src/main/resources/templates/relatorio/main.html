@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link th:href="@{css/main.css}" rel="stylesheet"/>
+    <link th:href="@{css/fonts.css}" rel="stylesheet">
+    <title>Relatório</title>
+</head>
+
+<body>
+<div class="titulo" th:replace="relatorio/titulo.html::titulo"></div>
+<div class="conteudo" th:replace="relatorio/conteudo.html::conteudo"></div>
+</body>
+</html>

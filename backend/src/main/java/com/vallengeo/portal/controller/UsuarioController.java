@@ -130,4 +130,18 @@ public class UsuarioController {
         usuarioService.redefinirSenha(request);
         return ResponseEntity.status(HttpStatus.valueOf(200)).build();
     }
+
+    @Operation(summary = "Serviço de remoção do usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = SALVO_SUCESSO, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
+            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),
+            @ApiResponse(responseCode = "403", description = FORBIDDEN_ERROR),
+            @ApiResponse(responseCode = "422", description = ENTITY_VALITATION_ERROR),
+            @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
+    })
+    @PatchMapping(path = "/remover/{id}")
+    public ResponseEntity<String> removerUsuario(@PathVariable UUID id) {
+        usuarioService.removerUsuario(id);
+        return ResponseEntity.status(HttpStatus.valueOf(200)).build();
+    }
 }

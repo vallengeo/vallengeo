@@ -1,6 +1,9 @@
 package com.vallengeo.cidadao.controller;
 
+import com.vallengeo.cidadao.payload.request.FiltroRelatorioRequest;
 import com.vallengeo.cidadao.payload.request.ProcessoArquivarRequest;
+import com.vallengeo.cidadao.payload.request.ProcessoObservacaoRequest;
+import com.vallengeo.cidadao.payload.request.RelatorioRequest;
 import com.vallengeo.cidadao.payload.response.*;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.service.ImovelService;
@@ -17,6 +20,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,9 +29,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.UUID;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
+import static com.vallengeo.core.helpers.DateHelpers.convertDateToLocalDateTime;
 import static com.vallengeo.core.util.Constants.*;
 
 @Slf4j
@@ -150,6 +156,56 @@ public class AnalistaController {
     public ResponseEntity<String> cadastrarNotificacaoVisualizada(@PathVariable Long notificacaoId) {
         notificacaoVisualizadaService.cadastrar(notificacaoId);
         return ResponseEntity.status(201).body(SALVO_SUCESSO);
+    }
+
+    @Operation(summary = "Visão geral do protocolo pelo identificador do processo.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/protocolo/{processoId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProtocoloResponse> visaoGeralProtocoloPeloProcessoId(@PathVariable UUID processoId) {
+        return ResponseEntity.ok(imovelService.buscaProtocolo(processoId));
+    }
+
+    @Operation(summary = "Serviço para incluir observação ao processo.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = SALVO_SUCESSO),
+            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),
+            @ApiResponse(responseCode = "403", description = FORBIDDEN_ERROR),
+            @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
+    })
+    @PostMapping(value = "/protocolo/observacao", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ProcessoResponse> criarProtocoloObservacao(@Validated @RequestBody ProcessoObservacaoRequest input) {
+        log.info("Incluíndo observação ao processo {}", input.getIdProcesso());
+        return ResponseEntity.status(201).body(processoService.criarProtocoloObservacao(input));
+    }
+
+    @Operation(summary = "Retorna as opções do filtro para o relatório.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ok"),
+            @ApiResponse(responseCode = "404", description = Constants.ENTITY_NOT_FOUND_ERROR)
+    })
+    @GetMapping(value = "/relatorio/filtro", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<FiltroRelatorioRequest, String>> buscarFiltroRelatorio() {
+        return ResponseEntity.ok(processoService.montaFiltroRelatorio());
+    }
+
+    @Operation(summary = "Serviço de download do relatório dos processos.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = SALVO_SUCESSO),
+            @ApiResponse(responseCode = "401", description = UNAUTHORIZED_ERROR),
+            @ApiResponse(responseCode = "403", description = FORBIDDEN_ERROR),
+            @ApiResponse(responseCode = "500", description = GENERAL_ERROR)
+    })
+    @PostMapping(value = "/relatorio/download", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Resource> baixarRelatorio(@Validated @RequestBody RelatorioRequest input) {
+        String nomeArquivo = "relatorio_" + convertDateToLocalDateTime(new Date()).format(DateTimeFormatter.ofPattern("yyyyMMddHHmm"));
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/pdf"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + nomeArquivo + ".pdf")
+                .header("X-FILE-ID", UUID.randomUUID().toString())
+                .body(processoService.relatorioImprimir(input, request));
     }
 
 }
