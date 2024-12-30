@@ -4,20 +4,23 @@ import { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Cadastrar com E-mail - VallenGeo',
-}
+  title: "Cadastrar - VallenGeo",
+};
 
 export default function CadastroPage({
   params,
 }: {
-  params: { municipio: string }
+  params: { municipio: string };
 }) {
   return (
     <div>
       <Logo useBlackLogo className="mx-auto" />
 
       <div className="mt-8 text-center">
-        <p>Acesse a plataforma de regularização de imóveis através dos campos abaixo.</p>
+        <p>
+          Acesse a plataforma de regularização de imóveis através dos campos
+          abaixo.
+        </p>
 
         <div className="flex flex-col gap-y-6 w-72 mx-auto mt-10">
           <Button asChild variant="gov-br" className="h-12">
@@ -34,5 +37,5 @@ export default function CadastroPage({
         </div>
       </div>
     </div>
-  )
+  );
 }

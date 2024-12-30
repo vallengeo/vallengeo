@@ -64,7 +64,7 @@ export function FormEsqueciMinhaSenha() {
           <Support />
 
           <Button type="submit" variant="default" className="px-16 h-12">
-            Entrar
+            Enviar
           </Button>
         </div>
       </form>

@@ -6,8 +6,6 @@ import { Welcome } from "./components/welcome";
 import { ResumoImoveis } from "./components/resumo-imoveis";
 import type { Metadata } from 'next'
 import { Suspense } from "react";
-import { TotalizadoresProcessoSkeleton } from "./components/totalizadores-processo-skeleton";
-import { TotalizadoresProcesso } from "./components/totalizadores-processo";
 import { Mapa } from './components/mapa'
 import { UltimosProcessosSkeleton } from "./components/ultimos-processos-skeleton";
 import { HistoricoProcessosSkeleton } from "./components/historico-processos-skeleton";
@@ -30,10 +28,6 @@ export default function HomePage({
           <Welcome/>
           <Notificacoes/>
         </div>
-
-        <Suspense fallback={<TotalizadoresProcessoSkeleton />}>
-          <TotalizadoresProcesso />
-        </Suspense>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 justify-center">
           <Suspense fallback={<UltimosProcessosSkeleton />}>
