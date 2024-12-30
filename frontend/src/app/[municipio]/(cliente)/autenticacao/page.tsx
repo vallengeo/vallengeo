@@ -1,23 +1,26 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
-import { Metadata } from "next"
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: 'Acesse a plataforma - VallenGeo',
-}
+  title: "Acesse a plataforma - VallenGeo",
+};
 
 export default function AutenticacaoPage({
   params,
 }: {
-  params: { municipio: string }
+  params: { municipio: string };
 }) {
   return (
     <div>
       <Logo useBlackLogo className="mx-auto" />
 
       <div className="mt-8 text-center">
-        <p>Acesse a plataforma de regularização de imóveis através dos campos abaixo.</p>
+        <p>
+          Acesse a plataforma de regularização de imóveis através dos campos
+          abaixo.
+        </p>
 
         <div className="flex flex-col gap-y-6 w-72 mx-auto mt-10">
           <Button variant="gov-br" className="h-12">
@@ -31,9 +34,7 @@ export default function AutenticacaoPage({
           </Button>
 
           <Button asChild variant="tertiary" className="h-12">
-            <Link href={`/${params.municipio}`}>
-              Acessar sem login
-            </Link>
+            <Link href={`/${params.municipio}`}>Acessar sem login</Link>
           </Button>
 
           <Button asChild variant="secondary" className="h-12 font-medium">
@@ -44,5 +45,5 @@ export default function AutenticacaoPage({
         </div>
       </div>
     </div>
-  )
+  );
 }
