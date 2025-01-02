@@ -1,5 +1,6 @@
 package com.vallengeo.global.service;
 
+import com.vallengeo.cidadao.service.S3Service;
 import com.vallengeo.core.util.FileUnzipper;
 import com.vallengeo.global.model.Arquivo;
 import com.vallengeo.global.repository.ArquivoRepository;
@@ -18,7 +19,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.vallengeo.core.config.Config.APPLICATION_DEFINITIVE_UPLOAD;
 import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
 
 @Slf4j
@@ -26,6 +26,7 @@ import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
 @RequiredArgsConstructor
 public class ArquivoService {
     private final ArquivoRepository repository;
+    private final S3Service s3Service;
 
     public List<String> filesUnzipped(MultipartFile file) throws IOException {
         log.info("Descompactando arquivo: {}", file.getOriginalFilename());
@@ -45,14 +46,12 @@ public class ArquivoService {
         return repository.findById(idArquivo);
     }
 
-    public String getContentType(Arquivo arquivo) {
-        return URLConnection.guessContentTypeFromName(
-                APPLICATION_DEFINITIVE_UPLOAD + File.separator + arquivo.getId() + "." + arquivo.getExtensao());
+    public ByteArrayResource getResource(Arquivo arquivo) {
+        byte[] bytesFile = s3Service.downloadFile(arquivo.getId().toString(),  arquivo.getExtensao());
+        return new ByteArrayResource(bytesFile);
     }
 
-    public ByteArrayResource readFile(Arquivo arquivo) throws IOException {
-        final FileSystemResource fileSystemResource = new FileSystemResource(
-                APPLICATION_DEFINITIVE_UPLOAD + File.separator + arquivo.getId() + arquivo.getExtensao());
-        return new ByteArrayResource(fileSystemResource.getInputStream().readAllBytes());
+    public String getContentType(Arquivo arquivo) {
+        return s3Service.getContentTypeFromS3(arquivo.getId().toString(),  arquivo.getExtensao());
     }
 }
