@@ -104,7 +104,7 @@ public class DocumentoController {
                     .contentType(MediaType.parseMediaType(contentType))
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + arquivo.getNome() + arquivo.getExtensao() + "")
                     .header("X-FILE-ID", idDocumento.toString())
-                    .body(arquivoService.readFile(arquivo));
+                    .body(arquivoService.getResource(arquivo));
         }
         return ResponseEntity.ok().body(null);
     }
