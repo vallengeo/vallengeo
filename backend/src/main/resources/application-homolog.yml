@@ -7,9 +7,6 @@ server:
   api:  ${API_URL}:${API_PORT}
 
 spring:
-  config:
-    import: optional:file:./docker/vallengeo/.env[.properties]
-  
   ## ===============================
   ## = BANCO DE DADOS
   ## ===============================
