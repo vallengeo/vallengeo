@@ -12,3 +12,12 @@ export const tipoDocumento = async () => {
   });
 }
 
+export const downloadDocumento = async (idDocumento: string) => {
+  const token = Cookies.get(ACCESS_TOKEN);
+
+  return await api.get(`documento/download/${idDocumento}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+}
