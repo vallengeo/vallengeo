@@ -51,7 +51,7 @@ import static com.vallengeo.core.util.SecurityUtils.getJwtToken;
 @Service
 @RequiredArgsConstructor
 public class ProcessoService {
-    @Value("${server.url}")
+    @Value("${server.api}")
     private String SERVER_URL;
 
     private final ProcessoRepository repository;
