@@ -1,7 +1,7 @@
 spring:
   main:
     allow-bean-definition-overriding: true
-    
+
   # ===============================
   # = BANCO DE DADOS
   # ===============================
@@ -108,3 +108,22 @@ feign:
         connect-timeout: 6000
         logger-level: full
         read-timeout: 6000
+
+# ===============================
+# AWS
+# ===============================
+# Amazon S3
+cloud:
+  aws:
+    credentials:
+      secret-key: ${AWS_APP_SECRET_KEY}
+      access-key: ${AWS_APP_ACCESS_KEY}
+    region:
+      static: sa-east-1
+    stack:
+      auto: 'false'
+
+# Buckets S3
+application:
+  bucket:
+    name: vallengeo-v1-documentos

@@ -34,7 +34,6 @@ import java.nio.file.Files;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.vallengeo.core.config.Config.APPLICATION_DEFINITIVE_UPLOAD;
 import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
 import static com.vallengeo.core.helpers.DateHelpers.convertDateToLocalDateTime;
 import static com.vallengeo.core.util.Constants.FILE_NOT_PERMITED_ERROR;
@@ -49,6 +48,7 @@ public class DocumentoService {
     private final DocumentoRepository repository;
     private final ProcessoRepository processoRepository;
     private final TipoDocumentoService tipoDocumentoService;
+    private final S3Service s3Service;
     public static final String LOG_PREFIX = "[DOCUMENTO] - ";
 
     @Transactional
@@ -183,8 +183,7 @@ public class DocumentoService {
     }
 
     private void moverParaPastaDefinitiva(File temp, String nome, String extensao) throws IOException {
-        final File definitive = new File(APPLICATION_DEFINITIVE_UPLOAD + File.separator + nome + extensao);
-        FileUtils.copyFile(temp, definitive);
+        s3Service.uploadFile(temp, nome, extensao);
         Files.delete(temp.toPath());
     }
 
