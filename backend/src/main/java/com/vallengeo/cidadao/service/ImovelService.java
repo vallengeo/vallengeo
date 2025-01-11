@@ -39,7 +39,7 @@ import static com.vallengeo.core.util.SecurityUtils.getJwtToken;
 @Service
 @RequiredArgsConstructor
 public class ImovelService {
-    @Value("${server.url}")
+    @Value("${server.api}")
     private String SERVER_URL;
     private final ImovelRepository repository;
     private final RelProcessoSituacaoProcessoRepository relProcessoSituacaoProcessoRepository;
