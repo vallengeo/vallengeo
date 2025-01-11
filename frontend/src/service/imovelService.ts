@@ -25,11 +25,28 @@ export const uploadShapeFile = async (file: File[]) => {
 export const cadastro = async (formData: ICadastroImovel) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  return api.post("/imovel/cadastro", formData, {
+  const response = await api.post("/imovel/cadastro", formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  return response.data;
+};
+
+export const editarImovel = async (
+  processoId: string,
+  formData: ICadastroImovel
+) => {
+  const token = Cookies.get(ACCESS_TOKEN);
+
+  const response = await api.post(`/imovel/editar/${processoId}`, formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
 };
 
 export const tipoUso = async () => {
@@ -51,9 +68,9 @@ export const cadastrados = async () => {
       Authorization: `Bearer ${token}`,
     },
     params: {
-      "pagina": 1,
-      "itens-por-pagina": 6
-    }
+      pagina: 1,
+      "itens-por-pagina": 6,
+    },
   });
 
   return response.data;

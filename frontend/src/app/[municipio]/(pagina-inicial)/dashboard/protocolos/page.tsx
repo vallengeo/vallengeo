@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Header } from "@/components/header";
+import { Header } from "@/app/[municipio]/(pagina-inicial)/components/header";
 import { ListaProtocolos } from "./components/protocolos";
 import { Mapa } from "../components/mapa";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function ProtocolosPage() {
   return (
     <>
-      <Header title="Protocolos" canShowBrasao />
+      <Header title="Protocolos" />
 
       <div className="space-y-4 my-6">
         <div className="bg-white border border-input rounded-3xl p-4">
