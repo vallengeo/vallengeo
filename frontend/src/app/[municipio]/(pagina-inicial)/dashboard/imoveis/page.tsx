@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { Header } from "@/components/header";
+import { Header } from "@/app/[municipio]/(pagina-inicial)/components/header";
 import { ImoveisCadastrados } from "./components/imoveis-cadastrados";
 import {
   Breadcrumb,
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 export default function ImoveisPage() {
   return (
     <>
-      <Header title="Imóveis" canShowBrasao>
+      <Header title="Imóveis">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>

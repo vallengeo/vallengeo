@@ -1,26 +1,24 @@
-'use client'
+"use client";
 
 import Link from "next/link";
 import { LogoSmall } from "@/components/logo-small";
 import { Profile } from "@/components/profile";
 import { Menu } from "./menu";
 import { LogOut } from "lucide-react";
-
-import { actionLogout } from '@/service/authService'
-import { useRouter } from 'next/navigation'
+import { actionLogout } from "@/service/authService";
+import { useRouter } from "next/navigation";
 
 interface ISidebar {
-  municipio: string
+  municipio: string;
 }
 
 export function Sidebar({ municipio }: ISidebar) {
   const router = useRouter();
   const logout = () => {
-    actionLogout()
-      .then(() => {
-        router.push(`/${municipio}`);
-      })
-  }
+    actionLogout().then(() => {
+      router.push(`/${municipio}`);
+    });
+  };
 
   return (
     <>
