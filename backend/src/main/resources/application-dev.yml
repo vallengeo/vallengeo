@@ -33,4 +33,4 @@ spring:
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
-geoserver-url: ${API_URL}:${GEOSERVER_PORT}/geoserver/vallengeo
+geoserver-url: 54.232.129.154:${GEOSERVER_PORT}/geoserver/vallengeo
