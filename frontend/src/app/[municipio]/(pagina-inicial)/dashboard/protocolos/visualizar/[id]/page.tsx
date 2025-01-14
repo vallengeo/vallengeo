@@ -28,7 +28,7 @@ export default function VisualizarProtocolo({
 }) {
   return (
     <>
-      <Header title="Protocolos" canShowBrasao>
+      <Header title="Protocolos">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
