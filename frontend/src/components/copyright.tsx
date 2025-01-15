@@ -1,7 +1,7 @@
 export function Copyright() {
   return (
-    <p className="text-sm">
+    <address className="not-italic text-sm">
       Copyright © 2024 Vallengeo - Todos os direitos reservados
-    </p>
+    </address>
   )
 }
