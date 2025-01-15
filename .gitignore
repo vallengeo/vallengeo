@@ -78,7 +78,7 @@ docker-compose.yml
 *.hprof
 
 # Docker
-backend/docker/vallengeo/.env
+backend/docker/vallengeo/.env*
 frontend/package-lock.json
 
 # Terraform
