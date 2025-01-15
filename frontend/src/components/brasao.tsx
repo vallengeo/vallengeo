@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import logo from '@/assets/images/prefeitura/logo_taubate.png'
+import brasao from '@/assets/images/prefeitura/brasao_cruzeiro.webp'
 
 interface BrasaoProps {
   className?: string;
@@ -10,7 +10,7 @@ export function Brasao({
 }: BrasaoProps) {
   return (
     <Image
-      src={logo}
+      src={brasao}
       alt="Brasão da Prefeitura"
       className={className}
     />
