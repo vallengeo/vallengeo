@@ -1,6 +1,8 @@
 package com.vallengeo.cidadao.payload.request;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;

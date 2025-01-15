@@ -34,3 +34,22 @@ resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "dev-ec2-instance-profile"
   role = aws_iam_role.dev-ec2_role.name
 }
+
+resource "aws_iam_user" "valengeo_user" {
+  name = "valengeo_user"
+}
+
+resource "aws_iam_user_policy" "valengeo_user_policy" {
+  user = aws_iam_user.valengeo_user.name
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = "*"
+        Resource = "*"
+      }
+    ]
+  })
+}

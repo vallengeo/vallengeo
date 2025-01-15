@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org/" lang="pt">
+<header th:fragment="conteudo" class="conteudo-relatorio">
+    <div class="card">
+        <h2>Protocolos</h2>
+        <table class="tabela-conteudo-relatorio">
+            <thead>
+            <tr>
+                <td><h4>Protocolos</h4></td>
+                <td><h4>Inscrição imobiliária</h4></td>
+                <td><h4>Data de registro</h4></td>
+                <td>
+                    <div class="col" style="text-align: center; width: 50%;">
+                        <h4>Situação</h4>
+                    </div>
+                </td>
+
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="relatorio : ${relatorios}">
+                <td>
+                    <p th:if="${relatorio.protocolo != null}"
+                       th:text="${relatorio.protocolo}"></p>
+                    <p th:if="${relatorio.protocolo == null}">-</p>
+                </td>
+                <td>
+                    <p th:if="${relatorio.inscricaoImobiliaria != null}"
+                       th:text="${relatorio.inscricaoImobiliaria}"></p>
+                    <p th:if="${relatorio.inscricaoImobiliaria == null}">-</p>
+                </td>
+
+                <td>
+                    <p th:if="${relatorio.dataRegistro != null}"
+                       th:text="${relatorio.getDataRegistroFormatada()}"></p>
+                    <p th:if="${relatorio.dataRegistro == null}">-</p>
+                </td>
+                <td>
+                    <div class="col" style="text-align: center; width: 50%;">
+                        <div class="button" th:style="'background-color:'+@{${relatorio.getCorSituacao()}}+';'">
+                            <p th:if="${relatorio.situacao != null}"
+                               th:text="${relatorio.getDescricaoSituacao()}"></p>
+                            <p th:if="${relatorio.situacao == null}">-</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</header>
+</html>

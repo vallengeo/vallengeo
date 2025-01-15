@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class ProcessoListagemSimplificadoResponse implements Serializable {
     private Long id;
     private String inscricaoImobiliaria;
-    private FichaImovelResponse.Processo processo;
+    private ProcessoResponse processo;
     private InformacaoImovelResponse informacaoImovel;
 
     public ProcessoListagemSimplificadoResponse(FichaImovelResponse ficha) {

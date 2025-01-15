@@ -2,8 +2,9 @@
 # = PORTA
 # ===============================
 server:
+  url: ${API_URL}
   port: ${API_PORT}
-  url: http://localhost:${API_PORT}
+  api:  ${API_URL}:${API_PORT}
 
 spring:
   config:
@@ -32,4 +33,4 @@ spring:
     user: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
-geoserver-url: http://localhost:9001/geoserver/vallengeo
+geoserver-url: 54.232.129.154:${GEOSERVER_PORT}/geoserver/vallengeo

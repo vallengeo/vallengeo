@@ -1,14 +1,18 @@
 package com.vallengeo.portal.service;
 
 import com.vallengeo.core.exceptions.custom.ForbiddenException;
+import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.repository.UsuarioRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import static com.vallengeo.core.util.Constants.NOT_FOUND;
 
 @Service("authorizationService")
 public class AuthorizationService implements UserDetailsService {
@@ -19,14 +23,9 @@ public class AuthorizationService implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        var usuario = usuarioRepository.findByEmailAndAtivoIsTrue(username);
-
-        if (usuario == null)
-            throw new UsernameNotFoundException("Usuário e/ou senha inválidos.");
-
-        return usuario;
-     }
+    public UserDetails loadUserByUsername(String username) {
+        return usuarioRepository.findByEmailAndAtivoIsTrue(username).orElseThrow(() -> new ValidatorException("Usuário: " + username + NOT_FOUND, HttpStatus.NOT_FOUND));
+    }
 
     public boolean hasPerfil(String perfil) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,7 +41,7 @@ public class AuthorizationService implements UserDetailsService {
         }
 
         if (userDetails.getPerfis().stream().noneMatch(p -> p.getCodigo().equalsIgnoreCase(perfil))) {
-             throw new ForbiddenException();
+            throw new ForbiddenException();
         }
 
         return true;

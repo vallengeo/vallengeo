@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.Map;
@@ -57,7 +58,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
 
 
         if (Objects.isNull(admin))
-            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com");
+            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com").orElse(null);
 
         expiredAccessToken = JwtTestUtils.buildJwtToken(admin, null, secretKey, Math.negateExact(expiration), algorithm);
     }
@@ -100,7 +101,7 @@ class AutenticacaoControllerTest extends AbstractIntegrationTest {
         assertEquals(HttpStatus.FORBIDDEN.value(), actual.getStatus());
         assertEquals(HttpStatus.FORBIDDEN.getReasonPhrase(), actual.getError());
         assertEquals("Usuário e/ou senha inválidos.", actual.getMessage());
-        assertEquals(BadCredentialsException.class.getName(), actual.getException());
+        assertEquals(InternalAuthenticationServiceException.class.getName(), actual.getException());
     }
 
     @Test @Order(3)

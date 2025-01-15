@@ -142,6 +142,22 @@ resource "aws_security_group" "main" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    description = "Allow Elastic traffic"
+    from_port   = 9243
+    to_port     = 9243
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "Allow APM traffic"
+    from_port   = 8200
+    to_port     = 8200
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     description = "Allow all outbound traffic"
     from_port   = 0

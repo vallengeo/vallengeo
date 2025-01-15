@@ -2,6 +2,7 @@ package com.vallengeo.portal.service;
 
 import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
+import com.vallengeo.core.util.Constants;
 import com.vallengeo.portal.payload.request.autenticacao.LoginRequest;
 import com.vallengeo.utils.UsuarioTestUtils;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -28,9 +30,11 @@ class AuthenticationServiceTest extends AbstractIntegrationTest {
     void testDadoEmailNaoCadastrado_QuandoAuthenticate_DeveLancarInternalAuthenticationServiceException() {
         var loginRequest = new LoginRequest("nao.cadastrado@gmail.com", "123456", null);
 
-         assertThrows(
-                BadCredentialsException.class,
+         var actual = assertThrows(
+                InternalAuthenticationServiceException.class,
                 () -> authenticationService.authenticate(loginRequest));
+
+         assertEquals("Usuário: " + loginRequest.email() + Constants.NOT_FOUND, actual.getMessage());
     }
 
     @Test

@@ -2,13 +2,14 @@ package com.vallengeo.portal.service;
 
 import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.core.exceptions.custom.ForbiddenException;
+import com.vallengeo.core.exceptions.custom.ValidatorException;
+import com.vallengeo.core.util.Constants;
 import com.vallengeo.utils.AuthTestUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,11 +31,13 @@ class AuthorizationServiceTest extends AbstractIntegrationTest {
     @Test @Order(1)
     @DisplayName("Integration Test - Dado Email Nao Cadastrado Quando loadUserByUsername() Deve Lancar UsernameNotFoundException")
     void testDadoEmailNaoCadastrado_QuandoLoadUserByUsername_DeveLancarUsernameNotFoundException() {
-        var actual = assertThrows(
-                UsernameNotFoundException.class,
-                () -> authorizationService.loadUserByUsername("nao.cadastrado@gmail.com"));
+        var username = "nao.cadastrado@gmail.com";
 
-        assertEquals("Usuário e/ou senha inválidos.", actual.getMessage());
+        var actual = assertThrows(
+                ValidatorException.class,
+                () -> authorizationService.loadUserByUsername(username));
+
+        assertEquals("Usuário: " + username + Constants.NOT_FOUND, actual.getMessage());
     }
 
     @Test @Order(2)

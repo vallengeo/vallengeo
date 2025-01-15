@@ -48,15 +48,6 @@ class PessoaControllerTest extends AbstractIntegrationTest {
     @Autowired
     private PessoaJuridicaRepository pessoaJuridicaRepository;
 
-    @Value("${server.port}")
-    private int serverPort;
-    @Value("${api.security.token.secret}")
-    private String secretKey;
-    @Value("${api.security.token.expiration}")
-    private Long expiration;
-    @Value("${api.security.token.algorithm}")
-    private String algorithm;
-
     private static RequestSpecification specification;
     private static String expiredToken;
     private static String accessToken;
@@ -95,7 +86,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         pessoaJuridicaRequest.setResponsavel(pessoaFisicaRequest);
 
         if (Objects.isNull(admin))
-            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com");
+            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com").orElse(null);
 
         accessToken = String.format("Bearer %s",
                 JwtTestUtils.buildJwtToken(admin, null, secretKey, expiration, algorithm));
@@ -149,7 +140,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
     @Test @Order(4)
     @DisplayName("Integration Test - Cadastrar Pessoa Fisica quando Atributos Invalidos deve Retornar Bad Request (400)")
     void testCadastrarPessoaFisica_QuandoAtributosInvalidos_DeveRetornarBadRequest() {
-        pessoaFisicaRequest.setEmail("email@invalido");
+        pessoaFisicaRequest.setEmail("email_invalido#.com");
         pessoaFisicaRequest.setTelefone("");
         pessoaFisicaRequest.setNome(null);
         pessoaFisicaRequest.setCpf("12345678910");
@@ -210,13 +201,13 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals(HttpStatus.CONFLICT.value(), actual.getStatus());
         assertEquals(HttpStatus.CONFLICT.getReasonPhrase(), actual.getError());
         assertEquals(ValidatorException.class.getName(), actual.getException());
-        assertEquals("CPF já cadastrado no sistema.", actual.getMessage());
+        assertEquals("CPF  já cadastrado no sistema.", actual.getMessage());
     }
 
     @Test @Order(7)
     @DisplayName("Integration Test - Cadastrar Pessoa Juridica quando Atributos Invalidos deve Retornar Bad Request (400)")
     void testCadastrarPessoaJuridica_QuandoAtributosInvalidos_DeveRetornarBadRequest() {
-        pessoaJuridicaRequest.setEmail("email@invalido");
+        pessoaJuridicaRequest.setEmail("email_invalido!abc,com");
         pessoaJuridicaRequest.setTelefone("");
         pessoaJuridicaRequest.setRazaoSocial(null);
         pessoaJuridicaRequest.setCnpj("96325874154123");

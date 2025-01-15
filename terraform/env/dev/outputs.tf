@@ -29,12 +29,12 @@ output "vallengeo_api_lb" {
 
 output "geoserver_ec2_public_ip" {
   description = "IP público da instância EC2 do Geoserver"
-  value       = module.geoserver_ec2.public_ip
+  value       = module.vallengeo_api_ec2.public_ip
 }
 
 output "geoserver_instance_id" {
   description = "ID da instancia"
-  value       = module.geoserver_ec2.instance_id
+  value       = module.vallengeo_api_ec2.instance_id
 }
 
 output "vallengeo_instance_id" {

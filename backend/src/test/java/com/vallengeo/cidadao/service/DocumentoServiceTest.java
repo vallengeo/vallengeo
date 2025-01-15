@@ -19,6 +19,7 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
@@ -33,6 +34,9 @@ import java.util.*;
 
 import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 
 @DisplayName("Documento Service Tests")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -57,12 +61,8 @@ class DocumentoServiceTest extends AbstractIntegrationTest {
     @Autowired
     private GrupoRepository grupoRepository;
 
-    @Value("${api.security.token.secret}")
-    private String secretKey;
-    @Value("${api.security.token.expiration}")
-    private Long expiration;
-    @Value("${api.security.token.algorithm}")
-    private String algorithm;
+    @MockBean
+    private S3Service s3Service;
 
     private MockHttpServletRequest httpServletRequest;
     private TipoDocumento tipoDocumento;
@@ -75,7 +75,7 @@ class DocumentoServiceTest extends AbstractIntegrationTest {
         AuthTestUtils.setAuthentication(authManager, UsuarioTestUtils.DEFAULT_DEV_EMAIL, UsuarioTestUtils.DEFAULT_DEV_PASSWORD);
 
         var grupo = Objects.requireNonNull(grupoRepository.findById(UsuarioTestUtils.GRUPO_ID).orElse(null));
-        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue(UsuarioTestUtils.DEFAULT_DEV_EMAIL);
+        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue(UsuarioTestUtils.DEFAULT_DEV_EMAIL).orElse(null);
         var token = JwtTestUtils.buildJwtToken(
                 userDetails, grupo.getId().toString(), secretKey, expiration, algorithm);
 
@@ -213,13 +213,16 @@ class DocumentoServiceTest extends AbstractIntegrationTest {
 
     @Test @Order(1)
     @DisplayName("Integration Test - Dado ProcessoDocumentoRequest Quando cadastrar() Deve Cadastrar Documentos")
-    void testDadoProcessoDocumentoRequest_QuandoCadastrar_DeveCadastrarDocumentos() throws IOException {
+    void testDadoProcessoDocumentoRequest_QuandoCadastrar_DeveCadastrarDocumentos() {
         var arquivoValido = ArquivoTestUtils.createFile(APPLICATION_TEMP_UPLOAD, UUID.randomUUID().toString(), extensao);
         var docTemporarioRequest = DocumentoTestUtils.getDocTemporarioRequest(
                 arquivoValido.getName(), "test-file" + extensao, tipoDocumento.getId());
 
         var request = DocumentoTestUtils.getProcessoDocumentoRequest(
                 List.of(docTemporarioRequest), processo.getId().toString());
+
+        doReturn("File uploaded: " + arquivoValido.getName())
+                .when(s3Service).uploadFile(eq(arquivoValido), anyString(), anyString());
 
         documentoService.cadastrar(request);
         var actual = documentoRepository.findAllByProcessoId(processo.getId());

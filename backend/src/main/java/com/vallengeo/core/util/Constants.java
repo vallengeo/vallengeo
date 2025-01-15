@@ -6,8 +6,6 @@ public class Constants {
     private Constants() {
     }
 
-    public static final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$";
-
     public static final long FIRST_MILLISECONDS_DATE = 0L;
 
     public static final String DATA_CADASTRO_DB = "dataCadastro";
@@ -33,7 +31,7 @@ public class Constants {
     public static final String MAX_UPLOAD_SIZE = "Tamanho do arquivo não permitido.";
     public static final String COUNT_FILE_INVALID_ERROR = "Quantidade de polígonos inválida.";
     public static final String GEOMETRY_INTERSECTS_IN_DATA_BASE = "O polígono está sobreposto a outra atividade já georreferenciada.";
-    public static final String GEOMETRY_WHITHOUT_INTERSECTS = "A geometria informada não pertence ao município informado.";
+    public static final String GEOMETRY_WHITHOUT_INTERSECTS = "A geometria informada não pertence ao município.";
 
     // FEEDBACK MESSAGES
     public static final String SALVO_SUCESSO = "Salvo com sucesso";

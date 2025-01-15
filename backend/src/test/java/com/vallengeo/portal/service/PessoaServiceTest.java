@@ -79,7 +79,7 @@ class PessoaServiceTest extends AbstractIntegrationTest {
                 () -> pessoaService.cadastrar(pessoaFisicaRequest));
 
         assertEquals(HttpStatus.CONFLICT, actual.getStatus());
-        assertEquals("CPF já cadastrado no sistema.", actual.getMessage());
+        assertEquals("CPF  já cadastrado no sistema.", actual.getMessage());
     }
 
     @Test @Order(3)

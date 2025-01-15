@@ -22,7 +22,6 @@ import io.restassured.response.ResponseOptions;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -46,15 +45,6 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
     @Autowired
     private BCryptPasswordEncoder encoder;
 
-    @Value("${server.port}")
-    private int serverPort;
-    @Value("${api.security.token.secret}")
-    private String secretKey;
-    @Value("${api.security.token.expiration}")
-    private Long expiration;
-    @Value("${api.security.token.algorithm}")
-    private String algorithm;
-
     private EsqueciMinhaSenhaRequest esqueciMinhaSenhaRequest;
     private CadastroSimplificadoRequest simplificadoRequest;
     private RedefinirSenhaRequest redefinirSenhaRequest;
@@ -75,7 +65,7 @@ class UsuarioControllerTest extends AbstractIntegrationTest {
                 .build();
 
         if (Objects.isNull(admin))
-            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com");
+            admin = (Usuario) usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com").orElse(null);
 
         accessToken = JwtTestUtils.buildJwtToken(admin, null, secretKey, expiration, algorithm);
         expiredAccessToken = JwtTestUtils.buildJwtToken(admin, null, secretKey, -expiration, algorithm);

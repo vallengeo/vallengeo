@@ -56,7 +56,7 @@ class TipoDocumentoServiceTest extends AbstractIntegrationTest {
 
     @BeforeAll
     public void setup() {
-        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com");
+        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.dev@gmail.com").orElse(null);
         var token = JwtTestUtils.buildJwtToken(
                 userDetails, UsuarioTestUtils.GRUPO_ID.toString(), secretKey, expiration, algorithm);
 

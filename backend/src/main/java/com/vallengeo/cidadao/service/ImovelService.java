@@ -2,10 +2,7 @@ package com.vallengeo.cidadao.service;
 
 import com.vallengeo.cidadao.model.*;
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
-import com.vallengeo.cidadao.payload.response.FichaImovelAnalistaResponse;
-import com.vallengeo.cidadao.payload.response.FichaImovelResponse;
-import com.vallengeo.cidadao.payload.response.MapaImovelResponse;
-import com.vallengeo.cidadao.payload.response.ProcessoListagemSimplificadoResponse;
+import com.vallengeo.cidadao.payload.response.*;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.ImovelResponse;
 import com.vallengeo.cidadao.payload.response.cadastro.imovel.RepresentanteResponse;
@@ -42,7 +39,7 @@ import static com.vallengeo.core.util.SecurityUtils.getJwtToken;
 @Service
 @RequiredArgsConstructor
 public class ImovelService {
-    @Value("${server.url}")
+    @Value("${server.api}")
     private String SERVER_URL;
     private final ImovelRepository repository;
     private final RelProcessoSituacaoProcessoRepository relProcessoSituacaoProcessoRepository;
@@ -144,6 +141,16 @@ public class ImovelService {
         return new ProcessoResponse(processo.getId(), processo.getProtocolo(), ImovelMapper.INSTANCE.toResponse(imovel));
     }
 
+    public ProtocoloResponse buscaProtocolo(UUID processoId) {
+        Imovel imovel = buscarImovelPeloProcessoId(processoId);
+        return ProtocoloResponse.builder()
+                .id(imovel.getId())
+                .inscricaoImobiliaria(imovel.getInscricaoImobiliaria())
+                .processo(montaFichaProcesso(processoId))
+                .historicos(historicoAnotacaoConsideracaoTecnicaService.historicoPorProcessoId(processoId))
+                .build();
+    }
+
     public FichaImovelResponse fichaImovel(UUID processoId) {
         Imovel imovel = buscarImovelPeloProcessoId(processoId);
 
@@ -225,7 +232,7 @@ public class ImovelService {
                 "." + caracterizacaoImovel.getUnidade();
     }
 
-    private FichaImovelResponse.Processo montaFichaProcesso(UUID processoId) {
+    private com.vallengeo.cidadao.payload.response.ProcessoResponse montaFichaProcesso(UUID processoId) {
         List<RelProcessoSituacaoProcesso> relProcessoSituacaoProcessos = relProcessoSituacaoProcessoRepository.findAllByProcessoIdAndAtivoIsTrue(processoId);
         relProcessoSituacaoProcessos.sort(Comparator.comparing(RelProcessoSituacaoProcesso::getDataAcao).reversed());
 
@@ -235,7 +242,7 @@ public class ImovelService {
 
         Processo processo = relProcessoSituacaoProcesso.getProcesso();
 
-        return FichaImovelResponse.Processo.builder()
+        return com.vallengeo.cidadao.payload.response.ProcessoResponse.builder()
                 .id(processo.getId())
                 .protocolo(processo.getProtocolo())
                 .ultimaAtualizacao(relProcessoSituacaoProcesso.getDataAcao())

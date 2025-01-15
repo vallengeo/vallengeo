@@ -88,13 +88,15 @@ public final class SecurityUtils {
                 "/css/**",
                 "/error",
                 "/ficha-imobiliaria-html",
+                "/relatorio-html",
                 "/api/v1/autenticacao/login",
                 "/api/v1/autenticacao/register",
                 "/api/v1/autenticacao/logout/**",
                 "/api/v1/usuario/esqueci-minha-senha",
                 "/api/v1/usuario/recuperar-senha",
                 "/api/v1/localidade/**",
-                "/api/v1/camada/**"
+                "/api/v1/camada/**",
+                "/api/v1/grupo",
 
 
         };

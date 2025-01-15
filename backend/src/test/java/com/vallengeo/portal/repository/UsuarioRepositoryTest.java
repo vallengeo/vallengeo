@@ -64,7 +64,7 @@ public class UsuarioRepositoryTest extends AbstractIntegrationTest {
     @Test @Order(3)
     @DisplayName("Integration Test - Dado Email Quando findByEmailAndAtivoIsTrue() Deve Retornar UserDetails")
     public void testDadoEmail_QuandoFindByEmailAndAtivoIsTrue_DeveRetornarUserDetails() {
-        UserDetails actual = usuarioRepository.findByEmailAndAtivoIsTrue(usuario.getEmail());
+        UserDetails actual = usuarioRepository.findByEmailAndAtivoIsTrue(usuario.getEmail()).orElse(null);
 
         assertNotNull(actual);
         assertInstanceOf(UserDetails.class, actual);
@@ -76,7 +76,7 @@ public class UsuarioRepositoryTest extends AbstractIntegrationTest {
     @Test @Order(4)
     @DisplayName("Integration Test - Dado Email Nao Cadastrado Quando findByEmailAndAtivoIsTrue() Deve Retornar Null")
     public void testDadoEmailNaoCadastrado_QuandoFindByEmailAndAtivoIsTrue_DeveRetornarNull() {
-        UserDetails actual = usuarioRepository.findByEmailAndAtivoIsTrue("andre@email.com");
+        UserDetails actual = usuarioRepository.findByEmailAndAtivoIsTrue("andre@email.com").orElse(null);
         assertNull(actual);
     }
 

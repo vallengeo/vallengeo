@@ -57,7 +57,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         AuthTestUtils.setAuthentication(authManager, UsuarioTestUtils.DEFAULT_DEV_EMAIL, UsuarioTestUtils.DEFAULT_DEV_PASSWORD);
 
         var grupo = Objects.requireNonNull(grupoRepository.findById(UsuarioTestUtils.GRUPO_ID).orElse(null));
-        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue(UsuarioTestUtils.DEFAULT_DEV_EMAIL);
+        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue(UsuarioTestUtils.DEFAULT_DEV_EMAIL).orElse(null);
         var token = JwtTestUtils.buildJwtToken(
                 userDetails, grupo.getId().toString(), secretKey, expiration, algorithm);
 

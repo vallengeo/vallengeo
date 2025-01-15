@@ -12,6 +12,7 @@ import com.vallengeo.cidadao.payload.response.TipoDocumentoResponse;
 import com.vallengeo.cidadao.repository.DocumentoRepository;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
 import com.vallengeo.cidadao.repository.TipoDocumentoRepository;
+import com.vallengeo.cidadao.service.S3Service;
 import com.vallengeo.core.exceptions.ApiExceptionCustom;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
 import com.vallengeo.core.util.Constants;
@@ -32,6 +33,7 @@ import org.apache.commons.compress.utils.FileNameUtils;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.core.io.Resource;
@@ -44,16 +46,19 @@ import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static com.vallengeo.core.config.Config.APPLICATION_DEFINITIVE_UPLOAD;
 import static com.vallengeo.core.config.Config.APPLICATION_TEMP_UPLOAD;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 
 @DisplayName("DocumentoController Tests")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -73,6 +78,9 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
     private TipoDocumentoRepository tipoDocumentoRepository;
     @Autowired
     private AuthenticationManager authManager;
+
+    @MockBean
+    private S3Service s3Service;
 
     private String accessToken;
     private RequestSpecification specification;
@@ -261,7 +269,9 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
     @Test @Order(8)
     @DisplayName("Integration Test - Dado Usuario Nao Autorizado Quando cadastrarDocumentos() Deve Retornar Forbidden")
     void testDadoUsuarioNaoAutorizado_QuandoCadastrarDocumentos_DeveRetornarForbidden() {
-        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.semperfil@gmail.com");
+        var userDetails = usuarioRepository.findByEmailAndAtivoIsTrue("vallengeo.semperfil@gmail.com")
+                .orElse(null);
+
         var forbiddenAccessToken = JwtTestUtils.buildJwtToken(
                 userDetails, null, secretKey, expiration, algorithm);
 
@@ -301,6 +311,9 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
     @Test @Order(10)
     @DisplayName("Integration Test - Dado ProcessoDocumentoRequest Quando cadastrarDocumentos() Deve Cadastrar Documento Definitivo")
     void testDadoProcessoDocumentoRequest_QuandoCadastrarDocumentos_DeveCadastrarDocumentoDefinitivo() throws IOException {
+        doReturn("File uploaded: " + FileNameUtils.getBaseName(arquivoCadastro.toPath()))
+                .when(s3Service).uploadFile(eq(arquivoCadastro), anyString(), anyString());
+
         ResponseOptions<?> response = given().spec(specification)
                 .header(HttpHeaders.AUTHORIZATION, accessToken)
                 .body(processoDocumentoRequest)
@@ -314,11 +327,6 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertInstanceOf(Documento.class, actual);
         assertEquals(docTemporarioRequest.getNomeOriginal(), actual.getNome() + actual.getExtensao());
-
-        arquivoCadastro = new File(APPLICATION_DEFINITIVE_UPLOAD + File.separator + actual.getId() + actual.getExtensao());
-        assertTrue(arquivoCadastro.exists());
-
-        FileUtils.delete(arquivoCadastro);
     }
 
     @Test @Order(11)
@@ -532,7 +540,12 @@ class DocumentoControllerTest extends AbstractIntegrationTest {
         documento = documentoRepository.save(documento);
 
         var arquivoDownload = ArquivoTestUtils.createFile(
-                APPLICATION_DEFINITIVE_UPLOAD, documento.getId().toString(), documento.getExtensao());
+                FileUtils.getUserDirectoryPath(), documento.getId().toString(), documento.getExtensao());
+
+        byte[] arquivoDownloadByteArray = Files.readAllBytes(arquivoDownload.toPath());
+
+        doReturn(arquivoDownloadByteArray).when(s3Service).downloadFile(anyString(), anyString());
+        doReturn("application/pdf").when(s3Service).getContentTypeFromS3(anyString(), anyString());
 
         ResponseOptions<?> response = given().spec(specification)
                 .contentType("application/pdf")

@@ -48,6 +48,10 @@ public class Usuario implements UserDetails, Serializable {
     private String codigoAcesso;
     @Column(name = "validade_codigo")
     private LocalDateTime validadeCodigo;
+    @Column(name = "data_exclusao")
+    private LocalDateTime dataExclusao;
+    @Column(name = "id_usuario_exclusao")
+    private UUID idUsuarioExclusao;
 
     @ManyToOne
     @JoinColumn(name = "id_pessoa", referencedColumnName = "id", updatable = false, insertable = false)

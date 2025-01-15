@@ -1,6 +1,7 @@
 server:
+  url: http://localhost
   port: 8888
-  url: http://localhost:${server.port}
+  api: ${server.url}:${server.port}
 
 spring:
   datasource:
@@ -45,3 +46,22 @@ usuario:
       minutos: 10
 
 geoserver-url: http://localhost:9001/geoserver/vallengeo
+
+# ===============================
+# AWS
+# ===============================
+# Amazon S3
+cloud:
+  aws:
+    credentials:
+      secret-key: abc
+      access-key: xyz
+    region:
+      static: sa-east-1
+    stack:
+      auto: 'false'
+
+# Buckets S3
+application:
+  bucket:
+    name: vallengeo-v1-documentos

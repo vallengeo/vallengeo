@@ -3,6 +3,7 @@ package com.vallengeo.portal.service;
 import com.vallengeo.core.exceptions.InvalidPasswordException;
 import com.vallengeo.core.exceptions.custom.UnauthorizedException;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
+import com.vallengeo.core.util.SecurityUtils;
 import com.vallengeo.portal.model.*;
 import com.vallengeo.portal.model.embeddable.RelUsuarioPerfilTelaPermissao;
 import com.vallengeo.portal.payload.request.usuario.CadastroRequest;
@@ -78,10 +79,7 @@ public class UsuarioService {
 
     @Transactional
     public void esqueciMinhaSenha(EsqueciMinhaSenhaRequest request) {
-        Usuario usuario = usuarioRepository.findByEmail(request.email())
-                .orElseThrow(
-                        () -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND, HttpStatus.NOT_FOUND));
-
+        Usuario usuario = usuarioRepository.findByEmail(request.email()).orElseThrow(() -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND, HttpStatus.NOT_FOUND));
         usuarioRepository.save(this.sendEmailRedefinirSenha(usuario, request.modulo()));
     }
 
@@ -110,6 +108,16 @@ public class UsuarioService {
         } else {
             throw new InvalidPasswordException(INVALID_PASSWORD);
         }
+    }
+
+    @Transactional
+    public void removerUsuario(UUID id) {
+        Usuario usuario = usuarioRepository.findById(id).orElseThrow(() -> new ValidatorException("Usuário com o identificador: " + id + NOT_FOUND, HttpStatus.NOT_FOUND));
+        usuario.setAtivo(Boolean.FALSE);
+        usuario.setDataAtualizacao(convertDateToLocalDateTime(new Date()));
+        usuario.setDataExclusao(convertDateToLocalDateTime(new Date()));
+        usuario.setIdUsuarioExclusao(Objects.requireNonNull(SecurityUtils.getUserSession()).getId());
+        usuarioRepository.save(usuario);
     }
 
     private UsuarioResponse montaUsuarioResponse(Usuario usuario){

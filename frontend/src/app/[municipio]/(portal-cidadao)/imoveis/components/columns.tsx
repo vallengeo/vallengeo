@@ -12,6 +12,8 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConteudoItem } from "@/interfaces/IImovelCadastrados";
+import { GRUPO_ID } from "@/constants/auth";
+import Cookies from 'js-cookie'
 
 export const columns: ColumnDef<ConteudoItem>[] = [
   {
@@ -71,8 +73,7 @@ export const columns: ColumnDef<ConteudoItem>[] = [
   {
     id: "acoes",
     cell: ({ row }) => {
-      const pathname = usePathname();
-      const municipio = pathname.split("/")[1];
+      const municipio = Cookies.get(GRUPO_ID);
 
       return (
         <DropdownMenu>

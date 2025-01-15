@@ -1,6 +1,7 @@
 package com.vallengeo.global.service;
 
 import com.vallengeo.AbstractIntegrationTest;
+import com.vallengeo.cidadao.service.S3Service;
 import com.vallengeo.core.config.Config;
 import com.vallengeo.core.exceptions.InvalidFileException;
 import com.vallengeo.core.util.Constants;
@@ -11,17 +12,20 @@ import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mock.web.MockMultipartFile;
 import org.testcontainers.shaded.org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.doReturn;
 
 @DisplayName("Arquivo Service Tests")
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -30,9 +34,11 @@ public class ArquivoServiceTest extends AbstractIntegrationTest {
 
     @Autowired
     private ArquivoRepository arquivoRepository;
-
     @Autowired
     private ArquivoService arquivoService;
+
+    @MockBean
+    private S3Service s3Service;
 
     private static Arquivo arquivo;
 
@@ -109,9 +115,11 @@ public class ArquivoServiceTest extends AbstractIntegrationTest {
     }
 
     @Test @Order(5)
-    @DisplayName("Integration Test - Dado Arquivo Quando getContentType() Deve Retornar String")
-    void testDadoArquivo_QuandoGetContentType_DeveRetornarString() {
-         var actual = arquivoService.getContentType(arquivo);
+    @DisplayName("Integration Test - Dado Arquivo Quando getContentType() Deve Retornar ContentType")
+    void testDadoArquivo_QuandoGetContentType_DeveRetornarContentType() {
+        doReturn("application/pdf").when(s3Service).getContentTypeFromS3(arquivo.getId().toString(), arquivo.getExtensao());
+
+        var actual = arquivoService.getContentType(arquivo);
 
         assertNotNull(actual);
         assertInstanceOf(String.class, actual);
@@ -122,9 +130,12 @@ public class ArquivoServiceTest extends AbstractIntegrationTest {
     @DisplayName("Integration Test - Dado Arquivo Quando readFile() Deve Retornar ByteArrayResource")
     void testDadoArquivo_QuandoReadFile_DeveRetornarByteArrayResource() throws IOException {
         var file = ArquivoTestUtils.createFile(
-                Config.APPLICATION_DEFINITIVE_UPLOAD, arquivo.getId().toString(), arquivo.getExtensao());
+                FileUtils.getUserDirectoryPath(), arquivo.getId().toString(), arquivo.getExtensao());
 
-        var actual = arquivoService.readFile(arquivo);
+        var fileByteArray = Files.readAllBytes(file.toPath());
+        doReturn(fileByteArray).when(s3Service).downloadFile(arquivo.getId().toString(), arquivo.getExtensao());
+
+        var actual = arquivoService.getResource(arquivo);
 
         assertNotNull(actual);
         assertInstanceOf(ByteArrayResource.class, actual);
