@@ -1,13 +1,13 @@
-import type { Config } from 'tailwindcss'
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   darkMode: ["class"],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx}",
+  ],
   theme: {
     container: {
       center: true,
@@ -51,7 +51,7 @@ const config: Config = {
         "gov-br": {
           DEFAULT: "rgb(var(--gov-br))",
           hover: "rgb(var(--gov-br-hover))",
-          foreground: "rgb(var(--gov-br-foreground))"
+          foreground: "rgb(var(--gov-br-foreground))",
         },
 
         muted: {
@@ -74,7 +74,7 @@ const config: Config = {
           foreground: "hsl(var(--card-foreground))",
         },
 
-        amarelo: 'var(--amarelo)'
+        amarelo: "var(--amarelo)",
       },
 
       borderRadius: {
@@ -100,13 +100,11 @@ const config: Config = {
       },
 
       backgroundImage: {
-        "welcome": "url('/bg-welcome.png'), linear-gradient(90deg, #36771C 25.1%, rgba(217, 217, 217, 0.00) 99.25%)"
-      }
+        welcome:
+          "linear-gradient(90.03deg, #36771C 25.1%, rgba(217, 217, 217, 0) 99.25%)",
+      },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require('tailwind-scrollbar-hide')
-  ],
-}
-export default config
+  plugins: [require("tailwindcss-animate"), require("tailwind-scrollbar-hide")],
+};
+export default config;
