@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
 import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
@@ -12,23 +12,26 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
 
-const resetPasswordSchema = z.object({
-  password: z.string({ required_error: "Senha é obrigatório" })
-    .nonempty("Senha é obrigatório")
-    .min(6, "Mínimo 6 dígitos"),
-  confirm_password: z.string({ required_error: "Senha é obrigatório" })
-    .nonempty("Senha é obrigatório")
-    .min(6, "Mínimo 6 dígitos")
-})
+const resetPasswordSchema = z
+  .object({
+    password: z
+      .string({ required_error: "Senha é obrigatório" })
+      .nonempty("Senha é obrigatório")
+      .min(6, "Mínimo 6 dígitos"),
+    confirm_password: z
+      .string({ required_error: "Senha é obrigatório" })
+      .nonempty("Senha é obrigatório")
+      .min(6, "Mínimo 6 dígitos"),
+  })
   .refine(({ password, confirm_password }) => password === confirm_password, {
     message: "A senha não corresponde",
-    path: ["confirm_password"]
-  })
+    path: ["confirm_password"],
+  });
 
-type resetPasswordData = z.infer<typeof resetPasswordSchema>
+type resetPasswordData = z.infer<typeof resetPasswordSchema>;
 
 export function FormRedefinirSenha() {
   const form = useForm<resetPasswordData>({
@@ -37,7 +40,7 @@ export function FormRedefinirSenha() {
 
   const onSubmit: SubmitHandler<resetPasswordData> = (data) => {
     console.log(data);
-  }
+  };
 
   return (
     <Form {...form}>
@@ -48,7 +51,9 @@ export function FormRedefinirSenha() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="password" className="font-semibold">Nova senha</FormLabel>
+                <FormLabel htmlFor="password" className="font-semibold">
+                  Nova senha
+                </FormLabel>
                 <FormControl>
                   <Input
                     id="password"
@@ -70,7 +75,9 @@ export function FormRedefinirSenha() {
             name="confirm_password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel htmlFor="confirm_password" className="font-semibold">Repetir senha</FormLabel>
+                <FormLabel htmlFor="confirm_password" className="font-semibold">
+                  Repetir senha
+                </FormLabel>
                 <FormControl>
                   <Input
                     id="confirm_password"
@@ -94,7 +101,7 @@ export function FormRedefinirSenha() {
               form.reset({
                 password: "",
                 confirm_password: "",
-              })
+              });
             }}
           >
             Limpar
@@ -106,5 +113,5 @@ export function FormRedefinirSenha() {
         </div>
       </form>
     </Form>
-  )
+  );
 }

@@ -10,7 +10,7 @@ import {
 import { Mapa } from "../components/mapa";
 
 export const metadata: Metadata = {
-  title: "Imóveis - VallenGeo",
+  title: "Imóveis | VallenGeo",
 };
 
 export default function ImoveisPage() {

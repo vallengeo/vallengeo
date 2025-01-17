@@ -20,7 +20,7 @@ import {
 export function Notificacoes() {
   const router = useRouter();
   const pathname = usePathname();
-  const idMunicipio = pathname.split('/')[1] || '';
+  const idMunicipio = pathname.split("/")[1] || "";
 
   const [notificacoes, setNotificacoes] = useState<
     INotificacaoNaoVisualizada[]

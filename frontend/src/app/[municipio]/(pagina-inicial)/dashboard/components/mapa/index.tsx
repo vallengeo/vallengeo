@@ -116,7 +116,7 @@ export function Mapa() {
       camadasPesquisar.current.clearLayers();
       try {
         const features: any = await fetchOnGeoserver(searchValue);
-        
+
         camadasPesquisar.current.addLayer(
           new L.GeoJSON(features, {
             style: {},
@@ -326,7 +326,7 @@ export function Mapa() {
 
   return (
     <div id="mapa-content" ref={contentRef}>
-      <div className="rounded-2xl cursor-pointer map" id="map">
+      <div className="cursor-pointer map" id="map">
         <Pesquisar
           onSearch={handleSearch}
           onChange={onChange}
