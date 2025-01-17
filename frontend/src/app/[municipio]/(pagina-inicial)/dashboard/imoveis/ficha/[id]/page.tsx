@@ -77,9 +77,9 @@ export default async function FichaImovelPage({
             </div>
           </div>
 
-          <Suspense fallback={<DownloadFichaSkeleton />}>
+          {/* <Suspense fallback={<DownloadFichaSkeleton />}>
             <DownloadFicha idDocumento={data.processo.id} />
-          </Suspense>
+          </Suspense> */}
         </div>
 
         <div className="bg-white border border-input rounded-3xl px-8 py-6">

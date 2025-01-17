@@ -15,6 +15,7 @@ export default function RootLayout({
 }) {
   const pathname = usePathname();
   const canShowSplashScreen =
+    typeof window !== "undefined" &&
     pathname === `/${params.municipio}/dashboard` &&
     localStorage.getItem("animateSplayScreen") !== null &&
     JSON.parse(localStorage.getItem("animateSplayScreen") || "false");
