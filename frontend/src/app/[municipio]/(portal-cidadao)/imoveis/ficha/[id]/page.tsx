@@ -17,22 +17,29 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
+import { ficha } from "@/service/imovelService";
+import IFicha from "@/interfaces/Analista/IFicha";
+import { InformacoesImovel } from "./components/informacoes-imovel";
 
-export default function FichaImovelPage({
-  params
+async function getData(processoId: string): Promise<IFicha> {
+  const response = await ficha(processoId);
+  return response.data;
+}
+
+export default async function FichaImovelPage({
+  params,
 }: {
   params: {
-    municipio: string,
-    id: string
-  }
+    municipio: string;
+    id: string;
+  };
 }) {
+  const data = await getData(params.id);
+
   return (
-    <main
-      role="main"
-      className="container space-y-6 py-6"
-    >
-      <div className="flex items-center justify-between flex-wrap">
+    <div className="container space-y-6 py-6">
+      <div className="flex items-start md:items-center justify-between flex-col md:flex-row flex-wrap gap-6">
         <Header
           title="Ficha de imóvel"
           linkBack={`/${params.municipio}/imoveis`}
@@ -40,15 +47,21 @@ export default function FichaImovelPage({
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${params.municipio}/imoveis`}>Imóveis</BreadcrumbLink>
+                <BreadcrumbLink href={`/${params.municipio}/imoveis`}>
+                  Imóveis
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbPage className="font-normal">Ficha de imóvel</BreadcrumbPage>
+                <BreadcrumbPage className="font-normal">
+                  Ficha de imóvel
+                </BreadcrumbPage>
               </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbPage className="font-normal">{params.id}</BreadcrumbPage>
+                <BreadcrumbPage className="font-normal">
+                  {data.inscricaoImobiliaria}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -63,15 +76,18 @@ export default function FichaImovelPage({
         </Link>
       </div>
 
-      <DownloadFicha ficha={params.id} />
-      <VisaoGeral ficha={params.id} />
-      <RepresentantesImovel />
-      <InformacoesContato />
-      <CaracterizacaoImovel />
+      <DownloadFicha ficha={data} />
+      <VisaoGeral ficha={data} />
+      <InformacoesImovel ficha={data} />
+      <RepresentantesImovel ficha={data} />
+      <InformacoesContato ficha={data} />
+      <CaracterizacaoImovel ficha={data} />
       <Georeferenciamento />
       <Observacoes />
-      <DocumentosEnviados />
+      <DocumentosEnviados ficha={data} />
       <Historico />
-    </main>
-  )
+
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+    </div>
+  );
 }

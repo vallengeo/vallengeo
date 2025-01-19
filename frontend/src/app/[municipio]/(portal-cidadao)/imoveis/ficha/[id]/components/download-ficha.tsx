@@ -1,28 +1,32 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Building } from "lucide-react";
+import IFicha from "@/interfaces/Analista/IFicha";
+import { fichaDownload } from "@/service/imovelService";
 
 interface DownloadFichaProps {
-  ficha: string
+  ficha: IFicha;
 }
 
-export function DownloadFicha({ ficha }: DownloadFichaProps) {
+export async function DownloadFicha({ ficha }: DownloadFichaProps) {
   return (
     <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl px-8 py-4">
       <div className="flex items-center gap-5">
         <Building size={32} />
 
         <div className="flex flex-col gap-1">
-          <span className="text-2xl font-medium">{ficha}</span>
-          <span>Davi Luan Manuel da Cruz</span>
+          <span className="text-2xl font-medium">
+            {ficha.inscricaoImobiliaria}
+          </span>
+          <span>{ficha.representantes[0].nome}</span>
         </div>
       </div>
 
       <Button asChild variant="default">
-        <Link href={`/imoveis/download/${ficha}`} download>
+        <Link href={`#`} download>
           Download ficha
         </Link>
       </Button>
     </div>
-  )
+  );
 }
