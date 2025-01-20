@@ -12,16 +12,14 @@ import { HistoricoProcessosSkeleton } from "./components/historico-processos-ske
 import { Totalizadores } from "./components/totalizadores";
 import { TotalizadoresSkeleton } from "./components/totalizadores-skeleton";
 import { NotificacoesSkeleton } from "./components/notificacoes-skeleton";
+import { MapaSkeleton } from "./components/mapa/skeleton";
+import { ResumoImoveisSkeleton } from "./components/resumo-imoveis/skeleton";
 
 export const metadata: Metadata = {
-  title: "Página Inicial - VallenGeo",
+  title: "Página Inicial | VallenGeo",
 };
 
-export default function HomePage({
-  params,
-}: {
-  params: { municipio: string };
-}) {
+export default function HomePage() {
   return (
     <>
       <Header title="Home" />
@@ -48,14 +46,16 @@ export default function HomePage({
           </Suspense>
         </div>
 
-        <div className="bg-white border border-input rounded-3xl p-4">
-          <h2 className="text-xl font-medium mb-6">Mapa da Cidade</h2>
-          <Mapa />
-        </div>
+        <Suspense fallback={<MapaSkeleton />}>
+          <div className="bg-white border border-input rounded-3xl overflow-hidden relative z-10">
+            <h2 className="text-xl font-medium px-6 py-5">Mapa da Cidade</h2>
+            <Mapa />
+          </div>
+        </Suspense>
 
-        <div>
+        <Suspense fallback={<ResumoImoveisSkeleton />}>
           <ResumoImoveis />
-        </div>
+        </Suspense>
       </div>
     </>
   );

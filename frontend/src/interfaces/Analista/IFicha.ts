@@ -2,6 +2,8 @@ export interface Processo {
   id: string;
   protocolo: string;
   imovel: Imovel;
+  ultimaAtualizacaoFormatada?: string;
+  situacao?: string;
 }
 
 export interface Imovel {
@@ -19,6 +21,9 @@ export interface Representante {
   endereco: Endereco;
   contato: Contato;
   tipoPessoa: string;
+  nome?: string;
+  cpf?: string;
+  rg?: string;
 }
 
 export interface Endereco {

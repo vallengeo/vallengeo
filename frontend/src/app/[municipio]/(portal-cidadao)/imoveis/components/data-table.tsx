@@ -66,72 +66,100 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
-      {table.getRowModel().rows?.length ? (
-        <div>
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-xl font-medium">Lista de imóveis</h2>
+      <div>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-medium">Lista de imóveis</h2>
 
-            <div className="flex items-center gap-3">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="inline-flex justify-center items-center h-8 w-8 border border-primary-foreground rounded">
-                    <Search size={18} />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="left"
-                  align="center"
-                  className="border-none bg-transparent shadow-none"
-                >
-                  <Input
-                    type="search"
-                    placeholder="Pesquisar imóvel"
-                    value={
-                      (table
-                        .getColumn("imoveis")
-                        ?.getFilterValue() as string) ?? ""
-                    }
-                    onChange={(event) =>
-                      table
-                        .getColumn("imoveis")
-                        ?.setFilterValue(event.target.value)
-                    }
-                    className="max-w-sm"
-                  />
-                </DropdownMenuContent>
-              </DropdownMenu>
+          <div className="flex items-center gap-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="inline-flex justify-center items-center h-8 w-8 border border-primary-foreground rounded">
+                  <Search size={18} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="left"
+                align="center"
+                className="border-none bg-transparent shadow-none"
+              >
+                <Input
+                  type="search"
+                  placeholder="Pesquisar imóvel"
+                  value={
+                    (table
+                      .getColumn("inscricaoImobiliaria")
+                      ?.getFilterValue() as string) ?? ""
+                  }
+                  onChange={(event) =>
+                    table
+                      .getColumn("inscricaoImobiliaria")
+                      ?.setFilterValue(event.target.value)
+                  }
+                  className="max-w-sm"
+                />
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button className="inline-flex justify-center items-center h-8 w-8 border border-primary-foreground rounded">
-                    <Filter size={18} />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-48" align="end">
-                  {table
-                    .getAllColumns()
-                    .filter((column) => column.getCanHide())
-                    .map((column) => {
-                      return (
-                        <DropdownMenuCheckboxItem
-                          key={column.id}
-                          className="capitalize"
-                          checked={column.getIsVisible()}
-                          onCheckedChange={(value) =>
-                            column.toggleVisibility(!!value)
-                          }
-                        >
-                          {column.id}
-                        </DropdownMenuCheckboxItem>
-                      );
-                    })}
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="inline-flex justify-center items-center h-8 w-8 border border-primary-foreground rounded">
+                  <Filter size={18} />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-48" align="end">
+                {table
+                  .getAllColumns()
+                  .filter((column) => column.getCanHide())
+                  .map((column) => {
+                    let label = "";
+
+                    switch (column.id) {
+                      case "inscricaoImobiliaria":
+                        label = "Inscrição imobiliária";
+                        break;
+                      case "informacaoImovel_endereco_logradouro":
+                        label = "Logradouro";
+                        break;
+                      case "informacaoImovel_endereco_numero":
+                        label = "Número e complemento";
+                        break;
+                      case "informacaoImovel_endereco_bairro":
+                        label = "Bairro";
+                        break;
+                      case "informacaoImovel_endereco_municipio_nome":
+                        label = "Cidade";
+                        break;
+                      case "informacaoImovel_endereco_municipio_estado_uf":
+                        label = "UF";
+                        break;
+                      case "processo_situacao":
+                        label = "Situação";
+                        break;
+                      case "acoes":
+                        label = "Ações";
+                        break;
+                    }
+
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.id}
+                        checked={column.getIsVisible()}
+                        onCheckedChange={(value) =>
+                          column.toggleVisibility(!!value)
+                        }
+                      >
+                        {label}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
+        </div>
 
-          <div>
-            <Table className="border-separate border-spacing-y-2">
+        <div>
+          <Table className="border-separate border-spacing-y-2">
+            {table.getRowModel().rows?.length ? (
               <TableHeader>
                 {table.getHeaderGroups().map((headerGroup) => (
                   <TableRow
@@ -156,8 +184,13 @@ export function DataTable<TData, TValue>({
                   </TableRow>
                 ))}
               </TableHeader>
-              <TableBody>
-                {table.getRowModel().rows.map((row) => (
+            ) : (
+              ""
+            )}
+
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && "selected"}
@@ -175,39 +208,45 @@ export function DataTable<TData, TValue>({
                       </TableCell>
                     ))}
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                ))
+              ) : (
+                <div className="min-h-[350px] grid">
+                  <div className="text-center m-auto max-w-[645px]">
+                    <p>
+                      Você ainda não tem nenhum imóvel cadastrado. Acesse agora
+                      o botão <strong>cadastrar</strong> para iniciar o processo
+                      de regularização.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </TableBody>
+          </Table>
 
-            <div className="flex items-center justify-end max-md:flex-col gap-2 py-4">
-              <Legenda className="flex-1" />
+          <div className="flex items-center justify-end max-md:flex-col gap-2 py-4">
+            <Legenda className="flex-1" />
 
-              <div className="space-x-2">
-                <Button
-                  variant="default"
-                  className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  <ChevronLeft size={16} />
-                </Button>
-                <Button
-                  variant="default"
-                  className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  <ChevronRight size={16} />
-                </Button>
-              </div>
+            <div className="space-x-2">
+              <Button
+                variant="default"
+                className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft size={16} />
+              </Button>
+              <Button
+                variant="default"
+                className="text-white bg-[#70C64D] rounded-full p-0 w-6 h-6 m-0"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                <ChevronRight size={16} />
+              </Button>
             </div>
           </div>
         </div>
-      ) : (
-        <div className="text-center mx-auto max-w-[645px]">
-          <p>Você ainda não tem nenhum imóvel cadastrado. Acesse agora o botão <strong>cadastrar</strong> para iniciar o processo de regularização.</p>
-        </div>
-      )}
+      </div>
     </>
   );
 }

@@ -53,7 +53,7 @@ const Modal = ({
 
         <DialogClose
           onClick={onClose}
-          className="absolute right-8 top-5 lg:top-9 rounded-sm ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
+          className="absolute right-8 top-5 lg:top-7 rounded-sm ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"
         >
           <span className="sr-only">Fechar</span>
           <X size={24} />

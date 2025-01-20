@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -29,6 +29,7 @@ import ICadastroImovel from "@/interfaces/ICadastroImovel";
 import { motion } from "motion/react";
 
 export function FormCadastroDocumentos() {
+  const router = useRouter();
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
 
@@ -90,12 +91,13 @@ export function FormCadastroDocumentos() {
 
     try {
       const response = await cadastro(sendData);
-
-      console.log(response);
+      const { id } = response;
 
       toast({
         description: "Dados enviados com sucesso!",
       });
+
+      router.push(`/${municipio}/imoveis/ficha/${id}`);
     } catch (error: any) {
       setLoadingContinuarDepois(false);
 
