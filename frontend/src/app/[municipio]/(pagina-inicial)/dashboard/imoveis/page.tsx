@@ -8,12 +8,21 @@ import {
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
 import { Mapa } from "../components/mapa";
+import IImovelCadastrados from "@/interfaces/IImovelCadastrados";
+import { imoveisCadastrados } from "@/service/analista/analistaService";
 
 export const metadata: Metadata = {
   title: "Imóveis | VallenGeo",
 };
 
-export default function ImoveisPage() {
+async function getData(): Promise<IImovelCadastrados> {
+  const response = await imoveisCadastrados();
+  return response;
+}
+
+export default async function ImoveisPage() {
+  const data = await getData();
+
   return (
     <>
       <Header title="Imóveis">
@@ -29,15 +38,15 @@ export default function ImoveisPage() {
       </Header>
 
       <div className="space-y-6 my-6">
-        <div className="bg-white border border-input rounded-3xl p-4">
-          <h2 className="text-xl font-medium px-6 py-4">
+        <div className="bg-white border border-input rounded-3xl">
+          <h2 className="text-xl font-medium px-6 py-5">
             Resumo de imóveis
           </h2>
           <Mapa />
         </div>
 
         <div className="bg-white border border-input rounded-2xl p-6 flex items-center justify-center">
-          <ImoveisCadastrados />
+          <ImoveisCadastrados data={data.conteudo} />
         </div>
       </div>
     </>

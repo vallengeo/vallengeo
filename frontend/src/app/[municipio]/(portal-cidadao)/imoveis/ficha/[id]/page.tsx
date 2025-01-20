@@ -21,10 +21,16 @@ import {
 import { ficha } from "@/service/imovelService";
 import IFicha from "@/interfaces/Analista/IFicha";
 import { InformacoesImovel } from "./components/informacoes-imovel";
+import { notFound } from "next/navigation";
 
-async function getData(processoId: string): Promise<IFicha> {
-  const response = await ficha(processoId);
-  return response.data;
+async function getData(processoId: string): Promise<IFicha | null> {
+  try {
+    const response = await ficha(processoId);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os dados:", error);
+    return null;
+  }
 }
 
 export default async function FichaImovelPage({
@@ -36,6 +42,11 @@ export default async function FichaImovelPage({
   };
 }) {
   const data = await getData(params.id);
+
+  if (!data || !data.id) {
+    notFound();
+    return null;
+  }
 
   return (
     <div className="container space-y-6 py-6">

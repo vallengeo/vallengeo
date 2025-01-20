@@ -7,7 +7,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -16,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import ITipoDocumento from "@/interfaces/ITipoDocumento";
 import { tipoDocumento } from "@/service/documentoService";
-import { useToast } from "@/components/ui/use-toast";
 
 interface DocumentosProps {
   ficha: IFicha;
@@ -25,7 +23,6 @@ interface DocumentosProps {
 export function DocumentosEnviados({ ficha }: DocumentosProps) {
   const documentosEnviados = ficha.documentosEnviados;
 
-  const { toast } = useToast();
   const [tipoDocumentos, setTipoDocumentos] = useState<ITipoDocumento[]>([]);
 
   useEffect(() => {
@@ -35,9 +32,6 @@ export function DocumentosEnviados({ ficha }: DocumentosProps) {
         setTipoDocumentos(response.data);
       } catch (error) {
         console.error("Erro ao buscar documentos:", error);
-        toast({
-          description: "Erro ao buscar documento.",
-        });
       }
     };
 

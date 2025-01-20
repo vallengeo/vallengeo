@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Building } from "lucide-react";
 import IFicha from "@/interfaces/Analista/IFicha";
-import { fichaDownload } from "@/service/imovelService";
 
 interface DownloadFichaProps {
   ficha: IFicha;

@@ -12,60 +12,229 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConteudoItem } from "@/interfaces/IImovelCadastrados";
-import { GRUPO_ID } from "@/constants/auth";
-import Cookies from 'js-cookie'
+
+function LinkCell({ label, link }: { label: string; link: string }) {
+  const pathname = usePathname();
+  const idMunicipio = pathname.split("/")[1];
+
+  return (
+    <Link href={`/${idMunicipio}/imoveis/ficha/${link}}`}>
+      {label}
+    </Link>
+  );
+}
 
 export const columns: ColumnDef<ConteudoItem>[] = [
   {
-    accessorKey: "imoveis",
-    header: () => <div>Imóveis cadastrados</div>,
+    accessorKey: "inscricaoImobiliaria",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Inscrição imobiliária
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
   },
   {
-    accessorKey: "logradouro",
-    header: () => <div>Logradouro</div>,
+    accessorKey: "informacaoImovel.endereco.logradouro",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Logradouro
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
   },
   {
-    accessorKey: "numero",
-    header: () => <div>Número e Complemento</div>,
-  },
-  {
-    accessorKey: "bairro",
-    header: () => <div>Bairro</div>,
-  },
-  {
-    accessorKey: "tipo",
-    header: () => <div>Tipo de imóvel</div>,
-  },
-  {
-    accessorKey: "telefone",
-    header: () => <div>Telefone</div>,
-  },
-  {
-    accessorKey: "situacao",
-    header: () => <div>Situação</div>,
+    accessorKey: "informacaoImovel.endereco.numero",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Número e Complemento
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
     cell: ({ row }) => {
-      let bgSelo = "";
+      return (
+        <span>
+          {row.original.informacaoImovel.endereco.numero}{" "}
+          {row.original.informacaoImovel.endereco.complemento}
+        </span>
+      );
+    },
+  },
+  {
+    accessorKey: "informacaoImovel.endereco.bairro",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Bairro
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
+  },
+  {
+    accessorKey: "informacaoImovel.endereco.municipio.nome",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Cidade
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
+  },
+  {
+    accessorKey: "informacaoImovel.endereco.municipio.estado.uf",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          UF
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
+  },
+  {
+    accessorKey: "processo.situacao",
+    header: ({ column }) => {
+      return (
+        <button
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Situação
+          <svg
+            width="6"
+            height="5"
+            viewBox="0 0 6 5"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M3.22389 4.50781C2.97309 4.50781 2.74092 4.37756 2.60804 4.16806L2.58279 4.12506L0.842148 1.06256L0.826948 1.03106C0.783463 0.921397 0.766033 0.802798 0.776081 0.684951C0.786129 0.567105 0.82337 0.453353 0.884763 0.352986C0.946155 0.25262 1.02996 0.168484 1.12933 0.107452C1.2287 0.0464192 1.34081 0.0102206 1.45652 0.00181256L1.50531 -0.000187292L4.93757 -0.000186986L4.94958 0.00056308L4.97704 6.28803e-05C5.08623 0.00579352 5.1928 0.0362782 5.28899 0.0892987C5.38517 0.142319 5.46855 0.216541 5.53306 0.306563L5.55979 0.346563C5.61817 0.440107 5.65549 0.545689 5.66906 0.655707C5.68262 0.765725 5.6721 0.877441 5.63824 0.982813L5.62059 1.03131L5.60588 1.06256L3.86719 4.12081C3.8036 4.23806 3.71037 4.33579 3.5972 4.40385C3.48402 4.4719 3.35503 4.5078 3.22364 4.50781L3.22389 4.50781Z"
+              fill="black"
+            />
+          </svg>
+        </button>
+      );
+    },
+    cell: ({ row }) => {
+      let label = "";
+      let background = "";
 
-      switch (row.getValue("situacao")) {
+      switch (row.original.processo.situacao) {
         case "Aprovado":
-          bgSelo = "bg-[#70C64D]";
+          label = "Aprovado";
+          background = "bg-[#70C64D]";
           break;
         case "Reprovado":
-          bgSelo = "bg-[#DA1C4A]";
+          label = "Reprovado";
+          background = "bg-[#DA1C4A]";
           break;
-        case "Em análise":
-          bgSelo = "bg-[#FFBE5B]";
+        case "Aguardando finalização de upload de arquivos":
+          label = "Em análise";
+          background = "bg-[#FFBE5B]";
           break;
         case "Arquivado":
-          bgSelo = "bg-[#729397]";
+          label = "Arquivado";
+          background = "bg-[#729397]";
           break;
       }
 
       return (
         <span
-          className={`inline-flex text-sm whitespace-nowrap font-light text-white ${bgSelo} px-2 rounded-3xl`}
+          className={`inline-flex text-sm whitespace-nowrap font-light text-white ${background} px-2 rounded-3xl`}
         >
-          {row.getValue("situacao")}
+          {label}
         </span>
       );
     },
@@ -73,8 +242,6 @@ export const columns: ColumnDef<ConteudoItem>[] = [
   {
     id: "acoes",
     cell: ({ row }) => {
-      const municipio = Cookies.get(GRUPO_ID);
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -88,25 +255,13 @@ export const columns: ColumnDef<ConteudoItem>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent className="rounded-2xl" align="end">
             <DropdownMenuItem className="justify-center">
-              <Link
-                href={`/${municipio}/imoveis/ficha/${row.original.processo.id}`}
-              >
-                Visualizar
-              </Link>
+              <LinkCell label="Visualizar" link={row.original.processo.id} />
             </DropdownMenuItem>
-            <DropdownMenuItem className="justify-center">
-              <Link
-                href={`/${municipio}/imoveis/relatorio/${row.original.processo.id}`}
-              >
-                Relatório
-              </Link>
+            <DropdownMenuItem className="justify-center" disabled>
+              <Link href="#">Relatório</Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="justify-center">
-              <Link
-                href={`/${municipio}/imoveis/arquivar/${row.original.processo.id}`}
-              >
-                Arquivar
-              </Link>
+            <DropdownMenuItem className="justify-center" disabled>
+              <Link href="#">Arquivar</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
