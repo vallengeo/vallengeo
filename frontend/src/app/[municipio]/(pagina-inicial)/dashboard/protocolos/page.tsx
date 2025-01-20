@@ -4,7 +4,7 @@ import { ListaProtocolos } from "./components/protocolos";
 import { Mapa } from "../components/mapa";
 
 export const metadata: Metadata = {
-  title: "Protocolos - VallenGeo",
+  title: "Protocolos | VallenGeo",
 };
 
 export default function ProtocolosPage() {

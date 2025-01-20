@@ -22,7 +22,7 @@ export function MyProfile({
           <span className="text-xl md:text-2xl">Cidadão</span>
 
           {showAddress && (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center md:justify-between gap-3 w-full">
               <Button
                 variant="link"
                 onClick={openModalChangePassword}
@@ -41,7 +41,7 @@ export function MyProfile({
               >
                 <Link
                   href="/"
-                  className="inline-flex items-center gap-1 lg:self-ende"
+                  className="inline-flex items-center gap-1 md:no-underline"
                 >
                   <PenSquare size={20} className="hidden lg:block" />
                   Editar

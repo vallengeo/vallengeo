@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { CadastrarComEmail } from "./components/form";
 
 export const metadata: Metadata = {
-  title: "Cadastrar com E-mail - VallenGeo",
+  title: "Cadastrar com E-mail | VallenGeo",
 };
 
 export default function CadastrarComEmailPage({

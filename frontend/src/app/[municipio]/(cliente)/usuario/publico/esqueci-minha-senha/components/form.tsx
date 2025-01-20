@@ -1,9 +1,7 @@
-'use client'
+"use client";
 
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-
 import { Support } from "@/components/support";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,28 +11,35 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "@/components/ui/form";
-
-
-const forgotPasswordUserFormSchema = z.object({
-  email: z.string({ required_error: "Email é obrigatório" })
-    .nonempty("Email é obrigatório")
-    .email({
-      message: "E-mail inválido, tente: example@example.com"
-    }),
-})
-
-type forgotPasswordUserFormData = z.infer<typeof forgotPasswordUserFormSchema>
+import {
+  recuperarSenhaData,
+  recuperarSenhaSchema,
+} from "@/validation/usuario/recuperar-senha";
+import IEsqueciMinhaSenha from "@/interfaces/Usuario/IEsqueciMinhaSenha";
+import { esqueciMinhaSenha } from "@/service/usuario";
+import { useRouter, usePathname } from "next/navigation";
 
 export function FormEsqueciMinhaSenha() {
-  const form = useForm<forgotPasswordUserFormData>({
-    resolver: zodResolver(forgotPasswordUserFormSchema)
+  const router = useRouter();
+  const pathname  = usePathname()
+  const idMunicipio = pathname.split('/')[1];
+
+  const form = useForm<recuperarSenhaData>({
+    resolver: zodResolver(recuperarSenhaSchema),
   });
 
-  const onSubmit: SubmitHandler<forgotPasswordUserFormData> = (data) => {
-    console.log(data)
-  }
+  const onSubmit: SubmitHandler<recuperarSenhaData> = (
+    data: IEsqueciMinhaSenha
+  ) => {
+    esqueciMinhaSenha({
+      ...data,
+      modulo: "",
+    }).then(() => {
+      router.push(`/${idMunicipio}/usuario/publico/recuperar-senha`);
+    });
+  };
 
   return (
     <Form {...form}>
@@ -69,5 +74,5 @@ export function FormEsqueciMinhaSenha() {
         </div>
       </form>
     </Form>
-  )
+  );
 }

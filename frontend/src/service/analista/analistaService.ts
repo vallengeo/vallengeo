@@ -28,12 +28,12 @@ export const protocolo = async (processoId: string) => {
 export const notificacaoNaoVisualizada = async () => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  return await api.get("analista/processo/notificacao-nao-visualizada", {
+  return await api.get("analista/notificacao-nao-visualizada", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
     params: {
-      pagin: 0,
+      pagina: 0,
       "itens-por-pagina": 5,
     },
   });
