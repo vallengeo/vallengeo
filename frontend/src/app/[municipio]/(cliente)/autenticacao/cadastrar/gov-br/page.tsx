@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import { CadastrarComGovbr } from "./components/form";
 
 export const metadata: Metadata = {
-  title: "Cadastrar com Gov.br - VallenGeo",
+  title: "Cadastrar com Gov.br | VallenGeo",
 };
 
 export default function CadastrarComGovBRPage({

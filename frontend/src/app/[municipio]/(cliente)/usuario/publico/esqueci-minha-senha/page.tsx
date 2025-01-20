@@ -3,7 +3,7 @@ import { FormEsqueciMinhaSenha } from "./components/form";
 import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
-  title: "Esqueceu a senha - VallenGeo",
+  title: "Esqueceu a senha | VallenGeo",
 };
 
 export default function EsqueciMinhaSenhaPage() {

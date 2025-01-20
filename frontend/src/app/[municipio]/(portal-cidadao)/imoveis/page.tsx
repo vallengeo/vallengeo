@@ -11,28 +11,16 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { ConteudoItem } from "@/interfaces/IImovelCadastrados";
+import IImovelCadastrados from "@/interfaces/IImovelCadastrados";
 import { cadastrados } from "@/service/imovelService";
 
 export const metadata: Metadata = {
   title: "Registro de Imóveis | VallenGeo",
 };
 
-async function getData(): Promise<ConteudoItem[]> {
+async function getData(): Promise<IImovelCadastrados> {
   const response = await cadastrados();
-
-  const data = response.conteudo.map((item: ConteudoItem) => ({
-    id: item.id,
-    processoId: item.processo.id,
-    logradouro: item.informacaoImovel.endereco.logradouro,
-    numero: item.informacaoImovel.endereco.numero,
-    bairro: item.informacaoImovel.endereco.bairro,
-    tipoUsoNome: item.informacaoImovel.tipoUso.nome,
-    telefone: "11221211221", // item.contato.telefone,
-    situacao: item.processo.situacao,
-  }));
-
-  return data;
+  return response;
 }
 
 export default async function RegistroImoveisPage({
@@ -73,7 +61,7 @@ export default async function RegistroImoveisPage({
         </div>
 
         <div className="bg-white border border-input rounded-2xl p-6 flex items-center justify-center">
-          <ImoveisCadastrados data={data} />
+          <ImoveisCadastrados data={data.conteudo} />
         </div>
       </div>
     </div>

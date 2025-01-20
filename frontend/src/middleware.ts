@@ -15,8 +15,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    // '/:municipio/dashboard/:path*',
-    // '/:municipio/imoveis/:path*',
-    // '/:municipio/configuracoes/:path*'
+    '/:municipio/dashboard/:path*',
+    '/:municipio/imoveis/:path*',
+    '/:municipio/configuracoes/:path*'
   ],
 }

@@ -20,7 +20,7 @@ import {
 export function Notificacoes() {
   const router = useRouter();
   const pathname = usePathname();
-  const idMunicipio = pathname.split('/')[1] || '';
+  const idMunicipio = pathname.split("/")[1] || "";
 
   const [notificacoes, setNotificacoes] = useState<
     INotificacaoNaoVisualizada[]
@@ -40,14 +40,15 @@ export function Notificacoes() {
     fetchNotificacoesNaoVisualizadas();
   }, []);
 
-  const handleVisualizarNotificacao = (notificacaoId: number) => async () => {
-    try {
-      await notificacaoVisualizada(notificacaoId);
-      router.push(`/${idMunicipio}/dashboard/imoveis/ficha/${notificacaoId}`);
-    } catch (error) {
-      console.error("Erro ao marcar notificação como visualizada:", error);
-    }
-  };
+  const handleVisualizarNotificacao =
+    (notificacaoId: number, inscricaoImobiliaria: string) => async () => {
+      try {
+        await notificacaoVisualizada(notificacaoId);
+        router.push(`/${idMunicipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`);
+      } catch (error) {
+        console.error("Erro ao marcar notificação como visualizada:", error);
+      }
+    };
 
   return (
     <>
@@ -83,16 +84,16 @@ export function Notificacoes() {
               </DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-2">
+            <div className="space-y-2 px-6 pb-6">
               {notificacoes.map((notificacao) => {
                 return (
                   <Button
                     key={notificacao.id}
                     type="button"
-                    onClick={handleVisualizarNotificacao(notificacao.id)}
-                    className="flex items-center justify-between bg-[#FDFDFD] hover:bg-muted/50 transition-colors border border-[#F0F0F0] rounded-2xl p-2"
+                    onClick={handleVisualizarNotificacao(notificacao.id, notificacao.inscricaoImobiliaria)}
+                    className="flex items-center justify-between bg-[#FDFDFD] hover:bg-muted/50 text-sm font-normal transition-colors border border-[#F0F0F0] rounded-2xl py-2.5 px-4 w-full hover:text-foreground hover:shadow-none h-auto text-left gap-6"
                   >
-                    <p className="ml-4">
+                    <p>
                       Nova atualização na inscrição imobiliária{" "}
                       <strong>{`${notificacao.inscricaoImobiliaria}`}</strong>.
                       Acesse ao lado para ser redirecionado ao imóvel.

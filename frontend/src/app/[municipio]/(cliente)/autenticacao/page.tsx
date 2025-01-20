@@ -4,7 +4,7 @@ import { Logo } from "@/components/logo";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Acesse a plataforma - VallenGeo",
+  title: "Acesse a plataforma | VallenGeo",
 };
 
 export default function AutenticacaoPage({
