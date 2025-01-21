@@ -2,15 +2,28 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Loading() {
   return (
-    <div className="container flex flex-col gap-y-6 h-full py-6">
-      <div className="w-full">
-        <Skeleton className="w-36 h-8 rounded-2xl mb-2" />
-        <Skeleton className="w-44 h-8 rounded-2xl" />
+    <div className="container space-y-6 pb-6">
+      <div className="flex items-start md:items-center flex-col md:flex-row justify-between gap-6">
+        <div className="space-y-2">
+          <Skeleton className="w-[320px] h-8" />
+          <Skeleton className="w-[320px] h-6" />
+        </div>
+
+        <Skeleton className="w-16 h-6" />
       </div>
 
-      <div className="flex flex-col gap-y-6 h-full">
-        <Skeleton className="w-full h-[100px] rounded-2xl" />
-        <Skeleton className="w-full h-full rounded-2xl" />
+      <div className="space-y-6">
+        <Skeleton className="w-full h-24 rounded-3xl" />
+        <Skeleton className="w-full h-36 rounded-3xl" />
+        <Skeleton className="w-full h-[150px] rounded-3xl" />
+        <Skeleton className="w-full h-[300px] rounded-3xl" />
+        <Skeleton className="w-full h-36 rounded-3xl" />
+        <Skeleton className="w-full h-[160px] rounded-3xl" />
+        <Skeleton className="w-full h-[455px] rounded-3xl" />
+        <Skeleton className="w-full h-24 rounded-3xl" />
+        <Skeleton className="w-full h-[300px] rounded-3xl" />
+        <Skeleton className="w-full h-[300px] rounded-3xl" />
+        <Skeleton className="w-full h-[400px] rounded-3xl" />
       </div>
     </div>
   )
