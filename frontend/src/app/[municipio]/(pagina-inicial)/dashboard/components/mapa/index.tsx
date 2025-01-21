@@ -21,7 +21,6 @@ import { CoordinatesControl } from "@/lib/mapa/leaflet-zoominfo/Control.Zoominfo
 import { MeasureTools } from "@/lib/mapa/measure-tools/measure-tools";
 import CamadasToggleCard from "./camadas";
 import ZoomControl from "@/lib/mapa/leaflet-zoominfo/ZoomControl";
-import { Legenda } from "./legenda";
 import Pesquisar from "./pesquisar";
 import Imoveis from "./imoveis";
 import Camada from "@/interfaces/ICamada";
@@ -341,7 +340,6 @@ export function Mapa() {
           setSelectedLayer={setSelectedLayer}
           camadas={camadas}
         />
-        <Legenda />
         <Imoveis map={map} imoveisLayers={imoveisLayers} />
       </div>
     </div>

@@ -16,8 +16,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 
 export function Notificacoes() {
+  const { toast } = useToast();
   const router = useRouter();
   const pathname = usePathname();
   const idMunicipio = pathname.split("/")[1] || "";
@@ -44,7 +46,14 @@ export function Notificacoes() {
     (notificacaoId: number, inscricaoImobiliaria: string) => async () => {
       try {
         await notificacaoVisualizada(notificacaoId);
-        router.push(`/${idMunicipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`);
+
+        toast({
+          description: "Notificação marcada como lida."
+        })
+
+        router.push(
+          `/${idMunicipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`
+        );
       } catch (error) {
         console.error("Erro ao marcar notificação como visualizada:", error);
       }
@@ -90,7 +99,10 @@ export function Notificacoes() {
                   <Button
                     key={notificacao.id}
                     type="button"
-                    onClick={handleVisualizarNotificacao(notificacao.id, notificacao.inscricaoImobiliaria)}
+                    // onClick={handleVisualizarNotificacao(
+                    //   notificacao.id,
+                    //   notificacao.inscricaoImobiliaria
+                    // )}
                     className="flex items-center justify-between bg-[#FDFDFD] hover:bg-muted/50 text-sm font-normal transition-colors border border-[#F0F0F0] rounded-2xl py-2.5 px-4 w-full hover:text-foreground hover:shadow-none h-auto text-left gap-6"
                   >
                     <p>

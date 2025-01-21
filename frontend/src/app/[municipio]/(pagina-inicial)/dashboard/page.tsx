@@ -14,12 +14,21 @@ import { TotalizadoresSkeleton } from "./components/totalizadores-skeleton";
 import { NotificacoesSkeleton } from "./components/notificacoes-skeleton";
 import { MapaSkeleton } from "./components/mapa/skeleton";
 import { ResumoImoveisSkeleton } from "./components/resumo-imoveis/skeleton";
+import IImovelCadastrados from "@/interfaces/IImovelCadastrados";
+import { imoveisCadastrados } from "@/service/analista/analistaService";
 
 export const metadata: Metadata = {
   title: "Página Inicial | VallenGeo",
 };
 
-export default function HomePage() {
+async function getData(): Promise<IImovelCadastrados> {
+  const response = await imoveisCadastrados();
+  return response;
+}
+
+export default async function HomePage() {
+  const data = await getData();
+
   return (
     <>
       <Header title="Home" />
@@ -54,7 +63,7 @@ export default function HomePage() {
         </Suspense>
 
         <Suspense fallback={<ResumoImoveisSkeleton />}>
-          <ResumoImoveis />
+          <ResumoImoveis data={data.conteudo} />
         </Suspense>
       </div>
     </>

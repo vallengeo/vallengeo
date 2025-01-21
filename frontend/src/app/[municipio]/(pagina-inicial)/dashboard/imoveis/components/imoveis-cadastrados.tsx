@@ -1,9 +1,9 @@
 import { ConteudoItem } from "@/interfaces/IImovelCadastrados";
-import { columns } from "./columns"
-import { DataTable } from "./data-table"
+import { columns } from "./columns";
+import { DataTable } from "./data-table";
 
 interface ImoveisCadastradosProps {
-  data: ConteudoItem[]
+  data: ConteudoItem[];
 }
 
 export async function ImoveisCadastrados({ data }: ImoveisCadastradosProps) {
@@ -11,5 +11,5 @@ export async function ImoveisCadastrados({ data }: ImoveisCadastradosProps) {
     <div className="w-full">
       <DataTable columns={columns} data={data} />
     </div>
-  )
+  );
 }
