@@ -1,5 +1,6 @@
 import api from "@/service/api";
 import Cookies from "js-cookie";
+import { cookies } from "@/lib/utils";
 import { ACCESS_TOKEN } from "@/constants/auth";
 import IDownloadRelatorio from "@/interfaces/Analista/IDownloadRelatorio";
 import IObservacaoProtocolo from "@/interfaces/Analista/IObservacaoProtocolo";
@@ -16,7 +17,8 @@ export const filtrosRelatorio = async () => {
 };
 
 export const protocolo = async (processoId: string) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get(`analista/protocolo/${processoId}`, {
     headers: {
@@ -43,7 +45,7 @@ export const notificacaoVisualizada = async (notificacaoId: number) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
   return await api.post(
-    "analista/processo/notificacao-visualizada",
+    "analista/notificacao-visualizada",
     notificacaoId,
     {
       headers: {
@@ -92,7 +94,8 @@ export const ultimosAlterados = async () => {
 };
 
 export const ficha = async (processoId: string) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   const response = await api.get(`analista/imovel/ficha/${processoId}`, {
     headers: {
@@ -100,11 +103,12 @@ export const ficha = async (processoId: string) => {
     },
   });
 
-  return response.data;
+  return response;
 };
 
 export const imoveisCadastrados = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   const response = await api.get("analista/imovel/cadastrados", {
     headers: {

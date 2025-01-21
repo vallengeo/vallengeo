@@ -14,7 +14,7 @@ export function VisaoGeral({ ficha }: VisaoGeralProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-5">
         <div className="flex flex-col gap-1">
           <span className="text-sm font-medium">Número de protocolo</span>
-          <span>{ficha.processo.protocolo}</span>
+          <span className="underline text-link">{ficha.processo.protocolo}</span>
         </div>
 
         <div className="flex flex-col gap-1">
