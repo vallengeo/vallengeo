@@ -21,10 +21,8 @@ export async function DownloadFicha({ ficha }: DownloadFichaProps) {
         </div>
       </div>
 
-      <Button asChild variant="default">
-        <Link href={`#`} download>
-          Download ficha
-        </Link>
+      <Button variant="default" disabled>
+        Download ficha
       </Button>
     </div>
   );
