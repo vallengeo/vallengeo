@@ -40,6 +40,7 @@ public class NotificacaoService {
                             .id(notificacao.getId())
                             .idImovel(notificacao.getImovel().getId())
                             .inscricaoImobiliaria(notificacao.getImovel().getInscricaoImobiliaria())
+                            .idProcesso(notificacao.getImovel().getProcesso().getId())
                             .build()
             );
 
