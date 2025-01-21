@@ -18,7 +18,7 @@ function LinkCell({ label, link }: { label: string; link: string }) {
   const idMunicipio = pathname.split("/")[1];
 
   return (
-    <Link href={`/${idMunicipio}/dashboard/imoveis/ficha/${link}}`}>
+    <Link href={`/${idMunicipio}/dashboard/imoveis/ficha/${link}`}>
       {label}
     </Link>
   );

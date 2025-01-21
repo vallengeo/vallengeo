@@ -22,6 +22,30 @@ import { ficha } from "@/service/imovelService";
 import IFicha from "@/interfaces/Analista/IFicha";
 import { InformacoesImovel } from "./components/informacoes-imovel";
 import { notFound } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string; municipio: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
+    const response = await ficha(id);
+    const { inscricaoImobiliaria } = response.data;
+
+    return {
+      title: `Ficha de imóvel: ${inscricaoImobiliaria} | Vallengeo`,
+    };
+  } catch (error) {
+    notFound();
+  }
+}
 
 async function getData(processoId: string): Promise<IFicha | null> {
   try {
@@ -33,16 +57,11 @@ async function getData(processoId: string): Promise<IFicha | null> {
   }
 }
 
-export default async function FichaImovelPage({
-  params,
-}: {
-  params: {
-    municipio: string;
-    id: string;
-  };
-}) {
-  const data = await getData(params.id);
+export default async function FichaImovelPage({ params, searchParams }: Props) {
+  const data = await getData((await params).id);
+  const municipio = (await params).municipio;
 
+  console.log(data);
   if (!data || !data.id) {
     notFound();
     return null;
@@ -53,12 +72,12 @@ export default async function FichaImovelPage({
       <div className="flex items-start md:items-center justify-between flex-col md:flex-row flex-wrap gap-6">
         <Header
           title="Ficha de imóvel"
-          linkBack={`/${params.municipio}/imoveis`}
+          linkBack={`/${municipio}/imoveis`}
         >
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${params.municipio}/imoveis`}>
+                <BreadcrumbLink href={`/${municipio}/imoveis`}>
                   Imóveis
                 </BreadcrumbLink>
               </BreadcrumbItem>
@@ -79,8 +98,8 @@ export default async function FichaImovelPage({
         </Header>
 
         <Link
-          href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica/editar/${params.id}`}
-          className="flex items-center gap-0.5"
+          href={`/${municipio}/imoveis/cadastro/pessoa-fisica/editar/${data.processo.id}`}
+          className="flex items-center gap-0.5 opacity-50 pointer-events-none"
         >
           <PenSquare size={20} />
           Editar

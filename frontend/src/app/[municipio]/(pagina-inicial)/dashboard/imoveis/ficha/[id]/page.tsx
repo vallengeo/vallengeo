@@ -17,11 +17,36 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { ficha } from "@/service/imovelService";
 import IFicha from "@/interfaces/Analista/IFicha";
 import { notFound } from "next/navigation";
 import { HistoricoObservacoes } from "./components/historico-observacoes";
 import { Button } from "@/components/ui/button";
+import { ficha } from "@/service/analista/analistaService";
+
+import type { Metadata, ResolvingMetadata } from "next";
+
+type Props = {
+  params: Promise<{ id: string; municipio: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
+    const response = await ficha(id);
+    const { inscricaoImobiliaria } = response.data;
+
+    return {
+      title: `Ficha de imóvel: ${inscricaoImobiliaria} | Vallengeo`,
+    };
+  } catch (error) {
+    notFound();
+  }
+}
 
 async function getData(processoId: string): Promise<IFicha | null> {
   try {
@@ -33,15 +58,9 @@ async function getData(processoId: string): Promise<IFicha | null> {
   }
 }
 
-export default async function FichaImovelPage({
-  params,
-}: {
-  params: {
-    municipio: string;
-    id: string;
-  };
-}) {
-  const data = await getData(params.id);
+export default async function FichaImovelPage({ params, searchParams }: Props) {
+  const data = await getData((await params).id);
+  const municipio = (await params).municipio;
 
   if (!data || !data.id) {
     notFound();
@@ -54,7 +73,7 @@ export default async function FichaImovelPage({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/${params.municipio}/dashboard/imoveis`}>
+              <BreadcrumbLink href={`/${municipio}/dashboard/imoveis`}>
                 Visualização imóveis
               </BreadcrumbLink>
             </BreadcrumbItem>
