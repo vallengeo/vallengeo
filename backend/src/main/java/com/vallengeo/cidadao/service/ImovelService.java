@@ -88,6 +88,7 @@ public class ImovelService {
                     .builder()
                     .id(imovel.getId())
                     .inscricaoImobiliaria(imovel.getInscricaoImobiliaria())
+                    .idProcesso(imovel.getProcesso().getId())
                     .informacaoImovel(imovel.getInformacaoImovel())
                     .geometria(imovel.getGeometria())
                     .build()
