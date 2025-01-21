@@ -3,7 +3,7 @@ import { FormRecuperarSenha } from "./components/form";
 import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
-  title: "Recuperar senha - VallenGeo",
+  title: "Recuperar senha | VallenGeo",
 };
 
 export default function RecuperarSenhaPage() {

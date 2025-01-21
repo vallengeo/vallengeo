@@ -1,21 +1,31 @@
-'use client'
+"use client";
 
 import Link from "next/link";
-import { useState } from "react"
-import { useRouter } from 'next/navigation'
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { loginFormSchema, loginFormData } from "@/validation/autenticacao/login"
+import {
+  loginFormSchema,
+  loginFormData,
+} from "@/validation/autenticacao/login";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader } from "@/components/loader"
-import { login } from '@/service/authService'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Loader } from "@/components/loader";
+import { login } from "@/service/authService";
 import IUserLogin from "@/interfaces/IUserLogin";
 import { useToast } from "@/components/ui/use-toast";
 
 interface IFormLogin {
-  municipio: string
+  municipio: string;
 }
 
 export function FormLogin({ municipio }: IFormLogin) {
@@ -27,8 +37,8 @@ export function FormLogin({ municipio }: IFormLogin) {
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
-      password: ""
-    }
+      password: "",
+    },
   });
 
   const onSubmit: SubmitHandler<loginFormData> = async (data) => {
@@ -37,24 +47,26 @@ export function FormLogin({ municipio }: IFormLogin) {
     const user: IUserLogin = {
       email: data.email,
       senha: data.password,
-      idMunicipio: 3513405
+      idMunicipio: 3513405,
     };
 
     await login(user)
       .then(() => {
+        localStorage.setItem("animateSplayScreen", JSON.stringify(true));
+
         router.refresh();
         router.push(`/${municipio}/dashboard`);
       })
       .catch((error) => {
         console.error(error);
         toast({
-          variant: 'destructive',
+          variant: "destructive",
           description: error.toString(),
         });
 
         setIsLoading(false);
       });
-  }
+  };
 
   return (
     <Form {...form}>
@@ -102,27 +114,27 @@ export function FormLogin({ municipio }: IFormLogin) {
           variant="link"
           className="w-fit ml-auto mt-4 mb-6 justify-end px-0"
         >
-          <Link href={`/${municipio}/usuario/publico/esqueci-minha-senha`}>Esqueci minha senha</Link>
+          <Link href={`/${municipio}/usuario/publico/esqueci-minha-senha`}>
+            Esqueci minha senha
+          </Link>
         </Button>
 
         <div className="flex items-center justify-between gap-2 flex-col-reverse sm:flex-row">
-          <Button
-            asChild
-            variant="link"
-            className="flex-shrink-0"
-          >
+          <Button asChild variant="link" className="flex-shrink-0">
             <Link href={`/${municipio}`}>Acessar sem login</Link>
           </Button>
 
           <Button
             type="submit"
             variant="default"
-            className={`'h-12 w-full sm:w-44' ${isLoading ? 'pointer-events-none' : ''}`}
+            className={`'h-12 w-full sm:w-44' ${
+              isLoading ? "pointer-events-none" : ""
+            }`}
           >
-            {isLoading ? <Loader /> : 'Entrar'}
+            {isLoading ? <Loader /> : "Entrar"}
           </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

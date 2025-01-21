@@ -4,7 +4,7 @@ import { CityBackdrop } from "@/components/cityBackdrop";
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Login - VallenGeo',
+  title: 'Login | VallenGeo',
 }
 
 export default function RootLayout({

@@ -41,15 +41,10 @@ public class OpenApiConfig {
                 );
 
         // Configura servidores com base no perfil ativo
-        if ("dev".equals(activeProfile)) {
-            openAPI.servers(List.of(
-                    new Server().url("http://localhost:9000").description("Desenvolvimento")
-            ));
-        } else {
-            openAPI.servers(List.of(
-                    new Server().url("http://54.232.129.154:9000").description("Homologação")
-            ));
-        }
+        openAPI.servers(List.of(
+                new Server().url("http://localhost:9000").description("Desenvolvimento"),
+                new Server().url("http://54.232.129.154:9000").description("Homologação")
+        ));
 
         return openAPI;
     }

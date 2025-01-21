@@ -3,7 +3,7 @@ import { FormRedefinirSenha } from "./components/form";
 import { Logo } from "@/components/logo";
 
 export const metadata: Metadata = {
-  title: "Redefinir senha - VallenGeo",
+  title: "Redefinir senha | VallenGeo",
 };
 
 export default function RedefinirSenhaPage() {
