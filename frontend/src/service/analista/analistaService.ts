@@ -44,15 +44,17 @@ export const notificacaoNaoVisualizada = async () => {
 export const notificacaoVisualizada = async (notificacaoId: number) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  return await api.post(
-    "analista/notificacao-visualizada",
-    notificacaoId,
+  const response = await api.post(
+    `analista/notificacao-visualizada/${notificacaoId}`,
+    {},
     {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     }
   );
+
+  return response.data;
 };
 
 export const totalizadoresProcesso = async () => {

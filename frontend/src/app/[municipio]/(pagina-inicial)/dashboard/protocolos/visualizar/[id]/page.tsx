@@ -32,7 +32,7 @@ export default function VisualizarProtocolo({
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/${params.municipio}/dashboard/protocolos`}>Visão Geral</BreadcrumbLink>
+              <BreadcrumbLink href={`/${params.municipio}/dashboard`}>Visão Geral</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
