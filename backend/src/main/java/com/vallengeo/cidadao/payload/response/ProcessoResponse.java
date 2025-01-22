@@ -16,8 +16,15 @@ public class ProcessoResponse implements Serializable {
     private UUID id;
     private String protocolo;
     private String Situacao;
+    private LocalDateTime dataCadastro;
     private LocalDateTime ultimaAtualizacao;
 
+    public String getDataCadastroFormatada() {
+        if (this.dataCadastro != null) {
+            return this.dataCadastro.format(DateTimeFormatter.ofPattern(DATE_FORMAT_TIME_TABLE));
+        }
+        return "-";
+    }
     public String getUltimaAtualizacaoFormatada() {
         if (this.ultimaAtualizacao != null) {
             return this.ultimaAtualizacao.format(DateTimeFormatter.ofPattern(DATE_FORMAT_TIME_TABLE));
