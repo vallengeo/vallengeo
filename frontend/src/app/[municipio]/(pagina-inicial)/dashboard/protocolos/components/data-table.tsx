@@ -1,16 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-
-import { Button } from "@/components/ui/button"
-
-import {
-  ChevronLeft,
-  ChevronRight,
-  Filter,
-  Search
-} from "lucide-react"
-
+import * as React from "react";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, ChevronRight, Filter, Search } from "lucide-react";
 import {
   ColumnDef,
   SortingState,
@@ -21,8 +13,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from "@tanstack/react-table"
-
+} from "@tanstack/react-table";
 import {
   Table,
   TableBody,
@@ -30,37 +21,28 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
-
-import { Input } from "@/components/ui/input"
-import { Legenda } from "@/components/legenda"
-
-const legendas = [
-  { color: "#70C64D", text: "Aprovado" },
-  { color: "#DA1C4A", text: "Reprovado" },
-  { color: "#FFBE5B", text: "Em análise" },
-  { color: "#729397", text: "Arquivado" },
-]
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Legenda } from "./legenda";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+    React.useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
@@ -74,16 +56,16 @@ export function DataTable<TData, TValue>({
     initialState: {
       pagination: {
         pageSize: 6,
-      }
+      },
     },
     state: {
       sorting,
       columnVisibility,
     },
-  })
+  });
 
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between mb-5">
         <h2 className="text-xl font-medium">Lista de protocolos</h2>
 
@@ -97,11 +79,15 @@ export function DataTable<TData, TValue>({
                 <Search size={18} />
               </button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent side="left" align="center" className="border-none bg-transparent shadow-none">
+            <DropdownMenuContent
+              side="left"
+              align="center"
+              className="border-none bg-transparent shadow-none"
+            >
               <Input
                 type="search"
                 placeholder="Pesquisar..."
-                value={table.getState().globalFilter ?? ''}
+                value={table.getState().globalFilter ?? ""}
                 onChange={(event) => table.setGlobalFilter(event.target.value)}
                 className="max-w-sm"
               />
@@ -122,18 +108,37 @@ export function DataTable<TData, TValue>({
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
                 .map((column) => {
+                  let label = "";
+
+                  switch (column.id) {
+                    case "processo_protocolo":
+                      label = "Protocolos";
+                      break;
+                    case "inscricaoImobiliaria":
+                      label = "Inscrição imobiliária";
+                      break;
+                    case "processo_ultimaAtualizacaoFormatada":
+                      label = "Última atualização";
+                      break;
+                    case "processo_situacao":
+                      label = "Situação";
+                      break;
+                    case "acoes":
+                      label = "Ações";
+                      break;
+                  }
+
                   return (
                     <DropdownMenuCheckboxItem
                       key={column.id}
-                      className="capitalize"
                       checked={column.getIsVisible()}
                       onCheckedChange={(value) =>
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id}
+                      {label}
                     </DropdownMenuCheckboxItem>
-                  )
+                  );
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
@@ -142,30 +147,35 @@ export function DataTable<TData, TValue>({
 
       <div>
         <Table className="border-separate border-spacing-y-2">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                className="hover:bg-transparent border-0"
-              >
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      className="text-primary-foreground font-semibold h-auto pb-1"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
+          {table.getRowModel().rows?.length ? (
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className="hover:bg-transparent border-0"
+                >
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        className="text-primary-foreground font-semibold h-auto pb-1"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    );
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+          ) : (
+            ""
+          )}
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -179,15 +189,23 @@ export function DataTable<TData, TValue>({
                       key={cell.id}
                       className="border-t border-b first:border-l last:border-r border-t-[#F0F0F0] border-b-[#F0F0F0] first:border-l-[#F0F0F0] last:border-l-[#F0F0F0] first:rounded-l-2xl last:rounded-r-2xl py-3 px-4"
                     >
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  Sem resultados.
+                <TableCell
+                  colSpan={columns.length}
+                  className="min-h-[350px] grid"
+                >
+                  <div className="text-center m-auto max-w-[645px]">
+                    <p>Sem resultados.</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -195,7 +213,7 @@ export function DataTable<TData, TValue>({
         </Table>
 
         <div className="flex items-center justify-end max-md:flex-col gap-2 py-4">
-          <Legenda legendas={legendas} className="flex-1" />
+          <Legenda className="flex-1" />
 
           <div className="space-x-2">
             <Button
@@ -219,6 +237,6 @@ export function DataTable<TData, TValue>({
           </div>
         </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }
