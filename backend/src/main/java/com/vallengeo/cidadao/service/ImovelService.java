@@ -246,6 +246,7 @@ public class ImovelService {
         return com.vallengeo.cidadao.payload.response.ProcessoResponse.builder()
                 .id(processo.getId())
                 .protocolo(processo.getProtocolo())
+                .dataCadastro(processo.getDataCadastro())
                 .ultimaAtualizacao(relProcessoSituacaoProcesso.getDataAcao())
                 .Situacao(relProcessoSituacaoProcesso.getSituacaoProcesso().getDescricao())
                 .build();
