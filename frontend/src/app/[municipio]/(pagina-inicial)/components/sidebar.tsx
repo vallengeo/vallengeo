@@ -16,6 +16,7 @@ export function Sidebar({ municipio }: ISidebar) {
   const router = useRouter();
   const logout = () => {
     actionLogout().then(() => {
+      router.refresh();
       router.push(`/${municipio}`);
     });
   };
