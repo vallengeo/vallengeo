@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { Menu } from "../components/menu";
+import { Menu } from "./menu";
 import { isAuthenticated } from "@/service/authService";
 import { MenuMobile } from "./menu-mobile";
 

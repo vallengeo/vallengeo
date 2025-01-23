@@ -2,12 +2,13 @@ import api from "@/service/api";
 import Cookies from "js-cookie";
 import { cookies } from "@/lib/utils";
 import { ACCESS_TOKEN } from "@/constants/auth";
-import IDownloadRelatorio from "@/interfaces/Analista/IDownloadRelatorio";
+import IRelatorioDownload from "@/interfaces/Analista/IRelatorioDownload";
 import IObservacaoProtocolo from "@/interfaces/Analista/IObservacaoProtocolo";
 import IArquivarImovel from "@/interfaces/Analista/IArquivarImovel";
 
 export const filtrosRelatorio = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get("analista/relatorio/filtro", {
     headers: {
@@ -118,7 +119,7 @@ export const imoveisCadastrados = async () => {
     },
     params: {
       pagina: 0,
-      "itens-por-pagina": 6,
+      "itens-por-pagina": 99,
     },
   });
 
@@ -135,7 +136,7 @@ export const imoveisCadastradosMapa = async () => {
   });
 };
 
-export const downloadRelatorio = async (formData: IDownloadRelatorio) => {
+export const downloadRelatorio = async (formData: IRelatorioDownload) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
   const response = await api.post("analista/relatorio/download", formData, {
