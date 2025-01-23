@@ -22,7 +22,6 @@ import { notFound } from "next/navigation";
 import { HistoricoObservacoes } from "./components/historico-observacoes";
 import { Button } from "@/components/ui/button";
 import { ficha } from "@/service/analista/analistaService";
-
 import type { Metadata, ResolvingMetadata } from "next";
 
 type Props = {

@@ -48,7 +48,7 @@ export function Notificacoes() {
         await notificacaoVisualizada(notificacaoId);
 
         toast({
-          description: "Notificação marcada como lida."
+          description: "Notificação marcada como lida.",
         });
 
         router.push(

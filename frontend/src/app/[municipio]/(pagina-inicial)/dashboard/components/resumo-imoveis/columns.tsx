@@ -249,9 +249,6 @@ export const columns: ColumnDef<ConteudoItem>[] = [
               <LinkCell label="Visualizar" link={row.original.processo.id} />
             </DropdownMenuItem>
             <DropdownMenuItem className="justify-center" disabled>
-              <Link href="#">Editar</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem className="justify-center" disabled>
               <Link href="#">Download</Link>
             </DropdownMenuItem>
             <DropdownMenuItem className="justify-center" disabled>
