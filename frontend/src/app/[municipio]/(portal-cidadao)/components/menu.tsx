@@ -19,7 +19,10 @@ interface IMenu {
 export function Menu({ municipio }: IMenu) {
   const router = useRouter();
   const logout = () => {
-    actionLogout().then(() => router.push(`/${municipio}`));
+    actionLogout().then(() => {
+      router.refresh();
+      router.push(`/${municipio}`)
+    });
   };
 
   return (

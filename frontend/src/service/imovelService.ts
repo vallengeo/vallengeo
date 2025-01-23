@@ -69,7 +69,7 @@ export const cadastrados = async () => {
     },
     params: {
       pagina: 0,
-      "itens-por-pagina": 6,
+      "itens-por-pagina": 99,
     },
   });
 

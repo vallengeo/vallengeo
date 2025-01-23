@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
@@ -48,8 +48,8 @@ export function Notificacoes() {
         await notificacaoVisualizada(notificacaoId);
 
         toast({
-          description: "Notificação marcada como lida."
-        })
+          description: "Notificação marcada como lida.",
+        });
 
         router.push(
           `/${idMunicipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`
@@ -99,10 +99,10 @@ export function Notificacoes() {
                   <Button
                     key={notificacao.id}
                     type="button"
-                    // onClick={handleVisualizarNotificacao(
-                    //   notificacao.id,
-                    //   notificacao.inscricaoImobiliaria
-                    // )}
+                    onClick={handleVisualizarNotificacao(
+                      notificacao.id,
+                      notificacao.idProcesso
+                    )}
                     className="flex items-center justify-between bg-[#FDFDFD] hover:bg-muted/50 text-sm font-normal transition-colors border border-[#F0F0F0] rounded-2xl py-2.5 px-4 w-full hover:text-foreground hover:shadow-none h-auto text-left gap-6"
                   >
                     <p>

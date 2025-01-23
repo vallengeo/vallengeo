@@ -22,7 +22,6 @@ import { notFound } from "next/navigation";
 import { HistoricoObservacoes } from "./components/historico-observacoes";
 import { Button } from "@/components/ui/button";
 import { ficha } from "@/service/analista/analistaService";
-
 import type { Metadata, ResolvingMetadata } from "next";
 
 type Props = {
@@ -88,7 +87,7 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
       </Header>
 
       <DownloadFicha ficha={data} />
-      <VisaoGeral ficha={data} />
+      <VisaoGeral municipio={municipio} ficha={data} />
       <InformacoesImovel ficha={data} />
       <RepresentantesImovel ficha={data} />
       <InformacoesContato ficha={data} />

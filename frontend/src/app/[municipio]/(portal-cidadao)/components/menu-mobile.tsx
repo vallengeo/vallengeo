@@ -23,7 +23,10 @@ interface IMenuMobile {
 export function MenuMobile({ municipio }: IMenuMobile) {
   const router = useRouter();
   const logout = () => {
-    actionLogout().then(() => router.push(`/${municipio}`));
+    actionLogout().then(() => {
+      router.refresh();
+      router.push(`/${municipio}`)
+    });
   };
 
   return (

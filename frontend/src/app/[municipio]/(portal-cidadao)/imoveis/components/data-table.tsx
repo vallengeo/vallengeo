@@ -84,16 +84,10 @@ export function DataTable<TData, TValue>({
               >
                 <Input
                   type="search"
-                  placeholder="Pesquisar imóvel"
-                  value={
-                    (table
-                      .getColumn("inscricaoImobiliaria")
-                      ?.getFilterValue() as string) ?? ""
-                  }
+                  placeholder="Pesquisar..."
+                  value={table.getState().globalFilter ?? ""}
                   onChange={(event) =>
-                    table
-                      .getColumn("inscricaoImobiliaria")
-                      ?.setFilterValue(event.target.value)
+                    table.setGlobalFilter(event.target.value)
                   }
                   className="max-w-sm"
                 />
@@ -210,15 +204,20 @@ export function DataTable<TData, TValue>({
                   </TableRow>
                 ))
               ) : (
-                <div className="min-h-[350px] grid">
-                  <div className="text-center m-auto max-w-[645px]">
-                    <p>
-                      Você ainda não tem nenhum imóvel cadastrado. Acesse agora
-                      o botão <strong>cadastrar</strong> para iniciar o processo
-                      de regularização.
-                    </p>
-                  </div>
-                </div>
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="min-h-[350px] grid"
+                  >
+                    <div className="text-center m-auto max-w-[645px]">
+                      <p>
+                        Você ainda não tem nenhum imóvel cadastrado. Acesse
+                        agora o botão <strong>cadastrar</strong> para iniciar o
+                        processo de regularização.
+                      </p>
+                    </div>
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>

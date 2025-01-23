@@ -88,6 +88,7 @@ public class ImovelService {
                     .builder()
                     .id(imovel.getId())
                     .inscricaoImobiliaria(imovel.getInscricaoImobiliaria())
+                    .idProcesso(imovel.getProcesso().getId())
                     .informacaoImovel(imovel.getInformacaoImovel())
                     .geometria(imovel.getGeometria())
                     .build()
@@ -245,6 +246,7 @@ public class ImovelService {
         return com.vallengeo.cidadao.payload.response.ProcessoResponse.builder()
                 .id(processo.getId())
                 .protocolo(processo.getProtocolo())
+                .dataCadastro(processo.getDataCadastro())
                 .ultimaAtualizacao(relProcessoSituacaoProcesso.getDataAcao())
                 .Situacao(relProcessoSituacaoProcesso.getSituacaoProcesso().getDescricao())
                 .build();
