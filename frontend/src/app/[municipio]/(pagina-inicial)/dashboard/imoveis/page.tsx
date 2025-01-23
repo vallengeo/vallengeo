@@ -38,7 +38,7 @@ export default async function ImoveisPage() {
       </Header>
 
       <div className="space-y-6 my-6">
-        <div className="bg-white border border-input rounded-3xl">
+        <div className="bg-white border border-input rounded-3xl overflow-hidden">
           <h2 className="text-xl font-medium px-6 py-5">
             Resumo de imóveis
           </h2>
