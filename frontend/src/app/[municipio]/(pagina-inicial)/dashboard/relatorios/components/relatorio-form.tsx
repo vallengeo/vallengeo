@@ -15,8 +15,6 @@ import {
 } from "@/components/ui/form";
 import IRelatorioFiltro from "@/interfaces/Analista/IRelatorioFiltro";
 import { downloadRelatorio } from "@/service/analista/analistaService";
-import Cookies from "js-cookie";
-import { GRUPO_ID } from "@/constants/auth";
 import IRelatorioDownload from "@/interfaces/Analista/IRelatorioDownload";
 
 interface RelatorioFormProps {
@@ -32,16 +30,15 @@ export function RelatorioForm({ data }: RelatorioFormProps) {
   });
 
   const onSubmit: SubmitHandler<relatoriosData> = (data) => {
-    const idGrupo = Cookies.get(GRUPO_ID);
-
     try {
       const relatorio: IRelatorioDownload = {
-        idProcesso: "",
-        idGrupo: String(idGrupo),
         filtros: data.items,
       }
 
-      downloadRelatorio(relatorio);
+      downloadRelatorio(relatorio)
+        .then((res) => {
+          console.log(res);
+        });
     } catch (error) {
       console.error("Ocorreu um erro ao gerar o relatório:", error);
     }

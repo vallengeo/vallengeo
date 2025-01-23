@@ -4,11 +4,7 @@ export default function Loading() {
   return (
     <div className="space-y-6 pb-6">
       <div className="flex items-center justify-between flex-col md:flex-row flex-wrap gap-6">
-        <div className="space-y-1.5">
-          <Skeleton className="w-[120px] h-8" />
-          <Skeleton className="w-[160px] h-8" />
-        </div>
-
+        <Skeleton className="w-[166px] h-8" />
         <Skeleton className="w-[132px] h-[62px]" />
       </div>
 
