@@ -50,7 +50,7 @@ public class JwtService {
                     .toString();
 
             String token = generateToken(userDetails, idGrupo);
-            return new LoginResponse(token, generateRefreshToken(token, idGrupo), getExpirationTime(), idGrupo);
+            return new LoginResponse(token, generateRefreshToken(token, idGrupo), getExpirationTime(), usuario.getId().toString(), idGrupo);
         }
 
         throw new UnauthorizedException("Usuário não possui permissão para o município especificado.");
@@ -58,8 +58,11 @@ public class JwtService {
 
     public LoginResponse generateLogin(String requestRefreshToken, HttpServletRequest http) {
         UserDetails userDetails = authorizationService.loadUserByUsername(extractUsername(requestRefreshToken));
-        String token = reniewToken(userDetails, requestRefreshToken, http);
-        return new LoginResponse(token, requestRefreshToken, getExpirationTime(), SecurityUtils.getUserJwt(http).getIdGrupo());
+        if (userDetails instanceof Usuario usuario) {
+            String token = reniewToken(userDetails, requestRefreshToken, http);
+            return new LoginResponse(token, requestRefreshToken, getExpirationTime(), usuario.getId().toString(), SecurityUtils.getUserJwt(http).getIdGrupo());
+        }
+        throw new UnauthorizedException();
     }
 
     public String generateToken(UserDetails userDetails, String idGrupo) {
