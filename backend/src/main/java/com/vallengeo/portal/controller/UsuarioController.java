@@ -52,6 +52,7 @@ public class UsuarioController {
         return ResponseEntity.ok().body(usuarioService.buscaTodos());
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Buscar usuário cadastrado pelo identificador")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Ok", content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
@@ -131,6 +132,7 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.valueOf(200)).build();
     }
 
+    @SecurityRequirement(name = "bearerAuth")
     @Operation(summary = "Serviço de remoção do usuário")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = SALVO_SUCESSO, content = {@Content(mediaType = MediaType.APPLICATION_JSON_VALUE)}),
