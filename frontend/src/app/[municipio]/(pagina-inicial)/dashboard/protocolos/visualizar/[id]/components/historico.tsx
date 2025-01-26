@@ -32,12 +32,12 @@ export function Historico() {
       <div className="relative pl-8">
         <div className="space-y-6">
           {historicos.reverse().map((historico) => (
-            <div key={historico.id} className="relative">
-              <span className={`block ${getStyleByType(historico.tipo).style} w-4 h-4 rounded-full absolute top-1 left-[-38px] z-10`}></span>
+            <div key={historico.id}>
+              <span className={`block ${getStyleByType(historico.tipo).style} size-4 rounded-full absolute left-0 translate-y-1 -translate-x-1.5 z-10`}></span>
 
               <div className="flex flex-col">
                 <span className="font-medium">{historico.titulo}</span>
-                <time dateTime={historico.data}>{historico.data}</time>
+                <span>{historico.data}</span>
 
                 {historico.descricao && (
                   <p className="font-light mt-2">{historico.descricao}</p>

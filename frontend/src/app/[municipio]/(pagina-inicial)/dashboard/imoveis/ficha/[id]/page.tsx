@@ -101,14 +101,14 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
         <HistoricoObservacoes />
       </div>
 
-      <div className="flex items-center gap-6">
-        <Button variant="secondary" className="mr-auto" disabled>
+      <div className="flex items-center gap-6 flex-col md:flex-row">
+        <Button variant="secondary" className="md:mr-auto w-full md:w-fit" disabled>
           Arquivar ficha
         </Button>
-        <Button variant="secondary" disabled>
+        <Button variant="secondary" disabled className="w-full md:w-fit">
           Reprovar
         </Button>
-        <Button variant="default" disabled>
+        <Button variant="default" disabled className="w-full md:w-fit">
           Aprovar
         </Button>
       </div>

@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { Header } from "@/components/header";
+import { Header } from "@/app/[municipio]/(pagina-inicial)/components/header";
 import { ArquivarProcesso } from "./components/arquivar-processo";
 import { VisaoGeral } from "./components/visao-geral";
 import { Historico } from "./components/historico";
@@ -74,9 +74,7 @@ export default async function VisualizarProtocolo({
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbLink
-                href={`/${municipio}/dashboard/protocolos`}
-              >
+              <BreadcrumbLink href={`/${municipio}/dashboard/protocolos`}>
                 Protocolos
               </BreadcrumbLink>
             </BreadcrumbItem>
@@ -89,23 +87,27 @@ export default async function VisualizarProtocolo({
       </Header>
 
       <div className="my-6 space-y-6">
-        <div className="bg-white border border-input rounded-3xl p-6 flex items-center justify-between flex-wrap">
+        <div className="bg-white border border-input rounded-3xl p-6 flex items-center justify-between flex-wrap gap-4">
           <div className="flex gap-2 items-start">
             <LucideHome size={20} className="mt-1" />
             <div>
-              <span className="text-lg font-medium block">{data.processo.protocolo}</span>
+              <span className="text-lg font-medium block">
+                {data.processo.protocolo}
+              </span>
               <span>{ficha.representantes[0].nome}</span>
             </div>
           </div>
 
           <Button variant="default">
-            <Link href={`/${municipio}/dashboard/imoveis/ficha/${data.processo.id}`}>
+            <Link
+              href={`/${municipio}/dashboard/imoveis/ficha/${data.processo.id}`}
+            >
               Ficha do imóvel
             </Link>
           </Button>
         </div>
 
-        <div className="flex gap-6">
+        <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1 space-y-6">
             <VisaoGeral protocolo={data} />
             <Historico />
