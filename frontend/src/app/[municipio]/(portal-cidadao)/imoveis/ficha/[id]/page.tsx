@@ -23,6 +23,8 @@ import IFicha from "@/interfaces/Analista/IFicha";
 import { InformacoesImovel } from "./components/informacoes-imovel";
 import { notFound } from "next/navigation";
 import type { Metadata, ResolvingMetadata } from "next";
+import IProtocolo from "@/interfaces/Analista/IProtocolo";
+import { protocolo } from "@/service/analista/analistaService";
 
 type Props = {
   params: Promise<{ id: string; municipio: string }>;
@@ -57,8 +59,14 @@ async function getData(processoId: string): Promise<IFicha | null> {
   }
 }
 
+async function getProcolo(processoId: string): Promise<IProtocolo> {
+  const response = await protocolo(processoId);
+  return response.data;
+}
+
 export default async function FichaImovelPage({ params, searchParams }: Props) {
   const data = await getData((await params).id);
+  const protocolo = await getProcolo((await params).id);
   const municipio = (await params).municipio;
 
   console.log(data);
@@ -113,11 +121,9 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
       <InformacoesContato ficha={data} />
       <CaracterizacaoImovel ficha={data} />
       <Georeferenciamento />
-      <Observacoes />
+      {/* <Observacoes /> */}
       <DocumentosEnviados ficha={data} />
-      <Historico />
-
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+      <Historico protocolo={protocolo} />
     </div>
   );
 }

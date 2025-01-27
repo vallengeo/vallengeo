@@ -110,14 +110,22 @@ export default async function VisualizarProtocolo({
         <div className="flex flex-col md:flex-row gap-6">
           <div className="flex-1 space-y-6">
             <VisaoGeral protocolo={data} />
-            <Historico />
+            <Historico protocolo={data} />
           </div>
 
-          <Observacoes />
+          <Observacoes idProcesso={(await params).id} />
         </div>
 
-        <div className="flex justify-end">
-          <ArquivarProcesso />
+        <div className="flex items-center justify-between gap-4 flex-col md:flex-row">
+          <div className="md:mr-auto w-full md:w-fit">
+            <ArquivarProcesso />
+          </div>
+
+          <Button variant={`secondary`} className="w-full md:w-fit">
+            Reprovar
+          </Button>
+
+          <Button className="w-full md:w-fit">Aprovar</Button>
         </div>
       </div>
     </>
