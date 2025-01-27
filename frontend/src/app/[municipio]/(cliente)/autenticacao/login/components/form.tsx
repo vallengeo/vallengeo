@@ -157,7 +157,7 @@ export function FormLogin({ municipio }: IFormLogin) {
           <Button
             type="submit"
             variant="default"
-            className={`'h-12 w-full sm:w-44' ${
+            className={`h-12 w-full sm:w-44 ${
               isLoading ? "pointer-events-none" : ""
             }`}
           >

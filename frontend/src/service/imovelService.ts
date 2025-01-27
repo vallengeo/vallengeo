@@ -50,7 +50,8 @@ export const editarImovel = async (
 };
 
 export const tipoUso = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return api.get("imovel/tipo-uso", {
     headers: {

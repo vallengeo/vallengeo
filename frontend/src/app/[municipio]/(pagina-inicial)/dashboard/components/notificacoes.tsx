@@ -86,7 +86,7 @@ export function Notificacoes() {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[1186px] bg-[#FCFCFC]">
+          <DialogContent className="sm:max-w-[1186px] bg-[#FCFCFC] min-h-[340px]">
             <DialogHeader>
               <DialogTitle className="text-[2rem] font-semibold">
                 Notificações

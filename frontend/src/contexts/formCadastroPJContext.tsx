@@ -44,7 +44,7 @@ const initialFormData: formCadastroPJData = {
     },
     nome: "",
     rg: "",
-    tipoPessoa: "FISICA",
+    tipoPessoa: "JURIDICA",
     telefone: "",
   },
   idGrupo: String(idGrupo),
@@ -85,14 +85,22 @@ const initialFormData: formCadastroPJData = {
   ],
   informacaoImovel: {
     tipoUso: {
-      id: "1",
+      id: "",
     },
     endereco: {
       cep: "",
       logradouro: "",
       bairro: "",
       numero: "",
-      idMunicipio: 0,
+      municipio: {
+        id: 0,
+        nome: "",
+        estado: {
+          id: 0,
+          nome: "",
+          uf: "",
+        },
+      },
     },
   },
   caracterizacaoImovel: {

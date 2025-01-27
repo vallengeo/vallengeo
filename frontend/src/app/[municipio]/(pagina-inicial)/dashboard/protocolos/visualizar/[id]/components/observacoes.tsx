@@ -25,6 +25,10 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircle } from "lucide-react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader } from "@/components/loader";
+import { Button } from "@/components/ui/button";
 
 interface ObservacoesProps {
   idProcesso: string;
@@ -32,6 +36,9 @@ interface ObservacoesProps {
 
 export function Observacoes({ idProcesso }: ObservacoesProps) {
   const { toast } = useToast();
+  const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const form = useForm<observacaoData>({
     resolver: zodResolver(observacaoSchema),
@@ -43,11 +50,16 @@ export function Observacoes({ idProcesso }: ObservacoesProps) {
   });
 
   const onSubmit: SubmitHandler<observacaoData> = async (data) => {
+    setIsLoading(true);
+
     await observacaoProtocolo(data)
       .then(() => {
         toast({
-          description: "Observação adicionado com sucesso"
+          description: "Observação adicionado com sucesso",
         });
+
+        form.reset();
+        router.refresh();
       })
       .catch((error) => {
         console.error("Ocorreu um erro ao adicionar uma observação:", error);
@@ -56,6 +68,9 @@ export function Observacoes({ idProcesso }: ObservacoesProps) {
           title: error.response.data.messageTitle,
           description: error.response.data.message,
         });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
@@ -120,13 +135,23 @@ export function Observacoes({ idProcesso }: ObservacoesProps) {
             />
 
             <div className="text-right">
-              <button
+              <Button
                 type="submit"
-                className="inline-flex items-center justify-center gap-1"
+                variant="no-style"
+                size="no-style"
+                className={`inline-flex items-center justify-center gap-1 w-24 ${
+                  isLoading ? "pointer-events-none" : ""
+                }`}
               >
-                Adicionar
-                <PlusCircle size={28} strokeWidth={1} />
-              </button>
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <>
+                    Adicionar
+                    <PlusCircle size={28} strokeWidth={1} />
+                  </>
+                )}
+              </Button>
             </div>
           </div>
         </form>
