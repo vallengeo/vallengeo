@@ -89,7 +89,8 @@ export const ficha = async (processoId: string) => {
 };
 
 export const fichaDownload = async (processoId: string) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return api.get(`imovel/ficha/${processoId}/download`, {
     headers: {

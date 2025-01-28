@@ -1,10 +1,8 @@
  "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import INotificacaoNaoVisualizada from "@/interfaces/Analista/INotificacaoNaoVisualizada";
 import {
-  notificacaoNaoVisualizada,
   notificacaoVisualizada,
 } from "@/service/analista/analistaService";
 import { Bell, ChevronRight } from "lucide-react";
@@ -18,29 +16,14 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/use-toast";
 
-export function Notificacoes() {
+interface NotificacoesProps {
+  municipio: string;
+  notificacoes: INotificacaoNaoVisualizada[];
+}
+
+export function Notificacoes({ municipio, notificacoes }: NotificacoesProps) {
   const { toast } = useToast();
   const router = useRouter();
-  const pathname = usePathname();
-  const idMunicipio = pathname.split("/")[1] || "";
-
-  const [notificacoes, setNotificacoes] = useState<
-    INotificacaoNaoVisualizada[]
-  >([]);
-
-  useEffect(() => {
-    const fetchNotificacoesNaoVisualizadas = async () => {
-      try {
-        const response = await notificacaoNaoVisualizada();
-        setNotificacoes(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar notificações:", error);
-        setNotificacoes([]);
-      }
-    };
-
-    fetchNotificacoesNaoVisualizadas();
-  }, []);
 
   const handleVisualizarNotificacao =
     (notificacaoId: number, inscricaoImobiliaria: string) => async () => {
@@ -52,7 +35,7 @@ export function Notificacoes() {
         });
 
         router.push(
-          `/${idMunicipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`
+          `/${municipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`
         );
       } catch (error) {
         console.error("Erro ao marcar notificação como visualizada:", error);

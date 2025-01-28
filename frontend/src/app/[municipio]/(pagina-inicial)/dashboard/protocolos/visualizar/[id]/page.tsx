@@ -116,16 +116,8 @@ export default async function VisualizarProtocolo({
           <Observacoes idProcesso={(await params).id} />
         </div>
 
-        <div className="flex items-center justify-between gap-4 flex-col md:flex-row">
-          <div className="md:mr-auto w-full md:w-fit">
-            <ArquivarProcesso />
-          </div>
-
-          <Button variant={`secondary`} className="w-full md:w-fit">
-            Reprovar
-          </Button>
-
-          <Button className="w-full md:w-fit">Aprovar</Button>
+        <div className="flex justify-end">
+          <ArquivarProcesso />
         </div>
       </div>
     </>

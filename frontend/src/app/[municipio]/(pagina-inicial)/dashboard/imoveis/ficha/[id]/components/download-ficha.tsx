@@ -5,9 +5,13 @@ import IFicha from "@/interfaces/Analista/IFicha";
 
 interface DownloadFichaProps {
   ficha: IFicha;
+  fichaDownload: string | null;
 }
 
-export async function DownloadFicha({ ficha }: DownloadFichaProps) {
+export async function DownloadFicha({
+  ficha,
+  fichaDownload,
+}: DownloadFichaProps) {
   return (
     <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl px-8 py-4">
       <div className="flex items-center gap-5">
@@ -21,9 +25,13 @@ export async function DownloadFicha({ ficha }: DownloadFichaProps) {
         </div>
       </div>
 
-      <Button variant="default" disabled>
-        Download ficha
-      </Button>
+      {fichaDownload && (
+        <Button variant="default">
+          <Link href={fichaDownload}>
+            Download ficha
+          </Link>
+        </Button>
+      )}
     </div>
   );
 }
