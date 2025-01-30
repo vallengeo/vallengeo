@@ -23,11 +23,11 @@ export default function CadastroPage({
         </p>
 
         <div className="flex flex-col gap-y-6 w-72 mx-auto mt-10">
-          <Button asChild variant="gov-br" className="h-12">
+          {/* <Button asChild variant="gov-br" className="h-12">
             <Link href={`/${params.municipio}/autenticacao/cadastrar/gov-br`}>
               Cadastrar com&nbsp;<span className="font-bold">gov.br</span>
             </Link>
-          </Button>
+          </Button> */}
 
           <Button asChild className="h-12">
             <Link href={`/${params.municipio}/autenticacao/cadastrar/email`}>

@@ -9,7 +9,7 @@ export default function Loading() {
         <Skeleton className="w-full h-12 mx-auto" />
 
         <div className="flex flex-col gap-y-6 w-72 mx-auto mt-10">
-          <Skeleton className="w-full h-12" />
+          {/* <Skeleton className="w-full h-12" /> */}
           <Skeleton className="w-full h-12" />
         </div>
       </div>
