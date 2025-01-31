@@ -36,7 +36,7 @@ export function Header({ title, children, linkBack }: HeaderProps) {
   };
 
   return (
-    <header role="banner" className="flex items-center justify-between gap-y-4">
+    <header role="banner" className="flex items-center justify-between gap-4">
       <div className="flex flex-col">
         <div className="flex items-center gap-3">
           <Sheet>
@@ -87,7 +87,7 @@ export function Header({ title, children, linkBack }: HeaderProps) {
         {children}
       </div>
 
-      <Brasao />
+      <Brasao className="flex-shrink-0 max-sm:[&>div]:hidden" />
     </header>
   );
 }

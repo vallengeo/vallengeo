@@ -6,7 +6,7 @@ interface HistoricoProps {
 
 export function Historico({ protocolo }: HistoricoProps) {
   return (
-    <div className="bg-white border border-input rounded-3xl px-8 py-6 overflow-y-auto scrollbar-hide max-h-[410px]">
+    <div className="bg-white border border-input rounded-3xl p-6 overflow-y-auto scrollbar-hide max-h-[410px]">
       <h2 className="text-xl font-medium mb-6">Histórico</h2>
 
       {protocolo.historicos.length ? (

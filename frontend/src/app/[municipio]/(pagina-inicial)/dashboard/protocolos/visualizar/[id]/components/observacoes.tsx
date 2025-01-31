@@ -75,7 +75,7 @@ export function Observacoes({ idProcesso }: ObservacoesProps) {
   };
 
   return (
-    <div className="grid grid-rows-[0fr_1fr] bg-white border border-input rounded-3xl p-6 flex-1 max-w-[440px]">
+    <div className="grid grid-rows-[0fr_1fr] bg-white border border-input rounded-3xl p-6 flex-1 lg:max-w-[440px]">
       <h2 className="text-lg font-bold mb-4">Observações</h2>
 
       <Form {...form}>

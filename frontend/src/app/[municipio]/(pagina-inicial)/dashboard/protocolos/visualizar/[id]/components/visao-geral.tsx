@@ -32,7 +32,7 @@ export function VisaoGeral({ protocolo }: VisaoGeralProps) {
     <div className="bg-white border border-input rounded-3xl p-6">
       <h2 className="text-lg font-medium mb-3">Visão Geral</h2>
 
-      <div className="flex items-start flex-wrap gap-4">
+      <div className="flex items-start flex-col md:flex-row flex-wrap gap-4">
         <div>
           <span className="font-semibold block">Número de cadastro</span>
           <span>{protocolo.processo.protocolo}</span>

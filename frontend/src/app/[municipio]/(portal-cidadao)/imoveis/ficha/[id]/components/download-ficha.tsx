@@ -13,7 +13,7 @@ export async function DownloadFicha({
   fichaDownload,
 }: DownloadFichaProps) {
   return (
-    <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl px-8 py-4">
+    <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl p-6">
       <div className="flex items-center gap-5">
         <Building size={32} />
 
