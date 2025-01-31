@@ -4,6 +4,7 @@ interface Processo {
   ultimaAtualizacao: string;
   ultimaAtualizacaoFormatada: string;
   situacao: string;
+  dataCadastroFormatada: string;
 }
 
 interface TipoUso {

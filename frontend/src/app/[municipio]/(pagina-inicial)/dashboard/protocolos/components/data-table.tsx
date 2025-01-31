@@ -117,8 +117,8 @@ export function DataTable<TData, TValue>({
                     case "inscricaoImobiliaria":
                       label = "Inscrição imobiliária";
                       break;
-                    case "processo_ultimaAtualizacaoFormatada":
-                      label = "Última atualização";
+                    case "processo_dataCadastroFormatada":
+                      label = "Data de registro";
                       break;
                     case "processo_situacao":
                       label = "Situação";
