@@ -40,7 +40,7 @@ export default function CadastroImovelPFLayout({
               </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbPage className="font-normal">
+                <BreadcrumbPage>
                   Cadastro de imóvel
                 </BreadcrumbPage>
               </BreadcrumbItem>
@@ -51,9 +51,9 @@ export default function CadastroImovelPFLayout({
         <p className="hidden md:block">*itens obrigatórios</p>
       </div>
 
-      <main role="main" className="space-y-6 mt-6 mb-4">
+      <div className="space-y-6 mt-6 mb-4">
         <FormCadastroPFProvider>{children}</FormCadastroPFProvider>
-      </main>
+      </div>
     </div>
   );
 }

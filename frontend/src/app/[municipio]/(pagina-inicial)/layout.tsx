@@ -42,7 +42,7 @@ export default function RootLayout({
   }, [canShowSplashScreen]);
 
   return (
-    <div className="container flex gap-0 lg:gap-6 flex-col lg:flex-row">
+    <div className="container flex flex-col lg:gap-6 lg:flex-row h-full">
       {isLoading && canShowSplashScreen && (
         <SplashScreen isAnimating={isAnimating} />
       )}

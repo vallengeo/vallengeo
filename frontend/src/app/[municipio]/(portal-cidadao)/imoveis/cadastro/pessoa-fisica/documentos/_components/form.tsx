@@ -21,20 +21,24 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
-import { tipoDocumento } from "@/service/documentoService";
-import ITipoDocumento from "@/interfaces/ITipoDocumento";
 import { Loader } from "@/components/loader";
 import { cadastro } from "@/service/imovelService";
 import ICadastroImovel from "@/interfaces/ICadastroImovel";
 import { motion } from "motion/react";
+import ITipoDocumento from "@/interfaces/ITipoDocumento";
 
-export function FormCadastroDocumentos() {
+interface FormCadastroDocumentosProps {
+  documentos: ITipoDocumento[];
+}
+
+export function FormCadastroDocumentos({
+  documentos,
+}: FormCadastroDocumentosProps) {
   const router = useRouter();
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
 
   const [files, setFiles] = useState<Record<number, File | undefined>>({});
-  const [documentos, setDocumentos] = useState<ITipoDocumento[]>([]);
   const [loadingContinuarDepois, setLoadingContinuarDepois] =
     useState<boolean>(false);
 
@@ -67,25 +71,6 @@ export function FormCadastroDocumentos() {
         caracterizacaoImovel: {
           ...data.caracterizacaoImovel,
         },
-        // TODO - verificar dados validos
-        georreferenciamento: {
-          geoJson: {
-            geometry: {
-              coordinates: [
-                [
-                  [-44.96611868173562, -22.559061809666048],
-                  [-44.966143985139496, -22.55902409240122],
-                  [-44.96592970837085, -22.558902617586],
-                  [-44.96590601936282, -22.558941882174288],
-                  [-44.96611868173562, -22.559061809666048],
-                ],
-              ],
-              type: "Polygon",
-            },
-            type: "Feature",
-            properties: {},
-          },
-        },
       },
     };
 
@@ -99,28 +84,20 @@ export function FormCadastroDocumentos() {
 
       router.push(`/${municipio}/imoveis/ficha/${id}`);
     } catch (error: any) {
-      setLoadingContinuarDepois(false);
-
       toast({
-        description: error.message,
+        title: error.response.data.messageTitle,
+        description: error.response.data.message,
         variant: "destructive",
       });
+    } finally {
+      setLoadingContinuarDepois(false);
     }
   };
-
-  useEffect(() => {
-    const documentos = async () => {
-      const response = await tipoDocumento();
-      setDocumentos(response.data);
-    };
-
-    documentos();
-  }, []);
 
   return (
     <Form {...form}>
       <motion.div
-        initial={{ y: -50, opacity: 0 }} //
+        initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{
           duration: 0.5,
@@ -132,96 +109,96 @@ export function FormCadastroDocumentos() {
           encType="multipart/form-data"
         >
           <div className="bg-white border border-input rounded-2xl p-6 space-y-6">
-            <div className="flex items-center justify-between space-y-1">
+            <div className="flex items-center justify-between space-y-1 flex-wrap gap-4">
               <h2 className="text-xl font-medium">Enviar documentos</h2>
-              <p>
-                Anexe os documentos no campo abaixo. Os arquivos aceitos são
-                shape, dwg, kml e PDF.
-              </p>
+              <p>Anexe os documentos no campo abaixo.</p>
             </div>
 
-            {documentos &&
-              documentos.map((documento, index) => {
-                const accept = documento.formatos.join(",");
+            {documentos.map((documento, index) => {
+              const accept = documento.formatos.join(",");
 
-                return (
-                  <div key={documento.id} className="space-y-3">
-                    <span className="font-bold block">
-                      {documento.titulo}
-                      {documento.obrigatorio && "*"}
-                    </span>
+              return (
+                <div key={documento.id} className="space-y-3">
+                  <span className="font-bold block">
+                    {documento.titulo}
+                    {documento.obrigatorio && "*"}
+                  </span>
 
-                    <FormField
-                      control={form.control}
-                      name={`documentos.${index}.idTipoDocumento`}
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
-                            <div className="flex items-center justify-between w-full">
-                              {files[index]?.name ? (
-                                <span className="text-primary underline font-bold">
-                                  {files[index]?.name}
-                                </span>
-                              ) : (
-                                <>
-                                  <span>nenhum documento informado</span>
-                                  <Button asChild variant="secondary">
-                                    <span>anexar arquivo</span>
-                                  </Button>
-                                </>
-                              )}
-                            </div>
+                  <FormField
+                    control={form.control}
+                    name={`documentos.${index}.idTipoDocumento`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
+                          <div className="flex items-center justify-between gap-4 w-full flex-wrap">
+                            {files[index]?.name ? (
+                              <span className="text-primary underline font-bold">
+                                {files[index]?.name}
+                              </span>
+                            ) : (
+                              <>
+                                <span>nenhum documento informado</span>
+                                <Button asChild variant="secondary">
+                                  <span>anexar arquivo</span>
+                                </Button>
+                              </>
+                            )}
+                          </div>
 
-                            <FormControl>
-                              <Input
-                                type="file"
-                                accept={accept}
-                                name={field.name}
-                                onBlur={field.onBlur}
-                                onChange={(e) => {
-                                  const file = e.target.files
-                                    ? e.target.files[0]
-                                    : undefined;
-                                  setFiles((prev) => ({
-                                    ...prev,
-                                    [index]: file,
-                                  }));
-                                  field.onChange(file ? file.name : "");
-                                }}
-                                ref={field.ref}
-                                className="hidden"
-                              />
-                            </FormControl>
-                          </FormLabel>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                );
-              })}
+                          <FormControl>
+                            <Input
+                              type="file"
+                              accept={accept}
+                              name={field.name}
+                              onBlur={field.onBlur}
+                              onChange={(e) => {
+                                const file = e.target.files
+                                  ? e.target.files[0]
+                                  : undefined;
+                                setFiles((prev) => ({
+                                  ...prev,
+                                  [index]: file,
+                                }));
+                                field.onChange(file ? file.name : "");
+                              }}
+                              ref={field.ref}
+                              className="hidden"
+                            />
+                          </FormControl>
+                        </FormLabel>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              );
+            })}
           </div>
 
-          <div className="flex justify-between items-center flex-wrap gap-4 mt-6">
+          <div className="flex justify-between items-center flex-col md:flex-row flex-wrap gap-4 mt-6">
             <Button
               type="button"
               onClick={async () => await handlePreviousStep(municipio)}
               variant="secondary"
+              className="w-full md:w-fit mr-auto"
             >
               Voltar
             </Button>
 
-            <div className="space-x-4">
-              <Button
-                type="button"
-                variant="secondary"
-                onClick={async () => await onSubmitContinuarDepois(formData)}
-              >
-                {loadingContinuarDepois ? <Loader /> : "Continuar depois"}
-              </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={async () => await onSubmitContinuarDepois(formData)}
+              className={`w-full md:w-60${
+                loadingContinuarDepois ? " pointer-events-none" : ""
+              }`}
+            >
+              {loadingContinuarDepois ? <Loader /> : "Continuar depois"}
+            </Button>
 
-              <Button type="submit">Finalizar</Button>
-            </div>
+            <Button type="submit" className="w-full md:w-fit">
+              Finalizar
+            </Button>
           </div>
         </form>
       </motion.div>

@@ -152,7 +152,7 @@ export function CadastrarComEmail({ municipio }: ICadastrarComEmail) {
 
         <div className="flex items-center justify-between flex-col-reverse sm:flex-row gap-6">
           <Button asChild variant="secondary" className="w-72 sm:w-fit">
-            <Link href={`/${municipio}/autenticacao/cadastrar`}>
+            <Link href={`/${municipio}/autenticacao`}>
               Voltar
             </Link>
           </Button>

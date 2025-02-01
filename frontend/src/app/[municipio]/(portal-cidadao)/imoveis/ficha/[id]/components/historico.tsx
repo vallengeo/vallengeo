@@ -1,92 +1,67 @@
-type Tipos = 'inicio' | 'aberto' | 'criado' | 'pendencia'
+import IProtocolo from "@/interfaces/Analista/IProtocolo";
 
-type Historico = {
-  id: string | number
-  tipo: Tipos
-  titulo: string
-  data: string,
-  descricao?: string
+interface HistoricoProps {
+  protocolo: IProtocolo;
 }
 
-const historicos: Historico[] = [
-  {
-    id: 1,
-    tipo: 'inicio',
-    titulo: 'Início de cadastro imobiliário',
-    data: '08/03/2023',
-  },
-  {
-    id: 2,
-    tipo: 'aberto',
-    titulo: 'Protocolo aberto',
-    data: '08/03/2023',
-  },
-  {
-    id: 3,
-    tipo: 'criado',
-    titulo: 'Processo criado com sucesso',
-    data: '08/03/2023',
-  },
-  {
-    id: 4,
-    tipo: 'pendencia',
-    titulo: 'Pendências de documento',
-    data: '06/04/2023',
-    descricao: 'Está faltando os projetos em dwg. '
-  }
-]
-
-export function Historico() {
+export function Historico({ protocolo }: HistoricoProps) {
   return (
-    <div className="bg-white border border-input rounded-3xl px-8 py-6 overflow-hidden">
+    <div className="bg-white border border-input rounded-3xl p-6 overflow-y-auto scrollbar-hide max-h-[410px]">
       <h2 className="text-xl font-medium mb-6">Histórico</h2>
 
-      <div className="relative pl-8">
-        <div className="space-y-6">
-          {historicos.reverse().map((historico) => (
-            <div key={historico.id} className="relative">
-              <span className={`block ${getStyleByType(historico.tipo).style} w-4 h-4 rounded-full absolute top-1 left-[-38px] z-10`}></span>
+      {protocolo.historicos.length ? (
+        <div className="relative pl-8">
+          <div className="space-y-6">
+            {protocolo.historicos.map((historico) => (
+              <div key={historico.id}>
+                <span className="block bg-[#EB5757] w-4 h-4 rounded-full absolute left-0 translate-y-1 -translate-x-1.5 z-10"></span>
+
+                <div className="flex flex-col">
+                  <span className="font-medium">{historico.titulo}</span>
+                  <span>{historico.dataCadastroFormatada}</span>
+
+                  {historico.descricao && (
+                    <p className="font-light mt-2">{historico.descricao}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            <div>
+              <span className="block bg-[#E3E3E3] w-4 h-4 rounded-full absolute left-0 translate-y-1 -translate-x-1.5 z-10"></span>
 
               <div className="flex flex-col">
-                <span className="font-medium">{historico.titulo}</span>
-                <time dateTime={historico.data}>{historico.data}</time>
-
-                {historico.descricao && (
-                  <p className="font-light mt-2">{historico.descricao}</p>
-                )}
+                <span className="font-medium">Processo criado com sucesso</span>
+                <span>{protocolo.processo.dataCadastroFormatada}</span>
               </div>
             </div>
-          ))}
+
+            <div>
+              <span className="block bg-[#8DFA61] w-4 h-4 rounded-full absolute left-0 translate-y-1 -translate-x-1.5 z-10"></span>
+
+              <div className="flex flex-col">
+                <span className="font-medium">Protocolo aberto</span>
+                <span>{protocolo.processo.dataCadastroFormatada}</span>
+              </div>
+            </div>
+
+            <div>
+              <span className="block bg-black w-4 h-4 rounded-full absolute left-0 translate-y-1 -translate-x-1.5 z-10"></span>
+
+              <div className="flex flex-col">
+                <span className="font-medium">
+                  Início de cadastro imobiliário
+                </span>
+                <span>{protocolo.processo.dataCadastroFormatada}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-0.5 bg-input h-[calc(100%_+_20px)] absolute left-0 top-2"></div>
         </div>
-
-        <div className="w-0.5 bg-input h-[calc(100%_+_20px)] absolute left-0 top-2"></div>
-      </div>
+      ) : (
+        <p>Não há nenhuma observação.</p>
+      )}
     </div>
-  )
-}
-
-function getStyleByType(tipo: Tipos) {
-  let style;
-
-  switch (tipo) {
-    case 'inicio':
-      style = 'bg-black';
-      break;
-
-    case 'aberto':
-      style = 'bg-[#8DFA61]';
-      break;
-
-    case 'criado':
-      style = 'bg-[#E3E3E3]';
-      break;
-
-    case 'pendencia':
-      style = 'bg-[#EB5757]';
-      break;
-  }
-
-  return {
-    style: style
-  }
+  );
 }

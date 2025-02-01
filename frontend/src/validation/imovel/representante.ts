@@ -87,7 +87,7 @@ const representanteSchema = z.array(
       },
       {
         message:
-          'Todos os campos são obrigatórios para "responsavel" ou "outro".',
+          'Todos os campos são obrigatórios para "Responsável Legal" ou "Outro".',
         path: ["contato"],
       }
     )
