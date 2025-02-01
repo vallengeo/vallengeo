@@ -94,7 +94,7 @@ interface Imovel {
   representantes: Representante[];
   informacaoImovel: InformacaoImovel;
   caracterizacaoImovel: CaracterizacaoImovel;
-  georreferenciamento: Georreferenciamento;
+  // georreferenciamento: Georreferenciamento;
 }
 
 export default interface ICadastroImovel {

@@ -49,7 +49,7 @@ export default function CadastroImoveisPage({
         </Breadcrumb>
       </Header>
 
-      <main role="main">
+      <div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex items-start gap-6 border border-input rounded-2xl py-9 px-7 bg-white">
             <Building size={40} />
@@ -87,7 +87,7 @@ export default function CadastroImoveisPage({
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

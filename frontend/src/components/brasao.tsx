@@ -13,7 +13,7 @@ export function Brasao({ className }: BrasaoProps) {
         src={brasao}
         alt="Brasão Cruzeiro"
       />
-      <div className="flex flex-col text-[#1d1d1b] leading-[1] text-center">
+      <div className="flex flex-col text-[#1d1d1b] leading-[1] text-center whitespace-nowrap">
         <span className="font-light text-sm">Prefeitura de</span>
         <span className="uppercase font-bold">CRUZEIRO</span>
       </div>

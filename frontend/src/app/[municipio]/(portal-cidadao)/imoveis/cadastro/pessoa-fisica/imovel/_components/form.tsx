@@ -37,14 +37,22 @@ import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import Mapa from "../../../_components/mapa";
 import InputMask from "react-input-mask";
-import { TipoUso } from "@/interfaces/ITipoUso";
-import { tipoUso } from "@/service/imovelService";
 import { Loader } from "@/components/loader";
 import { motion } from "motion/react";
+import IEstados from "@/interfaces/Localidade/IEstado";
+import { TipoUso } from "@/interfaces/ITipoUso";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-export function FormCadastroImovel() {
+interface FormCadastroImovelProps {
+  estados: IEstados[];
+  grupos: TipoUso[];
+}
+
+export function FormCadastroImovel({
+  estados,
+  grupos,
+}: FormCadastroImovelProps) {
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
 
@@ -52,8 +60,8 @@ export function FormCadastroImovel() {
     useState<boolean>(false);
   const [editarCaracterizacaoImovel, setEditarCaracterizacaoImovel] =
     useState<boolean>(false);
-  const [grupos, setGrupos] = useState<TipoUso[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [loadingCep, setLoadingCep] = useState<boolean>(false);
 
   const { toast } = useToast();
   const { formData, setFormData } = useFormState();
@@ -82,6 +90,8 @@ export function FormCadastroImovel() {
   };
 
   const consultarCep = async (value: string) => {
+    setLoadingCep(true);
+
     try {
       const cep = value.replace(/\D/g, "");
       if (cep.length < 8) {
@@ -89,8 +99,7 @@ export function FormCadastroImovel() {
       }
 
       const response = await getCep(cep);
-      const { logradouro, complemento, bairro, municipio, error } =
-        response.data;
+      const { logradouro, bairro, municipio, error } = response.data;
 
       if (error) {
         toast({
@@ -100,10 +109,22 @@ export function FormCadastroImovel() {
         return;
       }
 
-      setValue("informacaoImovel.endereco.logradouro", logradouro);
-      setValue("informacaoImovel.endereco.complemento", complemento);
-      setValue("informacaoImovel.endereco.bairro", bairro);
-      setValue("informacaoImovel.endereco.idMunicipio", municipio.id);
+      setValue(`informacaoImovel.endereco.logradouro`, logradouro);
+      setValue(`informacaoImovel.endereco.bairro`, bairro);
+      setValue(`informacaoImovel.endereco.municipio.id`, municipio.id);
+      setValue(`informacaoImovel.endereco.municipio.nome`, municipio.nome);
+      setValue(
+        `informacaoImovel.endereco.municipio.estado.id`,
+        municipio.estado.id
+      );
+      setValue(
+        `informacaoImovel.endereco.municipio.estado.nome`,
+        municipio.estado.nome
+      );
+      setValue(
+        `informacaoImovel.endereco.municipio.estado.uf`,
+        municipio.estado.uf
+      );
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -111,6 +132,8 @@ export function FormCadastroImovel() {
         description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setLoadingCep(false);
     }
   };
 
@@ -121,19 +144,6 @@ export function FormCadastroImovel() {
   const handleEditarCaracterizacaoImovel = () => {
     setEditarCaracterizacaoImovel(!editarCaracterizacaoImovel);
   };
-
-  useEffect(() => {
-    const obterGrupos = async () => {
-      try {
-        const response = await tipoUso();
-        setGrupos(response.data);
-      } catch (error) {
-        console.error(`Erro ao obter os grupos: ${error}`);
-      }
-    };
-
-    obterGrupos();
-  }, []);
 
   return (
     <Form {...form}>
@@ -146,14 +156,14 @@ export function FormCadastroImovel() {
         }}
       >
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <fieldset className="bg-white border border-input rounded-2xl p-6">
+          <fieldset className="bg-white border border-input rounded-2xl p-6 space-y-4 relative z-10">
             <h2 className="text-xl font-medium">Georeferenciamento</h2>
 
             <Mapa />
           </fieldset>
 
           <fieldset className="bg-white border border-input rounded-2xl p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <h2 className="text-xl font-medium">Informações do imóvel</h2>
                 <p>
@@ -213,7 +223,7 @@ export function FormCadastroImovel() {
                   control={form.control}
                   name="informacaoImovel.endereco.cep"
                   render={({ field }) => (
-                    <FormItem className="w-full md:w-[30%]">
+                    <FormItem className="w-full md:w-[30%] relative">
                       <FormLabel>CEP*</FormLabel>
                       <FormControl>
                         <InputMask
@@ -234,6 +244,11 @@ export function FormCadastroImovel() {
                           )}
                         </InputMask>
                       </FormControl>
+                      {loadingCep ? (
+                        <Loader className="absolute w-4 h-4 right-2.5 top-8" />
+                      ) : (
+                        ""
+                      )}
                       <FormMessage />
                     </FormItem>
                   )}
@@ -311,12 +326,62 @@ export function FormCadastroImovel() {
                     </FormItem>
                   )}
                 />
+
+                <FormField
+                  control={form.control}
+                  name={`informacaoImovel.endereco.municipio.estado.nome`}
+                  render={({ field }) => (
+                    <FormItem className="w-full md:w-1/4">
+                      <FormLabel>UF*</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={field.value || "Selecione um estado"}
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {estados.map((estado) => (
+                            <SelectItem key={estado.id} value={estado.uf}>
+                              {estado.nome}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div>
+                <FormField
+                  control={form.control}
+                  name="informacaoImovel.endereco.municipio.nome"
+                  render={({ field }) => (
+                    <FormItem className="w-full md:w-[35%]">
+                      <FormLabel>Cidade*</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          {...field}
+                          disabled={editarInformacaoImovel}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
             </div>
           </fieldset>
 
           <fieldset className="bg-white border border-input rounded-2xl p-6">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <h2 className="text-xl font-medium">
                   Caracterização do imóvel

@@ -9,14 +9,12 @@ export default function RootLayout({
   params: { municipio: string };
 }) {
   return (
-    <div className="h-screen flex flex-col">
+    <>
       <Header municipio={params.municipio} />
 
-      <main className="flex-1">
-        {children}
-      </main>
+      <main className="flex-1">{children}</main>
 
       <Footer />
-    </div>
+    </>
   );
 }

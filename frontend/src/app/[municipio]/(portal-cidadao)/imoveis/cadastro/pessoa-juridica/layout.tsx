@@ -51,9 +51,9 @@ export default function CadastroImovelPJLayout({
         <p className="hidden md:block">*itens obrigatórios</p>
       </div>
 
-      <main role="main" className="space-y-6 mt-6 mb-4">
+      <div className="space-y-6 mt-6 mb-4">
         <FormCadastroPJProvider>{children}</FormCadastroPJProvider>
-      </main>
+      </div>
     </div>
   );
 }
