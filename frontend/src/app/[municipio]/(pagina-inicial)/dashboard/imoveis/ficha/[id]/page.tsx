@@ -121,7 +121,7 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
 
       <div className="flex items-center gap-6 flex-col md:flex-row">
         <div className="md:mr-auto w-full md:w-fit">
-          <ArquivarProcesso />
+          <ArquivarProcesso idProcesso={(await params).id} />
         </div>
 
         <Button variant="secondary" className="w-full md:w-fit">
