@@ -29,7 +29,8 @@ export const protocolo = async (processoId: string) => {
 };
 
 export const notificacaoNaoVisualizada = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get("analista/notificacao-nao-visualizada", {
     headers: {
@@ -59,7 +60,8 @@ export const notificacaoVisualizada = async (notificacaoId: number) => {
 };
 
 export const totalizadoresProcesso = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get("analista/processo/totalizadores", {
     headers: {
@@ -69,7 +71,8 @@ export const totalizadoresProcesso = async () => {
 };
 
 export const ultimosAdicionados = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get("analista/processo/ultimos-cadastrados", {
     headers: {
@@ -83,7 +86,8 @@ export const ultimosAdicionados = async () => {
 };
 
 export const ultimosAlterados = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get("analista/processo/ultimos-alterados", {
     headers: {

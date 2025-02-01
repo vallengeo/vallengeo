@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="pt">
       <body
         className={cn(
-          "min-h-screen bg-background antialiased",
+          "min-h-dvh bg-background antialiased flex flex-col",
           inter.className
         )}
       >

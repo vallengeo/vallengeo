@@ -16,12 +16,19 @@ import {
 import IRelatorioFiltro from "@/interfaces/Analista/IRelatorioFiltro";
 import { downloadRelatorio } from "@/service/analista/analistaService";
 import IRelatorioDownload from "@/interfaces/Analista/IRelatorioDownload";
+import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { Loader } from "@/components/loader";
 
 interface RelatorioFormProps {
   data: IRelatorioFiltro;
 }
 
 export function RelatorioForm({ data }: RelatorioFormProps) {
+  const { toast } = useToast();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const form = useForm<relatoriosData>({
     resolver: zodResolver(relatoriosSchema),
     defaultValues: {
@@ -33,14 +40,27 @@ export function RelatorioForm({ data }: RelatorioFormProps) {
     try {
       const relatorio: IRelatorioDownload = {
         filtros: data.items,
-      }
+      };
+
+      setIsLoading(true);
 
       downloadRelatorio(relatorio)
         .then((res) => {
           console.log(res);
+        })
+        .catch((error) => {
+          toast({
+            variant: "destructive",
+            title: error.response.data.messageTitle,
+            description: error.response.data.message,
+          });
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } catch (error) {
       console.error("Ocorreu um erro ao gerar o relatório:", error);
+      setIsLoading(false);
     }
   };
 
@@ -90,7 +110,15 @@ export function RelatorioForm({ data }: RelatorioFormProps) {
             />
 
             <div className="text-right">
-              <Button type="submit">Gerar relatório</Button>
+              <Button
+                type="submit"
+                variant="default"
+                className={`h-12 w-full sm:w-52 ${
+                  isLoading ? "pointer-events-none" : ""
+                }`}
+              >
+                {isLoading ? <Loader /> : "Gerar relatório"}
+              </Button>
             </div>
           </form>
         </Form>

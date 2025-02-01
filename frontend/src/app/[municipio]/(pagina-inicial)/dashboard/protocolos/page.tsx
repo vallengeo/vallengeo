@@ -22,7 +22,7 @@ export default async function ProtocolosPage() {
       <Header title="Protocolos" />
 
       <div className="space-y-6 my-6">
-        <div className="bg-white border border-input rounded-3xl overflow-hidden">
+        <div className="bg-white border border-input rounded-3xl overflow-hidden relative z-10">
           <h2 className="text-xl font-medium px-6 py-5">Resumo de imóveis</h2>
           <Mapa />
         </div>

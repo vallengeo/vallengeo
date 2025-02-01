@@ -76,14 +76,14 @@ export const columns: ColumnDef<ConteudoItem>[] = [
     },
   },
   {
-    accessorKey: "processo.ultimaAtualizacaoFormatada",
+    accessorKey: "processo.dataCadastroFormatada",
     header: ({ column }) => {
       return (
         <button
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1"
         >
-          Última atualização
+          Data de registro
           <svg
             width="6"
             height="5"

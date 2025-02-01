@@ -6,7 +6,7 @@ interface VisaoGeralProps {
 
 export function VisaoGeral({ ficha }: VisaoGeralProps) {
   return (
-    <div className="bg-white border border-input rounded-3xl px-8 py-6">
+    <div className="bg-white border border-input rounded-3xl p-6">
       <header className="flex items-center justify-between">
         <h2 className="text-xl font-medium">Visão Geral</h2>
       </header>

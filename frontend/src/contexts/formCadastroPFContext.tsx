@@ -57,14 +57,22 @@ const initialFormData: formCadastroPFData = {
   ],
   informacaoImovel: {
     tipoUso: {
-      id: "1",
+      id: "",
     },
     endereco: {
       cep: "",
       logradouro: "",
       bairro: "",
       numero: "",
-      idMunicipio: 0,
+      municipio: {
+        id: 0,
+        nome: "",
+        estado: {
+          id: 0,
+          nome: "",
+          uf: "",
+        },
+      },
     },
   },
   caracterizacaoImovel: {
