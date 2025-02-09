@@ -9,7 +9,7 @@ export default function Loading() {
           <Skeleton className="w-[320px] h-6" />
         </div>
 
-        <Skeleton className="w-16 h-6" />
+        <Skeleton className="w-[132px] h-[62px]" />
       </div>
 
       <div className="space-y-6">

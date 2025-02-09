@@ -31,6 +31,12 @@ interface FormCadastroDocumentosProps {
   documentos: ITipoDocumento[];
 }
 
+type FileData = {
+  nomeTemporario: string;
+  nomeOriginal: string;
+  dataEnvio: Date;
+};
+
 export function FormCadastroDocumentos({
   documentos,
 }: FormCadastroDocumentosProps) {
@@ -38,7 +44,7 @@ export function FormCadastroDocumentos({
   const pathname = usePathname();
   const municipio = pathname.split("/")[1];
 
-  const [files, setFiles] = useState<Record<number, File | undefined>>({});
+  const [files, setFiles] = useState<Record<number, FileData | undefined>>({});
   const [loadingContinuarDepois, setLoadingContinuarDepois] =
     useState<boolean>(false);
 
@@ -117,6 +123,12 @@ export function FormCadastroDocumentos({
             {documentos.map((documento, index) => {
               const accept = documento.formatos.join(",");
 
+              form.setValue(
+                `documentos.${index}.obrigatorio`,
+                documento.obrigatorio
+              );
+              form.setValue(`documentos.${index}.formatos`, documento.formatos);
+
               return (
                 <div key={documento.id} className="space-y-3">
                   <span className="font-bold block">
@@ -124,16 +136,22 @@ export function FormCadastroDocumentos({
                     {documento.obrigatorio && "*"}
                   </span>
 
+                  <input
+                    type="hidden"
+                    name={`documentos.${index}.idTipoDocumento`}
+                    value={index}
+                  />
+
                   <FormField
                     control={form.control}
-                    name={`documentos.${index}.idTipoDocumento`}
+                    name={`documentos.${index}.file`}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="w-full rounded bg-[#FBFBFB] hover:bg-muted/50 border border-input p-6 cursor-pointer transition-colors text-base">
                           <div className="flex items-center justify-between gap-4 w-full flex-wrap">
-                            {files[index]?.name ? (
+                            {files[index]?.nomeOriginal ? (
                               <span className="text-primary underline font-bold">
-                                {files[index]?.name}
+                                {files[index]?.nomeOriginal}
                               </span>
                             ) : (
                               <>
@@ -152,21 +170,58 @@ export function FormCadastroDocumentos({
                               name={field.name}
                               onBlur={field.onBlur}
                               onChange={(e) => {
-                                const file = e.target.files
-                                  ? e.target.files[0]
-                                  : undefined;
-                                setFiles((prev) => ({
-                                  ...prev,
-                                  [index]: file,
-                                }));
-                                field.onChange(file ? file.name : "");
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const extensao = `.${file.name
+                                    .split(".")
+                                    .pop()
+                                    ?.toLowerCase()}`;
+
+                                  if (!documento.formatos.includes(extensao)) {
+                                    form.setError(`documentos.${index}.file`, {
+                                      type: "manual",
+                                      message: "Formato de arquivo inválido",
+                                    });
+                                    return;
+                                  }
+
+                                  const fileData: FileData = {
+                                    nomeTemporario:
+                                      file.name.replace(/\s+/g, "_") +
+                                      "_" +
+                                      Date.now(),
+                                    nomeOriginal: file.name,
+                                    dataEnvio: new Date(),
+                                  };
+
+                                  setFiles((prev) => ({
+                                    ...prev,
+                                    [index]: fileData,
+                                  }));
+
+                                  field.onChange(fileData.nomeOriginal);
+
+                                  form.setValue(
+                                    `documentos.${index}.nomeTemporario`,
+                                    fileData.nomeTemporario
+                                  );
+                                  form.setValue(
+                                    `documentos.${index}.nomeOriginal`,
+                                    fileData.nomeOriginal
+                                  );
+                                  form.setValue(
+                                    `documentos.${index}.dataEnvio`,
+                                    fileData.dataEnvio
+                                  );
+                                }
                               }}
                               ref={field.ref}
                               className="hidden"
                             />
                           </FormControl>
                         </FormLabel>
-                        <FormMessage />
+
+                        {!files[index]?.nomeOriginal && <FormMessage />}
                       </FormItem>
                     )}
                   />

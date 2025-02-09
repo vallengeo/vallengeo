@@ -5,7 +5,7 @@ interface documentos {
   dataEnvio: Date;
 }
 
-export default interface ICadastroDocumento {
+export default interface ICadastroDocumentos {
   idProcesso: string;
   documentos: documentos[];
 }

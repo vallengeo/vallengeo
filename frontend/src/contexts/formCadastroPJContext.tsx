@@ -7,51 +7,24 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
 } from "react";
 import Cookies from "js-cookie";
 import { GRUPO_ID } from "@/constants/auth";
-import { dadosEmpresaSchema } from "@/validation/imovel/representante";
+import { dadosEmpresaSchema } from "@/validation/imovel/representante-pj";
 import { imovelFormSchema } from "@/validation/imovel/imovel";
 
 const idGrupo = Cookies.get(GRUPO_ID);
-
 const formCadastroPJSchema = dadosEmpresaSchema.merge(imovelFormSchema);
 
 export type formCadastroPJData = z.infer<typeof formCadastroPJSchema>;
 
 const initialFormData: formCadastroPJData = {
-  cnpj: "",
-  razaoSocial: "",
-  responsavel: {
-    cpf: "",
-    email: "",
-    endereco: {
-      cep: "",
-      logradouro: "",
-      bairro: "",
-      numero: "",
-      complemento: "",
-      municipio: {
-        id: 0,
-        nome: "",
-        estado: {
-          id: 0,
-          nome: "",
-          uf: "",
-        },
-      },
-    },
-    nome: "",
-    rg: "",
-    tipoPessoa: "JURIDICA",
-    telefone: "",
-  },
   idGrupo: String(idGrupo),
   representantes: [
     {
       email: "",
       telefone: "",
+      tipoPessoa: "FISICA",
       endereco: {
         cep: "",
         logradouro: "",
@@ -68,10 +41,33 @@ const initialFormData: formCadastroPJData = {
           },
         },
       },
-      nome: "",
-      cpf: "",
-      rg: "",
-      tipoPessoa: "FISICA",
+      razaoSocial: "",
+      cnpj: "",
+      responsavel: {
+        id: 0,
+        email: "",
+        telefone: "",
+        tipoPessoa: "JURIDICA",
+        endereco: {
+          cep: "",
+          logradouro: "",
+          bairro: "",
+          numero: "",
+          complemento: "",
+          municipio: {
+            id: 0,
+            nome: "",
+            estado: {
+              id: 0,
+              nome: "",
+              uf: "",
+            },
+          },
+        },
+        nome: "",
+        cpf: "",
+        rg: "",
+      },
       contato: {
         nome: "",
         email: "",
@@ -92,15 +88,10 @@ const initialFormData: formCadastroPJData = {
       logradouro: "",
       bairro: "",
       numero: "",
-      municipio: {
-        id: 0,
-        nome: "",
-        estado: {
-          id: 0,
-          nome: "",
-          uf: "",
-        },
-      },
+      complemento: "",
+      idMunicipio: 0,
+      nomeMunicipio: "",
+      siglaUf: "",
     },
   },
   caracterizacaoImovel: {
@@ -112,6 +103,16 @@ const initialFormData: formCadastroPJData = {
     testadaPrincipal: "",
     fracaoIdeal: "",
     dataInclusao: new Date(),
+  },
+  georreferenciamento: {
+    geoJson: {
+      geometry: {
+        type: "Polygon",
+        coordinates: [],
+      },
+      type: "Feature",
+      properties: {},
+    },
   },
 };
 

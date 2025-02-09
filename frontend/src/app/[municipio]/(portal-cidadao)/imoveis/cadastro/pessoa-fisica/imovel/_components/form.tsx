@@ -57,16 +57,14 @@ export function FormCadastroImovel({
   const municipio = pathname.split("/")[1];
 
   const [editarInformacaoImovel, setEditarInformacaoImovel] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [editarCaracterizacaoImovel, setEditarCaracterizacaoImovel] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
 
   const { toast } = useToast();
   const { formData, setFormData } = useFormState();
-
-  console.log(formData);
 
   const form = useForm<imovelFormData>({
     mode: "all",
@@ -83,9 +81,7 @@ export function FormCadastroImovel({
   const onSubmit: SubmitHandler<imovelFormData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
     console.log(formData);
-
     setLoading(true);
-
     await handleNextStep(municipio);
   };
 
@@ -111,20 +107,9 @@ export function FormCadastroImovel({
 
       setValue(`informacaoImovel.endereco.logradouro`, logradouro);
       setValue(`informacaoImovel.endereco.bairro`, bairro);
-      setValue(`informacaoImovel.endereco.municipio.id`, municipio.id);
-      setValue(`informacaoImovel.endereco.municipio.nome`, municipio.nome);
-      setValue(
-        `informacaoImovel.endereco.municipio.estado.id`,
-        municipio.estado.id
-      );
-      setValue(
-        `informacaoImovel.endereco.municipio.estado.nome`,
-        municipio.estado.nome
-      );
-      setValue(
-        `informacaoImovel.endereco.municipio.estado.uf`,
-        municipio.estado.uf
-      );
+      setValue(`informacaoImovel.endereco.idMunicipio`, municipio.id);
+      setValue(`informacaoImovel.endereco.nomeMunicipio`, municipio.nome);
+      setValue(`informacaoImovel.endereco.siglaUf`, municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -193,12 +178,15 @@ export function FormCadastroImovel({
                     <FormItem className="w-full md:w-[35%]">
                       <FormLabel>Tipo de grupo ou ocupação/uso*</FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          disabled={editarInformacaoImovel}
-                        >
+                        <Select onValueChange={field.onChange}>
                           <SelectTrigger {...field}>
-                            <SelectValue />
+                            <SelectValue
+                              placeholder={
+                                grupos.find(
+                                  (grupo) => String(grupo.id) === field.value
+                                )?.nome || ""
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {grupos.map((grupo) => {
@@ -305,6 +293,7 @@ export function FormCadastroImovel({
                           disabled={editarInformacaoImovel}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -329,13 +318,14 @@ export function FormCadastroImovel({
 
                 <FormField
                   control={form.control}
-                  name={`informacaoImovel.endereco.municipio.estado.nome`}
+                  name={`informacaoImovel.endereco.siglaUf`}
                   render={({ field }) => (
                     <FormItem className="w-full md:w-1/4">
                       <FormLabel>UF*</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={editarInformacaoImovel}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -361,7 +351,7 @@ export function FormCadastroImovel({
               <div>
                 <FormField
                   control={form.control}
-                  name="informacaoImovel.endereco.municipio.nome"
+                  name="informacaoImovel.endereco.nomeMunicipio"
                   render={({ field }) => (
                     <FormItem className="w-full md:w-[35%]">
                       <FormLabel>Cidade*</FormLabel>
@@ -548,7 +538,6 @@ export function FormCadastroImovel({
                             <Button
                               variant={"outline"}
                               className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-transparent"
-                              disabled={editarCaracterizacaoImovel}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
                               {field.value ? (
@@ -564,7 +553,6 @@ export function FormCadastroImovel({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={editarCaracterizacaoImovel}
                           />
                         </PopoverContent>
                       </Popover>

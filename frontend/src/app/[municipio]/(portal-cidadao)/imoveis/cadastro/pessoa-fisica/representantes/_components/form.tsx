@@ -151,6 +151,29 @@ export function FormCadastroRepresentantes({
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="space-y-6">
             {fields.map((field, index) => {
+              const isRepresentante = watch(
+                `representantes.${index}.contato.representanteLegal`
+              );
+
+              if (isRepresentante) {
+                setValue(
+                  `representantes.${index}.contato.nome`,
+                  form.getValues(`representantes.${index}.nome`)
+                );
+                setValue(
+                  `representantes.${index}.contato.email`,
+                  form.getValues(`representantes.${index}.email`)
+                );
+                setValue(
+                  `representantes.${index}.contato.telefone`,
+                  form.getValues(`representantes.${index}.telefone`)
+                );
+                setValue(
+                  `representantes.${index}.contato.documento`,
+                  form.getValues(`representantes.${index}.cpf`)
+                );
+              }
+
               return (
                 <div key={field.id} className="space-y-6">
                   <div className="bg-white border border-input rounded-2xl p-6 space-y-6 relative overflow-hidden">
@@ -196,7 +219,7 @@ export function FormCadastroRepresentantes({
                         control={control}
                         name={`representantes.${index}.nome`}
                         render={({ field }) => (
-                          <FormItem className="w-full md:w-1/4">
+                          <FormItem className="w-full md:w-[30%]">
                             <FormLabel>Nome*</FormLabel>
                             <FormControl>
                               <Input type="text" {...field} />
