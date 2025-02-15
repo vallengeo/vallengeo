@@ -29,7 +29,7 @@ VALUES ((SELECT id FROM dado_global.camada WHERE codigo = 'quadra'),
         (SELECT id FROM portal_seguranca.grupo WHERE codigo = 'CRUZEIRO'));
 
 INSERT INTO dado_global.camada_grupo (id_camada, id_grupo)
-VALUES ((SELECT id FROM dado_global.camada WHERE codigo = 'crz03_lote'),
+VALUES ((SELECT id FROM dado_global.camada WHERE codigo = 'lote'),
         (SELECT id FROM portal_seguranca.grupo WHERE codigo = 'CRUZEIRO'));
 
 INSERT INTO dado_global.camada_grupo (id_camada, id_grupo)

@@ -49,7 +49,7 @@ public class ImovelTestUtils {
         return new ProcessoImovelRequest(grupoId, imovelRequest);
     }
 
-    private static GeorreferenciamentoRequest getGeorreferenciamentoRequest() throws IOException {
+    public static GeorreferenciamentoRequest getGeorreferenciamentoRequest() throws IOException {
         var geoJsonString = """
                 {
                     "type": "Feature",
