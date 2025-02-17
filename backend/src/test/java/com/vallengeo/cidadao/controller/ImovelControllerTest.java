@@ -4,11 +4,10 @@ import com.vallengeo.AbstractIntegrationTest;
 import com.vallengeo.cidadao.payload.request.ProcessoImovelRequest;
 import com.vallengeo.cidadao.payload.request.imovel.CaracterizacaoImovelRequest;
 import com.vallengeo.cidadao.payload.request.imovel.ImovelRequest;
-import com.vallengeo.cidadao.payload.response.FichaImovelResponse;
-import com.vallengeo.cidadao.payload.response.ProcessoListagemSimplificadoResponse;
-import com.vallengeo.cidadao.payload.response.TipoUsoResponse;
+import com.vallengeo.cidadao.payload.response.*;
 import com.vallengeo.cidadao.payload.response.cadastro.ProcessoResponse;
 import com.vallengeo.cidadao.repository.ProcessoRepository;
+import com.vallengeo.cidadao.service.GeorreferenciamentoService;
 import com.vallengeo.cidadao.service.ImovelService;
 import com.vallengeo.core.exceptions.ApiExceptionCustom;
 import com.vallengeo.core.exceptions.custom.ValidatorException;
@@ -16,10 +15,7 @@ import com.vallengeo.core.util.Constants;
 import com.vallengeo.core.util.Paginacao;
 import com.vallengeo.portal.model.Usuario;
 import com.vallengeo.portal.repository.UsuarioRepository;
-import com.vallengeo.utils.AuthTestUtils;
-import com.vallengeo.utils.ImovelTestUtils;
-import com.vallengeo.utils.JwtTestUtils;
-import com.vallengeo.utils.UsuarioTestUtils;
+import com.vallengeo.utils.*;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.ObjectMapperConfig;
@@ -29,15 +25,21 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -47,6 +49,8 @@ import java.util.UUID;
 import static com.vallengeo.core.helpers.DateHelpers.convertDateToLocalDateTime;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.springframework.http.HttpStatus.OK;
 
 @DisplayName("ImovelController Tests")
@@ -64,12 +68,16 @@ class ImovelControllerTest extends AbstractIntegrationTest {
     @Autowired
     private AuthenticationManager authManager;
 
+    @MockBean
+    private GeorreferenciamentoService georreferenciamentoService;
+
     private Usuario admin;
     private String accessToken;
     private String tokenSemPerfil;
     private RequestSpecification specification;
     private ProcessoImovelRequest processoImovelRequest;
     private ProcessoResponse processoCadastrado;
+    private File zipShapefile;
 
     @BeforeAll
     public void setup() throws IOException {
@@ -97,6 +105,14 @@ class ImovelControllerTest extends AbstractIntegrationTest {
         processoImovelRequest = ImovelTestUtils.getProcessoImovelRequest(UsuarioTestUtils.GRUPO_ID.toString(), 1L);
 
         processoCadastrado = imovelService.cadastrar(processoImovelRequest);
+
+        // Criar Shapefile
+        zipShapefile = File.createTempFile("zip_shapefile", ".zip");
+    }
+
+    @AfterAll
+    public void clean() throws IOException {
+        Files.deleteIfExists(zipShapefile.toPath());
     }
 
     @Test @Order(1)
@@ -481,5 +497,64 @@ class ImovelControllerTest extends AbstractIntegrationTest {
         assertEquals(processoCadastrado.imovel().getGeometria(), actual.imovel().getGeometria());
         assertNotEquals(processoCadastrado.imovel().getCaracterizacaoImovel(), actual.imovel().getCaracterizacaoImovel());
         assertNotEquals(processoCadastrado.imovel().getInscricaoImobiliaria(), actual.imovel().getInscricaoImobiliaria());
+    }
+
+    @Test @Order(21)
+    @DisplayName("Integration Test - Dado Usuario Nao Autenticado Quando buscarGeometriaPorShapeFile Deve Retornar Unauthorized")
+    public void testDadoUsuarioNaoAutenticado_QuandoBuscarGeometriaPorShapeFile_DeveRetornarUnauthorized() {
+        var response = given().spec(specification)
+                .when().post("/obter-geometria-por-arquivo");
+
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
+        var actual = response.body().as(ApiExceptionCustom.class);
+
+        assertNotNull(actual);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), actual.getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), actual.getError());
+        assertEquals(AccessDeniedException.class.getName(), actual.getException());
+        assertEquals(Constants.UNAUTHORIZED_ERROR, actual.getMessage());
+    }
+
+    @Test @Order(22)
+    @DisplayName("Integration Test - Dado Usuario Nao Autorizado Quando buscarGeometriaPorShapeFile Deve Retornar Unauthorized")
+    public void testDadoUsuarioNaoAutorizado_QuandoBuscarGeometriaPorShapeFile_DeveRetornarUnauthorized() {
+        var response = given().spec(specification)
+                .header(HttpHeaders.AUTHORIZATION, tokenSemPerfil)
+                .contentType(ContentType.MULTIPART)
+                .multiPart(zipShapefile)
+                .when().post("/obter-geometria-por-arquivo");
+
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), response.statusCode());
+        var actual = response.body().as(ApiExceptionCustom.class);
+
+        assertNotNull(actual);
+        assertEquals(HttpStatus.UNAUTHORIZED.value(), actual.getStatus());
+        assertEquals(HttpStatus.UNAUTHORIZED.getReasonPhrase(), actual.getError());
+        assertEquals(AccessDeniedException.class.getName(), actual.getException());
+        assertEquals(Constants.UNAUTHORIZED_ERROR, actual.getMessage());
+    }
+
+    @Test @Order(23)
+    @DisplayName("Integration Test - Dado Arquivo ZIP Quando buscarGeometriaPorShapeFile Deve Retornar GeometriaPorAquivoResponse")
+    public void testDadoArquivoZIP_QuandoBuscarGeometriaPorShapeFile_DeveRetornarGeometriaPorAquivoResponse() throws IOException {
+        var geometriaPorArquivo = GeometriaPorAquivoResponse.builder()
+                .geometria(ImovelTestUtils.getGeorreferenciamentoRequest().getGeometria())
+                .build();
+
+        doReturn(geometriaPorArquivo).when(georreferenciamentoService)
+                .obterGeometriaPorShapeFile(any(MultipartFile.class), any(HttpServletRequest.class));
+
+        var response = given().spec(specification)
+                .header(HttpHeaders.AUTHORIZATION, accessToken)
+                .contentType(ContentType.MULTIPART)
+                .multiPart(zipShapefile)
+                .when().post("/obter-geometria-por-arquivo");
+
+        assertEquals(HttpStatus.OK.value(), response.statusCode());
+        var actual = response.body().as(GeometriaPorAquivoResponse.class);
+
+        assertNotNull(actual);
+        assertInstanceOf(GeometriaPorAquivoResponse.class, actual);
+        assertEquals(geometriaPorArquivo.getGeometria(), actual.getGeometria());
     }
 }
