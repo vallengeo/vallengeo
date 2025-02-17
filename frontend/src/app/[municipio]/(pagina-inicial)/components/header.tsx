@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { ChevronLeft, LogOut, Menu as MenuIcon } from "lucide-react";
 import { Brasao } from "@/components/brasao";
 import { Logo } from "@/components/logo";
@@ -29,7 +36,7 @@ export function Header({ title, children, linkBack }: HeaderProps) {
   };
 
   return (
-    <header role="banner" className="flex items-center justify-between gap-y-4">
+    <header role="banner" className="flex items-center justify-between gap-4">
       <div className="flex flex-col">
         <div className="flex items-center gap-3">
           <Sheet>
@@ -40,6 +47,11 @@ export function Header({ title, children, linkBack }: HeaderProps) {
               side={`left`}
               className="flex flex-col gap-6 text-[#FCFCFC] py-6 px-4"
             >
+              <SheetHeader className="sr-only">
+                <SheetTitle>Menu</SheetTitle>
+                <SheetDescription>Links de navegação</SheetDescription>
+              </SheetHeader>
+
               <Logo />
               <Menu municipio={idMunicipio} />
 
@@ -75,7 +87,7 @@ export function Header({ title, children, linkBack }: HeaderProps) {
         {children}
       </div>
 
-      <Brasao />
+      <Brasao className="flex-shrink-0 max-sm:[&>div]:hidden" />
     </header>
   );
 }

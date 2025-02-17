@@ -29,7 +29,7 @@ function getIconByType(type: string, size: number) {
 
 export function Aviso({ type, size = 24, message, className }: AvisoProps) {
   return (
-    <div className={cn("flex items-center justify-center gap-4 p-4 bg-[#9897FF]/10 rounded-2xl text-lg", className)}>
+    <div className={cn("flex items-center justify-center gap-4 p-4 bg-[#9897FF]/10 rounded-2xl text-base md:text-lg [&_svg]:flex-shrink-0", className)}>
       {getIconByType(type, size)}
       <p>{message}</p>
     </div>

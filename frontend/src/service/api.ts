@@ -7,7 +7,6 @@ import {
 } from '@/constants/auth';
 import { actionLogout } from './authService';
 import Cookies from 'js-cookie'
-import { cookies } from '@/lib/utils';
 
 const Api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/`,

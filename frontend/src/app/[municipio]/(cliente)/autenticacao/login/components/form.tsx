@@ -1,25 +1,39 @@
-'use client'
+"use client";
 
 import Link from "next/link";
-import { useState } from "react"
-import { useRouter } from 'next/navigation'
-import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { loginFormSchema, loginFormData } from "@/validation/autenticacao/login"
+import {
+  loginFormSchema,
+  loginFormData,
+} from "@/validation/autenticacao/login";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Loader } from "@/components/loader"
-import { login } from '@/service/authService'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Loader } from "@/components/loader";
+import { login } from "@/service/authService";
 import IUserLogin from "@/interfaces/IUserLogin";
 import { useToast } from "@/components/ui/use-toast";
+import { getUsuario } from "@/service/usuario";
+import IUsuario from "@/interfaces/Usuario/IUsuario";
+import Cookies from "js-cookie";
 
 interface IFormLogin {
-  municipio: string
+  municipio: string;
 }
 
 export function FormLogin({ municipio }: IFormLogin) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const { toast } = useToast();
   const router = useRouter();
 
@@ -27,9 +41,14 @@ export function FormLogin({ municipio }: IFormLogin) {
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
       email: "",
-      password: ""
-    }
+      password: "",
+    },
   });
+
+  async function handleUsuario(idUsuario: string): Promise<IUsuario> {
+    const response = await getUsuario(idUsuario);
+    return response.data;
+  }
 
   const onSubmit: SubmitHandler<loginFormData> = async (data) => {
     setIsLoading(true);
@@ -37,24 +56,47 @@ export function FormLogin({ municipio }: IFormLogin) {
     const user: IUserLogin = {
       email: data.email,
       senha: data.password,
-      idMunicipio: 3513405
+      idMunicipio: 3513405,
     };
 
     await login(user)
-      .then(() => {
-        router.refresh();
-        router.push(`/${municipio}/dashboard`);
+      .then(async (response) => {
+        const { idUsuario } = response.data;
+
+        await handleUsuario(idUsuario).then((response) => {
+          const { ativo, perfis } = response;
+
+          if (!ativo) {
+            toast({
+              variant: "destructive",
+              description: "Usuário desativado!",
+            });
+          }
+
+          let redirect = `/${municipio}/`; // default
+
+          perfis.map((perfil) => {
+            localStorage.setItem("animateSplayScreen", JSON.stringify(true));
+
+            if (perfil.codigo === "ADMINISTRADOR") {
+              redirect = `/${municipio}/dashboard`;
+            }
+          });
+
+          Cookies.set("userId", idUsuario);
+          router.refresh();
+          router.push(redirect);
+        });
       })
       .catch((error) => {
-        console.error(error);
         toast({
-          variant: 'destructive',
-          description: error.toString(),
+          variant: "destructive",
+          title: error.response.data.messageTitle,
+          description: error.response.data.message,
         });
-
         setIsLoading(false);
       });
-  }
+  };
 
   return (
     <Form {...form}>
@@ -102,27 +144,27 @@ export function FormLogin({ municipio }: IFormLogin) {
           variant="link"
           className="w-fit ml-auto mt-4 mb-6 justify-end px-0"
         >
-          <Link href={`/${municipio}/usuario/publico/esqueci-minha-senha`}>Esqueci minha senha</Link>
+          <Link href={`/${municipio}/usuario/publico/esqueci-minha-senha`}>
+            Esqueci minha senha
+          </Link>
         </Button>
 
         <div className="flex items-center justify-between gap-2 flex-col-reverse sm:flex-row">
-          <Button
-            asChild
-            variant="link"
-            className="flex-shrink-0"
-          >
+          <Button asChild variant="link" className="flex-shrink-0">
             <Link href={`/${municipio}`}>Acessar sem login</Link>
           </Button>
 
           <Button
             type="submit"
             variant="default"
-            className={`'h-12 w-full sm:w-44' ${isLoading ? 'pointer-events-none' : ''}`}
+            className={`h-12 w-full sm:w-44 ${
+              isLoading ? "pointer-events-none" : ""
+            }`}
           >
-            {isLoading ? <Loader /> : 'Entrar'}
+            {isLoading ? <Loader /> : "Entrar"}
           </Button>
         </div>
       </form>
     </Form>
-  )
+  );
 }

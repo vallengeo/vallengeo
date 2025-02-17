@@ -6,7 +6,7 @@ import { VisaoGeral } from "./components/visao-geral";
 import { InformacoesContato } from "./components/informacoes-contato";
 import { CaracterizacaoImovel } from "./components/caracterizacao-imovel";
 import { Georeferenciamento } from "./components/georeferenciamento";
-import { Observacoes } from "./components/observacoes";
+// import { Observacoes } from "./components/observacoes";
 import { DocumentosEnviados } from "./components/documentos-enviados";
 import { Historico } from "./components/historico";
 import { RepresentantesImovel } from "./components/representantes";
@@ -17,61 +17,122 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+} from "@/components/ui/breadcrumb";
+import { ficha, fichaDownload } from "@/service/imovelService";
+import IFicha from "@/interfaces/Analista/IFicha";
+import { InformacoesImovel } from "./components/informacoes-imovel";
+import { notFound } from "next/navigation";
+import type { Metadata, ResolvingMetadata } from "next";
+import IProtocolo from "@/interfaces/Analista/IProtocolo";
+import { protocolo } from "@/service/analista/analistaService";
 
-export default function FichaImovelPage({
-  params
-}: {
-  params: {
-    municipio: string,
-    id: string
+type Props = {
+  params: Promise<{ id: string; municipio: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
+    const response = await ficha(id);
+    const { inscricaoImobiliaria } = response.data;
+
+    return {
+      title: `Ficha de imóvel: ${inscricaoImobiliaria} | Vallengeo`,
+    };
+  } catch (error) {
+    notFound();
   }
-}) {
+}
+
+async function getData(processoId: string): Promise<IFicha | null> {
+  try {
+    const response = await ficha(processoId);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os dados:", error);
+    return null;
+  }
+}
+
+async function getProcolo(processoId: string): Promise<IProtocolo> {
+  const response = await protocolo(processoId);
+  return response.data;
+}
+
+async function getFichaDownload(
+  processoId: string
+): Promise<string | null> {
+  try {
+    const response = await fichaDownload(processoId);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao fazer download da ficha:", error);
+    return null;
+  }
+}
+
+export default async function FichaImovelPage({ params, searchParams }: Props) {
+  const data = await getData((await params).id);
+  const protocolo = await getProcolo((await params).id);
+  const fichaDownload = await getFichaDownload((await params).id);
+  const municipio = (await params).municipio;
+
+  if (!data || !data.id) {
+    notFound();
+    return null;
+  }
+
   return (
-    <main
-      role="main"
-      className="container space-y-6 py-6"
-    >
-      <div className="flex items-center justify-between flex-wrap">
-        <Header
-          title="Ficha de imóvel"
-          linkBack={`/${params.municipio}/imoveis`}
-        >
+    <div className="container space-y-6 py-6">
+      <div className="flex items-start md:items-center justify-between flex-col md:flex-row flex-wrap gap-6">
+        <Header title="Ficha de imóvel" linkBack={`/${municipio}/imoveis`}>
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbLink href={`/${params.municipio}/imoveis`}>Imóveis</BreadcrumbLink>
+                <BreadcrumbLink href={`/${municipio}/imoveis`}>
+                  Imóveis
+                </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbPage className="font-normal">Ficha de imóvel</BreadcrumbPage>
+                <BreadcrumbPage className="font-normal">
+                  Ficha de imóvel
+                </BreadcrumbPage>
               </BreadcrumbItem>
               <BreadcrumbSeparator>/</BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbPage className="font-normal">{params.id}</BreadcrumbPage>
+                <BreadcrumbPage className="font-normal">
+                  {data.inscricaoImobiliaria}
+                </BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
         </Header>
 
         <Link
-          href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica/editar/${params.id}`}
-          className="flex items-center gap-0.5"
+          href={`/${municipio}/imoveis/cadastro/pessoa-fisica/editar/${data.processo.id}`}
+          className="flex items-center gap-0.5 opacity-50 pointer-events-none"
         >
           <PenSquare size={20} />
           Editar
         </Link>
       </div>
 
-      <DownloadFicha ficha={params.id} />
-      <VisaoGeral ficha={params.id} />
-      <RepresentantesImovel />
-      <InformacoesContato />
-      <CaracterizacaoImovel />
+      <DownloadFicha ficha={data} fichaDownload={fichaDownload} />
+      <VisaoGeral ficha={data} />
+      <InformacoesImovel ficha={data} />
+      <RepresentantesImovel ficha={data} />
+      <InformacoesContato ficha={data} />
+      <CaracterizacaoImovel ficha={data} />
       <Georeferenciamento />
-      <Observacoes />
-      <DocumentosEnviados />
-      <Historico />
-    </main>
-  )
+      {/* <Observacoes /> */}
+      {/* <DocumentosEnviados ficha={data} /> */}
+      <Historico protocolo={protocolo} />
+    </div>
+  );
 }

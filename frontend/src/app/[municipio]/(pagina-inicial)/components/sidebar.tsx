@@ -7,6 +7,8 @@ import { Menu } from "./menu";
 import { LogOut } from "lucide-react";
 import { actionLogout } from "@/service/authService";
 import { useRouter } from "next/navigation";
+import { Suspense } from "react";
+import { MenuSkeleton } from "./menu-skeleton";
 
 interface ISidebar {
   municipio: string;
@@ -16,6 +18,7 @@ export function Sidebar({ municipio }: ISidebar) {
   const router = useRouter();
   const logout = () => {
     actionLogout().then(() => {
+      router.refresh();
       router.push(`/${municipio}`);
     });
   };
@@ -29,7 +32,9 @@ export function Sidebar({ municipio }: ISidebar) {
           </Link>
 
           <div className="mt-10">
-            <Menu municipio={municipio} />
+            <Suspense fallback={<MenuSkeleton />}>
+              <Menu municipio={municipio} />
+            </Suspense>
           </div>
         </div>
 

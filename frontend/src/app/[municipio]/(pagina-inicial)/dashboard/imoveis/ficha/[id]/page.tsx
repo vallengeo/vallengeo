@@ -1,6 +1,7 @@
 import { Header } from "@/app/[municipio]/(pagina-inicial)/components/header";
 import { DownloadFicha } from "./components/download-ficha";
 import { VisaoGeral } from "./components/visao-geral";
+import { InformacoesImovel } from "./components/informacoes-imovel";
 import { InformacoesContato } from "./components/informacoes-contato";
 import { CaracterizacaoImovel } from "./components/caracterizacao-imovel";
 import { Georeferenciamento } from "./components/georeferenciamento";
@@ -8,8 +9,6 @@ import { Observacoes } from "./components/observacoes";
 import { DocumentosEnviados } from "./components/documentos-enviados";
 import { Historico } from "./components/historico";
 import { RepresentantesImovel } from "./components/representantes";
-import { Button } from "@/components/ui/button";
-import { HistoricoObservacoes } from "./components/historico-observacoes";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -19,119 +18,119 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import IFicha from "@/interfaces/Analista/IFicha";
-import { ficha } from "@/service/analista/analistaService";
-import { redirect } from "next/navigation";
-import { Building } from "lucide-react";
-import Link from "next/link";
-import { Suspense } from "react";
-import { DownloadFichaSkeleton } from "./components/download-ficha-skeleton";
+import { notFound } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ficha, protocolo } from "@/service/analista/analistaService";
+import type { Metadata, ResolvingMetadata } from "next";
+import { fichaDownload } from "@/service/imovelService";
+import IProtocolo from "@/interfaces/Analista/IProtocolo";
+import { ArquivarProcesso } from "../../../protocolos/visualizar/[id]/components/arquivar-processo";
 
-async function getData(processoId: string): Promise<IFicha> {
-  const response = await ficha(processoId);
-  return response;
+type Props = {
+  params: Promise<{ id: string; municipio: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const resolvedParams = await params;
+    const id = resolvedParams.id;
+    const response = await ficha(id);
+    const { inscricaoImobiliaria } = response.data;
+
+    return {
+      title: `Ficha de imóvel: ${inscricaoImobiliaria} | Vallengeo`,
+    };
+  } catch (error) {
+    notFound();
+  }
 }
 
-export default async function FichaImovelPage({
-  params,
-}: {
-  params: {
-    municipio: string;
-    id: string;
-  };
-}) {
-  const data = await getData(params.id);
+async function getData(processoId: string): Promise<IFicha | null> {
+  try {
+    const response = await ficha(processoId);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar os dados:", error);
+    return null;
+  }
+}
 
-  if (!data.id) {
-    redirect(`/${params.municipio}/dashboard/imoveis`);
+async function getProcolo(processoId: string): Promise<IProtocolo> {
+  const response = await protocolo(processoId);
+  return response.data;
+}
+
+async function getFichaDownload(processoId: string): Promise<string | null> {
+  try {
+    const response = await fichaDownload(processoId);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao fazer download da ficha:", error);
+    return null;
+  }
+}
+
+export default async function FichaImovelPage({ params, searchParams }: Props) {
+  const data = await getData((await params).id);
+  const protocolo = await getProcolo((await params).id);
+  const fichaDownload = await getFichaDownload((await params).id);
+  const municipio = (await params).municipio;
+
+  if (!data || !data.id) {
+    notFound();
+    return null;
   }
 
   return (
-    <>
-      <Header
-        title="Ficha de imóvel"
-        linkBack={`/${params.municipio}/dashboard/imoveis`}
-      >
+    <div className="space-y-6 pb-6">
+      <Header title="Ficha de imóvel">
         <Breadcrumb>
           <BreadcrumbList>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/${params.municipio}/dashboard/imoveis`}>
+              <BreadcrumbLink href={`/${municipio}/dashboard/imoveis`}>
                 Visualização imóveis
               </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbPage>{params.id}</BreadcrumbPage>
+              <BreadcrumbPage className="font-normal">
+                {data.inscricaoImobiliaria}
+              </BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
 
-      <div className="space-y-6 py-6">
-        <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl px-8 py-4">
-          <div className="flex items-center gap-5">
-            <Building size={32} />
+      <DownloadFicha ficha={data} fichaDownload={fichaDownload} />
+      <VisaoGeral municipio={municipio} ficha={data} />
+      <InformacoesImovel ficha={data} />
+      <RepresentantesImovel ficha={data} />
+      <InformacoesContato ficha={data} />
+      <CaracterizacaoImovel ficha={data} />
+      <Georeferenciamento />
+      <DocumentosEnviados ficha={data} />
 
-            <div className="flex flex-col gap-1">
-              <span className="text-2xl font-medium">{data.inscricaoImobiliaria}</span>
-              <span>{data.representantes[0].contato.nome}</span>
-            </div>
-          </div>
-
-          <Suspense fallback={<DownloadFichaSkeleton />}>
-            <DownloadFicha idDocumento={data.processo.id} />
-          </Suspense>
-        </div>
-
-        <div className="bg-white border border-input rounded-3xl px-8 py-6">
-          <header className="flex items-center justify-between">
-            <h2 className="text-xl font-medium">Visão Geral</h2>
-          </header>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-5 text-sm">
-            <div className="flex flex-col gap-1">
-              <span className="font-medium">Número de protocolo</span>
-              <span className="text-[#0056F9] underline">{data.processo.id}</span>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="font-medium">Inscrição imobiliária</span>
-              <span>{data.inscricaoImobiliaria}</span>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="font-medium">Última atualização</span>
-              <time dateTime="02-02-2022"></time>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <span className="font-medium">Situação</span>
-              <span className="inline-flex text-sm whitespace-nowrap font-light bg-[#FACF61] px-2 rounded-3xl w-fit">
-
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <RepresentantesImovel />
-        <InformacoesContato />
-        <CaracterizacaoImovel />
-        <Georeferenciamento />
-        <Observacoes />
-        <DocumentosEnviados />
-
-        <div className="flex flex-col md:flex-row gap-6">
-          <Historico />
-          <HistoricoObservacoes />
-        </div>
-
-        <div className="flex items-center gap-6">
-          <Button variant="secondary" className="mr-auto">
-            Arquivar ficha
-          </Button>
-          <Button variant="secondary">Reprovar</Button>
-          <Button variant="default">Aprovar</Button>
-        </div>
+      <div className="flex flex-col md:flex-row gap-6">
+        <Historico protocolo={protocolo} />
+        <Observacoes idProcesso={(await params).id} />
       </div>
-    </>
+
+      <div className="flex items-center gap-6 flex-col md:flex-row">
+        <div className="md:mr-auto w-full md:w-fit">
+          <ArquivarProcesso idProcesso={(await params).id} />
+        </div>
+
+        <Button variant="secondary" className="w-full md:w-fit">
+          Reprovar
+        </Button>
+        <Button variant="default" className="w-full md:w-fit">
+          Aprovar
+        </Button>
+      </div>
+    </div>
   );
 }

@@ -12,7 +12,7 @@ export const uploadShapeFile = async (file: File[]) => {
   });
 
   return api.post(
-    "/imovel/georreferenciamento/obter-geometria-por-arquivo",
+    "/imovel/obter-geometria-por-arquivo",
     formData,
     {
       headers: {
@@ -50,7 +50,8 @@ export const editarImovel = async (
 };
 
 export const tipoUso = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return api.get("imovel/tipo-uso", {
     headers: {
@@ -68,8 +69,8 @@ export const cadastrados = async () => {
       Authorization: `Bearer ${token}`,
     },
     params: {
-      pagina: 1,
-      "itens-por-pagina": 6,
+      pagina: 0,
+      "itens-por-pagina": 99,
     },
   });
 
@@ -77,9 +78,10 @@ export const cadastrados = async () => {
 };
 
 export const ficha = async (processoId: string) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
-  return api.get(`imovel/ficha/${processoId}`, {
+  return api.get(`/imovel/ficha/${processoId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -87,7 +89,8 @@ export const ficha = async (processoId: string) => {
 };
 
 export const fichaDownload = async (processoId: string) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return api.get(`imovel/ficha/${processoId}/download`, {
     headers: {

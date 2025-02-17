@@ -2,9 +2,9 @@
 
 import { Sidebar } from "@/app/[municipio]/(pagina-inicial)/components/sidebar";
 import { Footer } from "./components/footer";
-// import { SplashScreen } from '@/components/splash-screen'
-// import { usePathname } from 'next/navigation'
-// import { useEffect, useState } from 'react'
+import { SplashScreen } from "@/components/splash-screen";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function RootLayout({
   children,
@@ -13,32 +13,39 @@ export default function RootLayout({
   children: React.ReactNode;
   params: { municipio: string };
 }) {
-  // const pathname = usePathname()
-  // const canShowSplashScreen = pathname === `/${params.municipio}/dashboard`
-  // const [isLoading, setIsLoading] = useState<boolean>(canShowSplashScreen);
-  // const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const pathname = usePathname();
+  const canShowSplashScreen =
+    typeof window !== "undefined" &&
+    pathname === `/${params.municipio}/dashboard` &&
+    localStorage.getItem("animateSplayScreen") !== null &&
+    JSON.parse(localStorage.getItem("animateSplayScreen") || "false");
 
-  // useEffect(() => {
-  //   if (canShowSplashScreen) {
-  //     document.querySelector('body')?.classList.add('overflow-hidden');
-  //     const timeout = setTimeout(() => {
-  //       setIsAnimating(true);
+  const [isLoading, setIsLoading] = useState<boolean>(canShowSplashScreen);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
-  //       setTimeout(() => {
-  //         document.querySelector('body')?.classList.remove('overflow-hidden');
-  //         setIsLoading(false);
-  //       }, 1000);
-  //     }, 6000);
+  useEffect(() => {
+    if (canShowSplashScreen) {
+      document.querySelector("body")?.classList.add("overflow-hidden");
+      const timeout = setTimeout(() => {
+        setIsAnimating(true);
 
-  //     return () => clearTimeout(timeout);
-  //   }
-  // }, [canShowSplashScreen])
+        setTimeout(() => {
+          localStorage.removeItem("animateSplayScreen");
+
+          document.querySelector("body")?.classList.remove("overflow-hidden");
+          setIsLoading(false);
+        }, 1000);
+      }, 6000);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [canShowSplashScreen]);
 
   return (
-    <div className="container flex gap-0 lg:gap-6 flex-col lg:flex-row">
-      {/* {isLoading && canShowSplashScreen && (
+    <div className="container flex flex-col lg:gap-6 lg:flex-row h-full">
+      {isLoading && canShowSplashScreen && (
         <SplashScreen isAnimating={isAnimating} />
-      )} */}
+      )}
 
       <aside className="sticky top-0 z-0 h-screen py-6 hidden lg:block">
         <Sidebar municipio={params.municipio} />

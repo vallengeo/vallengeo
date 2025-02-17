@@ -1,10 +1,8 @@
-"use client";
+ "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import INotificacaoNaoVisualizada from "@/interfaces/Analista/INotificacaoNaoVisualizada";
 import {
-  notificacaoNaoVisualizada,
   notificacaoVisualizada,
 } from "@/service/analista/analistaService";
 import { Bell, ChevronRight } from "lucide-react";
@@ -16,38 +14,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useToast } from "@/components/ui/use-toast";
 
-export function Notificacoes() {
+interface NotificacoesProps {
+  municipio: string;
+  notificacoes: INotificacaoNaoVisualizada[];
+}
+
+export function Notificacoes({ municipio, notificacoes }: NotificacoesProps) {
+  const { toast } = useToast();
   const router = useRouter();
-  const pathname = usePathname();
-  const idMunicipio = pathname.split('/')[1] || '';
 
-  const [notificacoes, setNotificacoes] = useState<
-    INotificacaoNaoVisualizada[]
-  >([]);
-
-  useEffect(() => {
-    const fetchNotificacoesNaoVisualizadas = async () => {
+  const handleVisualizarNotificacao =
+    (notificacaoId: number, inscricaoImobiliaria: string) => async () => {
       try {
-        const response = await notificacaoNaoVisualizada();
-        setNotificacoes(response.data);
+        await notificacaoVisualizada(notificacaoId);
+
+        toast({
+          description: "Notificação marcada como lida.",
+        });
+
+        router.push(
+          `/${municipio}/dashboard/imoveis/ficha/${inscricaoImobiliaria}`
+        );
       } catch (error) {
-        console.error("Erro ao buscar notificações:", error);
-        setNotificacoes([]);
+        console.error("Erro ao marcar notificação como visualizada:", error);
       }
     };
-
-    fetchNotificacoesNaoVisualizadas();
-  }, []);
-
-  const handleVisualizarNotificacao = (notificacaoId: number) => async () => {
-    try {
-      await notificacaoVisualizada(notificacaoId);
-      router.push(`/${idMunicipio}/dashboard/imoveis/ficha/${notificacaoId}`);
-    } catch (error) {
-      console.error("Erro ao marcar notificação como visualizada:", error);
-    }
-  };
 
   return (
     <>
@@ -76,23 +69,26 @@ export function Notificacoes() {
             </Button>
           </DialogTrigger>
 
-          <DialogContent className="sm:max-w-[1186px] bg-[#FCFCFC]">
+          <DialogContent className="sm:max-w-[1186px] bg-[#FCFCFC] min-h-[340px]">
             <DialogHeader>
               <DialogTitle className="text-[2rem] font-semibold">
                 Notificações
               </DialogTitle>
             </DialogHeader>
 
-            <div className="space-y-2">
+            <div className="space-y-2 px-6 pb-6">
               {notificacoes.map((notificacao) => {
                 return (
                   <Button
                     key={notificacao.id}
                     type="button"
-                    onClick={handleVisualizarNotificacao(notificacao.id)}
-                    className="flex items-center justify-between bg-[#FDFDFD] hover:bg-muted/50 transition-colors border border-[#F0F0F0] rounded-2xl p-2"
+                    onClick={handleVisualizarNotificacao(
+                      notificacao.id,
+                      notificacao.idProcesso
+                    )}
+                    className="flex items-center justify-between bg-[#FDFDFD] hover:bg-muted/50 text-sm font-normal transition-colors border border-[#F0F0F0] rounded-2xl py-2.5 px-4 w-full hover:text-foreground hover:shadow-none h-auto text-left gap-6"
                   >
-                    <p className="ml-4">
+                    <p>
                       Nova atualização na inscrição imobiliária{" "}
                       <strong>{`${notificacao.inscricaoImobiliaria}`}</strong>.
                       Acesse ao lado para ser redirecionado ao imóvel.

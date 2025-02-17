@@ -21,7 +21,6 @@ import { CoordinatesControl } from "@/lib/mapa/leaflet-zoominfo/Control.Zoominfo
 import { MeasureTools } from "@/lib/mapa/measure-tools/measure-tools";
 import CamadasToggleCard from "./camadas";
 import ZoomControl from "@/lib/mapa/leaflet-zoominfo/ZoomControl";
-import { Legenda } from "./legenda";
 import Pesquisar from "./pesquisar";
 import Imoveis from "./imoveis";
 import Camada from "@/interfaces/ICamada";
@@ -116,7 +115,7 @@ export function Mapa() {
       camadasPesquisar.current.clearLayers();
       try {
         const features: any = await fetchOnGeoserver(searchValue);
-        
+
         camadasPesquisar.current.addLayer(
           new L.GeoJSON(features, {
             style: {},
@@ -326,7 +325,7 @@ export function Mapa() {
 
   return (
     <div id="mapa-content" ref={contentRef}>
-      <div className="rounded-2xl cursor-pointer map" id="map">
+      <div className="cursor-pointer map" id="map">
         <Pesquisar
           onSearch={handleSearch}
           onChange={onChange}
@@ -341,7 +340,6 @@ export function Mapa() {
           setSelectedLayer={setSelectedLayer}
           camadas={camadas}
         />
-        <Legenda />
         <Imoveis map={map} imoveisLayers={imoveisLayers} />
       </div>
     </div>

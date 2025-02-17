@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
-import { Menu } from "../components/menu";
+import { Menu } from "./menu";
 import { isAuthenticated } from "@/service/authService";
 import { MenuMobile } from "./menu-mobile";
 
@@ -13,7 +13,7 @@ export function Header({ municipio }: HeaderProps) {
   return (
     <>
       {isAuthenticated() ? (
-        <header role="banner" className="bg-primary-foreground py-6">
+        <header role="banner" className="sticky top-0 z-40 bg-primary-foreground py-6">
           <div className="container">
             <div className="flex items-center justify-between gap-6">
               <Link href={`/${municipio}`}>

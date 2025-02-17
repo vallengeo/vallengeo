@@ -8,39 +8,31 @@ import { ChevronRight } from "lucide-react";
 import { ultimosAlterados } from "@/service/analista/analistaService";
 import IUltimosAlterados from "@/interfaces/Analista/IUltimosAlterados";
 
-export function HistoricoProcessos() {
-  const pathname = usePathname();
-  const municipio = pathname.split("/")[1];
+interface HistoricoProcessosProps {
+  municipio: string;
+  ultimosAlterados: IUltimosAlterados[];
+}
 
-  const [processos, setProcessos] = useState<IUltimosAlterados[]>([]);
-
-  useEffect(() => {
-    const fetchUltimosAlterados = async () => {
-      try {
-        const response = await ultimosAlterados();
-        setProcessos(response.data);
-      } catch (error) {
-        console.error("Erro ao buscar últimos processos alterados:", error);
-      }
-    };
-
-    fetchUltimosAlterados();
-  }, []);
-
+export function HistoricoProcessos({
+  municipio,
+  ultimosAlterados,
+}: HistoricoProcessosProps) {
   return (
     <div className="flex flex-col gap-2 bg-white border border-input rounded-3xl p-6">
-      <h2 className="text-xl font-semibold">Histórico de atualizações de processos</h2>
+      <h2 className="text-xl font-semibold">
+        Histórico de atualizações de processos
+      </h2>
 
-      {processos.length > 0 ? (
+      {ultimosAlterados.length > 0 ? (
         <>
           <ul className="space-y-2.5">
-            {processos.map((processo) => (
+            {ultimosAlterados.map((processo) => (
               <li
                 key={processo.id}
                 className="bg-[#FDFDFD] hover:bg-muted/50 transition-colors border border-[#F0F0F0] rounded-2xl"
               >
                 <Link
-                  href={`/${municipio}/dashboard/protocolos/ficha/${processo.protocolo}`}
+                  href={`/${municipio}/dashboard/protocolos/visualizar/${processo.id}`}
                   className="flex items-center justify-between px-4 py-2"
                 >
                   {processo.id}

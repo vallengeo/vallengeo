@@ -1,11 +1,13 @@
 import api from "./api";
 import Cookies from "js-cookie";
+import { cookies } from "@/lib/utils";
 import { ACCESS_TOKEN } from "@/constants/auth";
 import IUploadTemp from "@/interfaces/Documento/IUploadTemp";
 import ICadastroDocumento from "@/interfaces/Documento/ICadastroDocumento";
 
 export const tipoDocumento = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return await api.get("documento/tipo-documento", {
     headers: {

@@ -1,63 +1,17 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
+import { useState } from "react";
+import { Pagination } from "@/components/pagination";
+import IFicha from "@/interfaces/Analista/IFicha";
 
-import { Avatar } from "@/components/avatar"
-import { Button } from "@/components/ui/button"
-import { PenSquare } from "lucide-react"
-import Link from "next/link"
+interface RepresentantesImovelProps {
+  ficha: IFicha;
+}
 
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle
-} from '@/components/ui/dialog'
-
-import { FormRedefinirSenha } from '@/components/profile/form'
-import { Pagination } from "@/components/pagination"
-
-const representantes = [
-  {
-    id: 1,
-    avatar: <Avatar />,
-    nome: "Davi Luan Manuel da Cruz",
-    perfil: "Cidadão",
-    cpf: "393.178.226-30",
-    rg: "30.390.965-1",
-    email: "daviluandacruz@zf-lensysteme.com",
-    cep: "25635-201",
-    endereco: "Rua Alfredo Schilick",
-    numero: "582",
-    complemento: "-",
-    bairro: "Chácara Flora",
-    cidade: "Petrópolis",
-    estado: "Rio de janeiro",
-    telefone: "(24) 2758-1193"
-  },
-  {
-    id: 2,
-    avatar: <Avatar />,
-    nome: "Teste Vallengeo",
-    perfil: "Cidadão",
-    cpf: "393.178.226-30",
-    rg: "30.390.965-1",
-    email: "teste@vallengeo.com",
-    cep: "25635-201",
-    endereco: "Rua Alfredo Schilick",
-    numero: "582",
-    complemento: "-",
-    bairro: "Chácara Flora",
-    cidade: "Petrópolis",
-    estado: "Rio de janeiro",
-    telefone: "(24) 2758-1193"
-  }
-]
-
-export function RepresentantesImovel() {
+export function RepresentantesImovel({ ficha }: RepresentantesImovelProps) {
   const itemsPerPage = 1;
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const representantes = ficha.representantes;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -70,15 +24,12 @@ export function RepresentantesImovel() {
   };
 
   return (
-    <div className="bg-white border border-input rounded-3xl px-8 py-6 relative">
+    <div className="bg-white border border-input rounded-3xl p-6 relative">
       <h2 className="text-xl font-medium mb-6">Representante do imóvel</h2>
 
-      {currentItems.map(representante => (
-        <div
-          key={representante.id}
-          className="space-y-6"
-        >
-          <div className="grid grid-cols-4 gap-x-4 gap-y-8">
+      {currentItems.map((representante) => (
+        <div key={representante.id} className="space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
             <div className="flex flex-col">
               <span className="font-medium text-sm">Nome Completo</span>
               <span>{representante.nome}</span>
@@ -96,42 +47,42 @@ export function RepresentantesImovel() {
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">E-mail</span>
-              <span>{representante.email}</span>
+              <span className="break-words">{representante.email}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">CEP</span>
-              <span>{representante.cep}</span>
+              <span>{representante.endereco.cep}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">Endereço</span>
-              <span>{representante.endereco}</span>
+              <span>{representante.endereco.logradouro}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">Número</span>
-              <span>{representante.numero}</span>
+              <span>{representante.endereco.numero}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">Complemento</span>
-              <span>{representante.complemento}</span>
+              <span>{representante.endereco.complemento ?? "-"}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">Bairro</span>
-              <span>{representante.bairro}</span>
+              <span>{representante.endereco.bairro}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">Cidade</span>
-              <span>{representante.cidade}</span>
+              <span>{representante.endereco.municipio.nome}</span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">Estado</span>
-              <span>{representante.estado}</span>
+              <span>{representante.endereco.municipio.estado.nome}</span>
             </div>
 
             <div className="flex flex-col">
@@ -142,12 +93,14 @@ export function RepresentantesImovel() {
         </div>
       ))}
 
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        paginate={paginate}
-        className="absolute m-0 right-6 top-6 justify-normal w-fit"
-      />
+      {totalPages > 1 && (
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          paginate={paginate}
+          className="absolute m-0 right-6 top-6 justify-normal w-fit"
+        />
+      )}
     </div>
-  )
+  );
 }

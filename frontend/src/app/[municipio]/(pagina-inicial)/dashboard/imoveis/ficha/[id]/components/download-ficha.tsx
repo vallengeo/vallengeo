@@ -1,31 +1,37 @@
-"use client";
-
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import { downloadDocumento } from "@/service/documentoService";
+import { Building } from "lucide-react";
+import IFicha from "@/interfaces/Analista/IFicha";
 
 interface DownloadFichaProps {
-  idDocumento: string;
+  ficha: IFicha;
+  fichaDownload: string | null;
 }
 
-export function DownloadFicha({ idDocumento }: DownloadFichaProps) {
-  const [path, setPath] = useState<string>("");
-
-  useEffect(() => {
-    const fetchDownloadDocumento = async () => {
-      const response = await downloadDocumento(idDocumento);
-      setPath(response.data);
-    };
-
-    fetchDownloadDocumento();
-  }, []);
-
+export async function DownloadFicha({
+  ficha,
+  fichaDownload,
+}: DownloadFichaProps) {
   return (
-    <Button asChild variant="default">
-      <Link href={path} download>
-        Download ficha
-      </Link>
-    </Button>
+    <div className="flex items-center justify-between flex-wrap gap-y-6 bg-white border border-input rounded-3xl p-6">
+      <div className="flex items-center gap-5">
+        <Building size={32} />
+
+        <div className="flex flex-col gap-1">
+          <span className="text-2xl font-medium">
+            {ficha.inscricaoImobiliaria}
+          </span>
+          <span>{ficha.representantes[0].nome}</span>
+        </div>
+      </div>
+
+      {fichaDownload && (
+        <Button variant="default">
+          <Link href={fichaDownload}>
+            Download ficha
+          </Link>
+        </Button>
+      )}
+    </div>
   );
 }

@@ -6,7 +6,14 @@ import { ProfileTrigger } from "@/components/profile-trigger";
 import { useRouter } from "next/navigation";
 import { actionLogout } from "@/service/authService";
 import { Building, LogOut, Menu, Settings } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Logo } from "@/components/logo";
 
 interface IMenuMobile {
@@ -16,7 +23,10 @@ interface IMenuMobile {
 export function MenuMobile({ municipio }: IMenuMobile) {
   const router = useRouter();
   const logout = () => {
-    actionLogout().then(() => router.push(`/${municipio}`));
+    actionLogout().then(() => {
+      router.refresh();
+      router.push(`/${municipio}`)
+    });
   };
 
   return (
@@ -29,6 +39,11 @@ export function MenuMobile({ municipio }: IMenuMobile) {
           side={`left`}
           className="flex flex-col gap-6 text-[#FCFCFC] py-6 px-4"
         >
+          <SheetHeader className="sr-only">
+            <SheetTitle>Menu</SheetTitle>
+            <SheetDescription>Links de navegação</SheetDescription>
+          </SheetHeader>
+
           <Logo />
 
           <Link

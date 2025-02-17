@@ -50,7 +50,7 @@ export function Menu({ municipio }: IMenu) {
           return (
             <li key={link.id}>
               <Link
-                href={`/${municipio}/dashboard/${link.href}`}
+                href={`/${municipio}/dashboard${link.href}`}
                 className={`group flex items-center gap-1 text-sm p-2 ${
                   isActive
                     ? "bg-primary text-primary-foreground font-semibold pointer-events-none"
