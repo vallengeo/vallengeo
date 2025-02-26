@@ -36,6 +36,8 @@ class GeoserverServiceTest extends AbstractIntegrationTest {
     private static GeorreferenciamentoFeatureColletionResponse featureColletionResponse;
     private static GeorreferenciamentoFeatureColletionResponse.Feature.Propriedade propriedades;
 
+    private static final String LIMITE_MUNICIPAL = "limite_municipal";
+
     @BeforeAll
     public static void setup() throws IOException {
         camadas = List.of("limite_municipal", "setor", "quadra", "lote");
@@ -63,7 +65,7 @@ class GeoserverServiceTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Dado Geometria E Camadas Quando buscaTodasInterseccoes Deve Retornar Lista GeorreferenciamentoFeatureColletionResponse")
     public void testDadoGeometriaECamadas_QuandoBuscaTodasInterseccoes_DeveRetornarListaGeorreferenciamentoFeatureColletionResponse() {
-        doReturn(new GeorreferenciamentoFeatureColletionResponse())
+        doReturn(featureColletionResponse)
                 .when(geoserverFeignClient).buscaInterseccaoPorGeometria(anyString());
 
         var actual = geoserverService.buscaTodasInterseccoes(geometry, camadas);
@@ -75,12 +77,10 @@ class GeoserverServiceTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Dado Geometria E Camada Quando buscaInterseccao Deve Retornar GeorreferenciamentoFeatureColletionResponse")
     public void testDadoGeometriaECamada_QuandoBuscaInterseccao_DeveRetornarGeorreferenciamentoFeatureColletionResponse() {
-        var camada = "limite_municipal";
-
         doReturn(featureColletionResponse)
-                .when(geoserverFeignClient).buscaInterseccaoPorGeometria(contains(camada));
+                .when(geoserverFeignClient).buscaInterseccaoPorGeometria(contains(LIMITE_MUNICIPAL));
 
-        var actual = geoserverService.buscaInterseccao(geometry, camada);
+        var actual = geoserverService.buscaInterseccao(geometry, LIMITE_MUNICIPAL);
 
         assertNotNull(actual);
         assertInstanceOf(GeorreferenciamentoFeatureColletionResponse.class, actual);
@@ -98,12 +98,10 @@ class GeoserverServiceTest extends AbstractIntegrationTest {
     @Test
     @DisplayName("Integration Test - Dado Geometria E Camada Quando contidoNaCamadaDoGrupo Deve Retornar GeorreferenciamentoFeatureColletionResponse")
     public void testDadoGeometriaECamada_QuandoContidoNaCamadaDoGrupo_DeveRetornarGeorreferenciamentoFeatureColletionResponse() {
-        var camada = "limite_municipal";
-
         doReturn(featureColletionResponse)
-                .when(geoserverFeignClient).buscaInterseccaoPorGeometria(contains(camada));
+                .when(geoserverFeignClient).buscaInterseccaoPorGeometria(contains(LIMITE_MUNICIPAL));
 
-        var actual = geoserverService.contidoNaCamadaDoGrupo(geometry, camada);
+        var actual = geoserverService.contidoNaCamadaDoGrupo(geometry, LIMITE_MUNICIPAL);
 
         assertNotNull(actual);
         assertInstanceOf(GeorreferenciamentoFeatureColletionResponse.class, actual);

@@ -184,7 +184,7 @@ class GeorreferenciamentoServiceTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("Integration Test - Dado Geometria Sem Intersecoes Quando obterGeometriaPorShapeFile Deve Lancar ValidatorException")
-    public void testDadoGeometriaSemIntersecoes_QuandoObterGeometriaPorShapeFile_DeveLancarValidatorException() throws IOException, FactoryException {
+    public void testDadoGeometriaSemIntersecoes_QuandoObterGeometriaPorShapeFile_DeveLancarValidatorException() {
         doReturn(null).when(geoserverService).contidoNaCamadaDoGrupo(any(Geometry.class), anyString());
 
         var actual = assertThrows(
@@ -199,7 +199,7 @@ class GeorreferenciamentoServiceTest extends AbstractIntegrationTest {
 
     @Test
     @DisplayName("Integration Test - Dado Shapefile Quando obterGeometriaPorShapeFile Deve Retornar GeometriaPorAquivoResponse")
-    public void testDadoShapefile_QuandoObterGeometriaPorShapeFile_DeveRetornarGeometriaPorAquivoResponse() throws IOException, FactoryException {
+    public void testDadoShapefile_QuandoObterGeometriaPorShapeFile_DeveRetornarGeometriaPorAquivoResponse() {
         doReturn(featureColletionResponse).when(geoserverService)
                 .contidoNaCamadaDoGrupo(any(Geometry.class), eq("limite_municipal"));
 
