@@ -64,15 +64,10 @@ const initialFormData: formCadastroPFData = {
       logradouro: "",
       bairro: "",
       numero: "",
-      municipio: {
-        id: 0,
-        nome: "",
-        estado: {
-          id: 0,
-          nome: "",
-          uf: "",
-        },
-      },
+      complemento: "",
+      idMunicipio: 0,
+      nomeMunicipio: "",
+      siglaUf: "",
     },
   },
   caracterizacaoImovel: {
@@ -84,6 +79,16 @@ const initialFormData: formCadastroPFData = {
     testadaPrincipal: "",
     fracaoIdeal: "",
     dataInclusao: new Date(),
+  },
+  georreferenciamento: {
+    geoJson: {
+      geometry: {
+        type: "Polygon",
+        coordinates: [],
+      },
+      type: "Feature",
+      properties: {},
+    },
   },
 };
 

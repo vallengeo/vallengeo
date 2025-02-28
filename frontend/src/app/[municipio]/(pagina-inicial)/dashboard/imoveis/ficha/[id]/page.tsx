@@ -119,17 +119,8 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
         <Observacoes idProcesso={(await params).id} />
       </div>
 
-      <div className="flex items-center gap-6 flex-col md:flex-row">
-        <div className="md:mr-auto w-full md:w-fit">
-          <ArquivarProcesso idProcesso={(await params).id} />
-        </div>
-
-        <Button variant="secondary" className="w-full md:w-fit">
-          Reprovar
-        </Button>
-        <Button variant="default" className="w-full md:w-fit">
-          Aprovar
-        </Button>
+      <div className="text-right">
+        <ArquivarProcesso idProcesso={(await params).id} />
       </div>
     </div>
   );

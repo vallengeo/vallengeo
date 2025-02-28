@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -30,7 +30,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { X as LucideX } from "lucide-react";
-import { Aviso } from "../../../_components/aviso";
+import { Aviso } from "@/components/aviso";
 import { useToast } from "@/components/ui/use-toast";
 import InputMask from "react-input-mask";
 import { Loader } from "@/components/loader";
@@ -43,14 +43,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import IFicha from "@/interfaces/Analista/IFicha";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 interface FormCadastroRepresentantesProps {
+  ficha: IFicha;
   estados: IEstados[];
 }
 
 export function FormCadastroRepresentantes({
+  ficha,
   estados,
 }: FormCadastroRepresentantesProps) {
   const pathname = usePathname();
@@ -74,12 +77,91 @@ export function FormCadastroRepresentantes({
     setValue,
     watch,
     formState: { errors, isValid },
+    trigger,
   } = form;
+
+  useEffect(() => {
+    if (ficha?.representantes) {
+      ficha.representantes.forEach((representante, index) => {
+        setValue(`representantes.${index}.nome`, representante.nome || "");
+        setValue(`representantes.${index}.email`, representante.email);
+        setValue(`representantes.${index}.cpf`, representante.cpf || "");
+        setValue(`representantes.${index}.rg`, representante.rg || "");
+        setValue(`representantes.${index}.telefone`, representante.telefone);
+        setValue(
+          `representantes.${index}.endereco.cep`,
+          representante.endereco.cep
+        );
+        setValue(
+          `representantes.${index}.endereco.logradouro`,
+          representante.endereco.logradouro
+        );
+        setValue(
+          `representantes.${index}.endereco.bairro`,
+          representante.endereco.bairro
+        );
+        setValue(
+          `representantes.${index}.endereco.numero`,
+          representante.endereco.numero
+        );
+        setValue(
+          `representantes.${index}.endereco.municipio.id`,
+          representante.endereco.municipio.id
+        );
+        setValue(
+          `representantes.${index}.endereco.municipio.nome`,
+          representante.endereco.municipio.nome
+        );
+        setValue(
+          `representantes.${index}.endereco.municipio.estado.id`,
+          representante.endereco.municipio.estado.id
+        );
+        setValue(
+          `representantes.${index}.endereco.municipio.estado.nome`,
+          representante.endereco.municipio.estado.nome
+        );
+        setValue(
+          `representantes.${index}.endereco.municipio.estado.uf`,
+          representante.endereco.municipio.estado.uf
+        );
+        setValue(
+          `representantes.${index}.contato.nome`,
+          representante.contato.nome
+        );
+        setValue(
+          `representantes.${index}.contato.email`,
+          representante.contato.email
+        );
+        setValue(
+          `representantes.${index}.contato.telefone`,
+          representante.contato.telefone
+        );
+        setValue(
+          `representantes.${index}.contato.documento`,
+          representante.contato.documento
+        );
+        setValue(
+          `representantes.${index}.contato.representanteLegal`,
+          representante.contato.representanteLegal
+        );
+        setValue(
+          `representantes.${index}.contato.responsavelTecnico`,
+          representante.contato.responsavelTecnico
+        );
+        setValue(
+          `representantes.${index}.contato.outro`,
+          representante.contato.outro
+        );
+      });
+
+      trigger();
+    }
+  }, [ficha, setValue, trigger]);
 
   const onSubmit: SubmitHandler<dadosPessoaisData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
     setLoading(true);
-    await handleNextStep(municipio);
+    await handleNextStep(municipio, ficha.processo.id);
   };
 
   const { fields, append, remove } = useFieldArray({

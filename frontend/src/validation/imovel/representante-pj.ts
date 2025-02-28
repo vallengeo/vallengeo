@@ -48,6 +48,27 @@ const contatoSchema = z.object({
   outro: z.boolean().optional(),
 });
 
+const responsavelSchema = z.object({
+  id: z.number(),
+  email: z
+    .string({ required_error: "Email é obrigatório" })
+    .email({ message: "E-mail inválido, tente: example@example.com" }),
+  telefone: z
+    .string({ required_error: "Telefone é obrigatório" })
+    .min(1, { message: "Telefone é obrigatório" }),
+  tipoPessoa: z.enum(["FISICA", "JURIDICA"]),
+  endereco: enderecoSchema,
+  nome: z
+    .string({ required_error: "Nome é obrigatório" })
+    .min(1, { message: "Nome é obrigatório" }),
+  cpf: z
+    .string({ required_error: "CPF é obrigatório" })
+    .min(1, { message: "CPF é obrigatório" }),
+  rg: z
+    .string({ required_error: "RG é obrigatório" })
+    .min(1, { message: "RG é obrigatório" }),
+});
+
 const representanteSchema = z.array(
   z
     .object({
@@ -60,15 +81,13 @@ const representanteSchema = z.array(
       tipoPessoa: z.enum(["FISICA", "JURIDICA"]),
       endereco: enderecoSchema,
       contato: contatoSchema,
-      nome: z
-        .string({ required_error: "Nome é obrigatório" })
-        .min(1, { message: "Nome é obrigatório" }),
-      cpf: z
-        .string({ required_error: "CPF é obrigatório" })
-        .min(1, { message: "CPF é obrigatório" }),
-      rg: z
-        .string({ required_error: "RG é obrigatório" })
-        .min(1, { message: "RG é obrigatório" }),
+      razaoSocial: z
+        .string({ required_error: "Razão social é obrigatório" })
+        .min(1, { message: "Razão social é obrigatório" }),
+      cnpj: z
+        .string({ required_error: "CNPJ é obrigatório" })
+        .min(1, { message: "CNPJ é obrigatório" }),
+      responsavel: responsavelSchema,
     })
     .refine(
       (data) => {
@@ -95,9 +114,9 @@ const representanteSchema = z.array(
     )
 );
 
-export const dadosPessoaisSchema = z.object({
+export const dadosEmpresaSchema = z.object({
   idGrupo: z.string(),
   representantes: representanteSchema,
 });
 
-export type dadosPessoaisData = z.infer<typeof dadosPessoaisSchema>;
+export type dadosEmpresaData = z.infer<typeof dadosEmpresaSchema>;
