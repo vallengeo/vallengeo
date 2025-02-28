@@ -35,21 +35,24 @@ import {
 } from "@/components/ui/select";
 import { CalendarIcon, PenSquare as LucidePenSquare } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
-import Mapa from "../../../_components/mapa";
+import Mapa from "../../../../cadastro/_components/mapa";
 import InputMask from "react-input-mask";
 import { Loader } from "@/components/loader";
 import { motion } from "motion/react";
 import IEstados from "@/interfaces/Localidade/IEstado";
 import { TipoUso } from "@/interfaces/ITipoUso";
+import IFicha from "@/interfaces/Analista/IFicha";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
 
 interface FormCadastroImovelProps {
+  ficha: IFicha;
   estados: IEstados[];
   grupos: TipoUso[];
 }
 
 export function FormCadastroImovel({
+  ficha,
   estados,
   grupos,
 }: FormCadastroImovelProps) {
@@ -57,16 +60,14 @@ export function FormCadastroImovel({
   const municipio = pathname.split("/")[1];
 
   const [editarInformacaoImovel, setEditarInformacaoImovel] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [editarCaracterizacaoImovel, setEditarCaracterizacaoImovel] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingCep, setLoadingCep] = useState<boolean>(false);
 
   const { toast } = useToast();
   const { formData, setFormData } = useFormState();
-
-  console.log(formData);
 
   const form = useForm<imovelFormData>({
     mode: "all",
@@ -78,15 +79,93 @@ export function FormCadastroImovel({
   const {
     setValue,
     formState: { isValid },
+    trigger,
   } = form;
+
+  useEffect(() => {
+    if (ficha?.informacaoImovel) {
+      setValue(
+        "informacaoImovel.tipoUso.id",
+        ficha.informacaoImovel.tipoUso.id.toString()
+      );
+      setValue(
+        "informacaoImovel.endereco.cep",
+        ficha.informacaoImovel.endereco.cep
+      );
+      setValue(
+        "informacaoImovel.endereco.logradouro",
+        ficha.informacaoImovel.endereco.logradouro
+      );
+      setValue(
+        "informacaoImovel.endereco.numero",
+        ficha.informacaoImovel.endereco.numero
+      );
+      setValue(
+        "informacaoImovel.endereco.complemento",
+        ficha.informacaoImovel.endereco.complemento || ""
+      );
+      setValue(
+        "informacaoImovel.endereco.bairro",
+        ficha.informacaoImovel.endereco.bairro
+      );
+      setValue(
+        "informacaoImovel.endereco.idMunicipio",
+        ficha.informacaoImovel.endereco.municipio.id
+      );
+      setValue(
+        "informacaoImovel.endereco.nomeMunicipio",
+        ficha.informacaoImovel.endereco.municipio.nome
+      );
+      setValue(
+        "informacaoImovel.endereco.siglaUf",
+        ficha.informacaoImovel.endereco.municipio.estado.uf
+      );
+    }
+
+    if (ficha?.caracterizacaoImovel) {
+      setValue(
+        "caracterizacaoImovel.areaTerreno",
+        ficha.caracterizacaoImovel.areaTerreno
+      );
+      setValue(
+        "caracterizacaoImovel.dataInclusao",
+        new Date(ficha.caracterizacaoImovel.dataInclusao)
+      );
+      setValue(
+        "caracterizacaoImovel.fracaoIdeal",
+        ficha.caracterizacaoImovel.fracaoIdeal
+      );
+      setValue("caracterizacaoImovel.lote", ficha.caracterizacaoImovel.lote);
+      setValue(
+        "caracterizacaoImovel.quadra",
+        ficha.caracterizacaoImovel.quadra
+      );
+      setValue("caracterizacaoImovel.setor", ficha.caracterizacaoImovel.setor);
+      setValue(
+        "caracterizacaoImovel.testadaPrincipal",
+        ficha.caracterizacaoImovel.testadaPrincipal
+      );
+      setValue(
+        "caracterizacaoImovel.unidade",
+        ficha.caracterizacaoImovel.unidade
+      );
+    }
+
+    if (ficha?.georreferenciamento) {
+      setValue(
+        "georreferenciamento.geoJson.geometry",
+        ficha.georreferenciamento.geoJson.geometry as any
+      );
+    }
+
+    trigger();
+  }, [ficha, setValue, trigger]);
 
   const onSubmit: SubmitHandler<imovelFormData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
     console.log(formData);
-
     setLoading(true);
-
-    await handleNextStep(municipio);
+    await handleNextStep(municipio, ficha.processo.id);
   };
 
   const consultarCep = async (value: string) => {
@@ -182,12 +261,15 @@ export function FormCadastroImovel({
                     <FormItem className="w-full md:w-[35%]">
                       <FormLabel>Tipo de grupo ou ocupação/uso*</FormLabel>
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          disabled={editarInformacaoImovel}
-                        >
+                        <Select onValueChange={field.onChange}>
                           <SelectTrigger {...field}>
-                            <SelectValue />
+                            <SelectValue
+                              placeholder={
+                                grupos.find(
+                                  (grupo) => String(grupo.id) === field.value
+                                )?.nome || ""
+                              }
+                            />
                           </SelectTrigger>
                           <SelectContent>
                             {grupos.map((grupo) => {
@@ -294,6 +376,7 @@ export function FormCadastroImovel({
                           disabled={editarInformacaoImovel}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -538,7 +621,6 @@ export function FormCadastroImovel({
                             <Button
                               variant={"outline"}
                               className="h-8 w-full rounded-3xl border border-input px-3 py-2 text-sm justify-start bg-transparent disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-transparent"
-                              disabled={editarCaracterizacaoImovel}
                             >
                               <CalendarIcon className="mr-2 h-4 w-4" />
                               {field.value ? (
@@ -554,7 +636,6 @@ export function FormCadastroImovel({
                             mode="single"
                             selected={field.value}
                             onSelect={field.onChange}
-                            disabled={editarCaracterizacaoImovel}
                           />
                         </PopoverContent>
                       </Popover>
@@ -569,7 +650,9 @@ export function FormCadastroImovel({
           <div className="flex justify-between items-center flex-wrap gap-4">
             <Button
               type="button"
-              onClick={async () => await handlePreviousStep(municipio)}
+              onClick={async () =>
+                await handlePreviousStep(municipio, ficha.processo.id)
+              }
               variant="secondary"
             >
               Voltar

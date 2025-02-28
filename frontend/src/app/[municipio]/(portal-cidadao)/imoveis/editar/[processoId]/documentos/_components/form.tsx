@@ -22,12 +22,15 @@ import {
 } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { Loader } from "@/components/loader";
-import { cadastro } from "@/service/imovelService";
+import { editarImovel } from "@/service/imovelService";
 import ICadastroImovel from "@/interfaces/ICadastroImovel";
 import { motion } from "motion/react";
 import ITipoDocumento from "@/interfaces/ITipoDocumento";
+import { cadastrarDocumentos } from "@/service/documentoService";
+import IFicha from "@/interfaces/Analista/IFicha";
 
 interface FormCadastroDocumentosProps {
+  ficha: IFicha;
   documentos: ITipoDocumento[];
 }
 
@@ -38,6 +41,7 @@ type FileData = {
 };
 
 export function FormCadastroDocumentos({
+  ficha,
   documentos,
 }: FormCadastroDocumentosProps) {
   const router = useRouter();
@@ -45,51 +49,95 @@ export function FormCadastroDocumentos({
   const municipio = pathname.split("/")[1];
 
   const [files, setFiles] = useState<Record<number, FileData | undefined>>({});
+  const [loading, setLoading] = useState<boolean>(false);
   const [loadingContinuarDepois, setLoadingContinuarDepois] =
     useState<boolean>(false);
 
   const { toast } = useToast();
-  const { formData, setFormData } = useFormState();
+  const { formData } = useFormState();
 
   const form = useForm<documentosFormData>({
     resolver: zodResolver(documentosFormSchema),
   });
 
-  const onSubmit: SubmitHandler<documentosFormData> = (data) => {
-    setFormData((prev: any) => ({ ...prev, ...data }));
-    console.log(formData);
+  const { setValue, trigger } = form;
 
-    toast({
-      description: "Dados enviados com sucesso!",
-    });
+  // TODO: listar documentos enviados
+  // useEffect(() => {
+  //   if (ficha?.documentosEnviados) {
+  //     ficha.documentosEnviados.forEach((documento, index) => {
+
+  //     });
+
+  //     trigger();
+  //   }
+  // }, [ficha, setValue]);
+
+  const onSubmit: SubmitHandler<documentosFormData> = async (data: any) => {
+    try {
+      setLoading(true);
+
+      const sendData: ICadastroImovel = {
+        idGrupo: data.idGrupo,
+        imovel: {
+          representantes: data.representantes,
+          informacaoImovel: data.informacaoImovel,
+          caracterizacaoImovel: data.caracterizacaoImovel,
+          georreferenciamento: data.georreferenciamento,
+        },
+      };
+
+      await editarImovel(ficha.processo.id, sendData);
+
+      const processoId = ficha.processo.id;
+
+      toast({ description: "Imóvel editado com sucesso!" });
+      setValue("idProcesso", processoId);
+
+      await cadastrarDocumentos({
+        idProcesso: processoId,
+        documentos: data.documentos,
+      });
+
+      toast({ description: "Documentos enviados com sucesso!" });
+
+      router.push(`/${municipio}/imoveis/ficha/${processoId}`);
+    } catch (error: any) {
+      toast({
+        title: error.response?.data?.messageTitle || "Erro ao enviar",
+        description: error.response?.data?.message || "Tente novamente.",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onSubmitContinuarDepois = async (data: any) => {
-    setLoadingContinuarDepois(true);
-
-    const sendData: ICadastroImovel = {
-      idGrupo: data.idGrupo,
-      imovel: {
-        representantes: data.representantes,
-        informacaoImovel: data.informacaoImovel,
-        caracterizacaoImovel: data.caracterizacaoImovel,
-        georreferenciamento: data.georreferenciamento,
-      },
-    };
-
     try {
-      const response = await cadastro(sendData);
-      const { id } = response;
+      setLoadingContinuarDepois(true);
 
-      toast({
-        description: "Dados enviados com sucesso!",
-      });
+      const sendData: ICadastroImovel = {
+        idGrupo: data.idGrupo,
+        imovel: {
+          representantes: data.representantes,
+          informacaoImovel: data.informacaoImovel,
+          caracterizacaoImovel: data.caracterizacaoImovel,
+          georreferenciamento: data.georreferenciamento,
+        },
+      };
 
-      router.push(`/${municipio}/imoveis/ficha/${id}`);
+      const processoId = ficha.processo.id;
+
+      await editarImovel(processoId, sendData);
+
+      toast({ description: "Imóvel editado com sucesso!" });
+
+      router.push(`/${municipio}/imoveis/ficha/${processoId}`);
     } catch (error: any) {
       toast({
-        title: error.response.data.messageTitle,
-        description: error.response.data.message,
+        title: error.response?.data?.messageTitle || "Erro ao enviar",
+        description: error.response?.data?.message || "Tente novamente.",
         variant: "destructive",
       });
     } finally {
@@ -120,12 +168,12 @@ export function FormCadastroDocumentos({
             {documentos.map((documento, index) => {
               const accept = documento.formatos.join(",");
 
-              form.setValue(`documentos.${index}.idTipoDocumento`, index);
-              form.setValue(
+              setValue(`documentos.${index}.idTipoDocumento`, index);
+              setValue(
                 `documentos.${index}.obrigatorio`,
                 documento.obrigatorio
               );
-              form.setValue(`documentos.${index}.formatos`, documento.formatos);
+              setValue(`documentos.${index}.formatos`, documento.formatos);
 
               return (
                 <div key={documento.id} className="space-y-3">
@@ -193,15 +241,15 @@ export function FormCadastroDocumentos({
 
                                   field.onChange(fileData.nomeOriginal);
 
-                                  form.setValue(
+                                  setValue(
                                     `documentos.${index}.nomeTemporario`,
                                     fileData.nomeTemporario
                                   );
-                                  form.setValue(
+                                  setValue(
                                     `documentos.${index}.nomeOriginal`,
                                     fileData.nomeOriginal
                                   );
-                                  form.setValue(
+                                  setValue(
                                     `documentos.${index}.dataEnvio`,
                                     fileData.dataEnvio
                                   );
@@ -225,7 +273,9 @@ export function FormCadastroDocumentos({
           <div className="flex justify-between items-center flex-col md:flex-row flex-wrap gap-4 mt-6">
             <Button
               type="button"
-              onClick={async () => await handlePreviousStep(municipio)}
+              onClick={async () =>
+                await handlePreviousStep(municipio, ficha.processo.id)
+              }
               variant="secondary"
               className="w-full md:w-fit mr-auto"
             >
@@ -243,8 +293,13 @@ export function FormCadastroDocumentos({
               {loadingContinuarDepois ? <Loader /> : "Continuar depois"}
             </Button>
 
-            <Button type="submit" className="w-full md:w-fit">
-              Finalizar
+            <Button
+              type="submit"
+              className={`w-full md:w-fit${
+                loading ? " pointer-events-none" : ""
+              }`}
+            >
+              {loading ? <Loader /> : "Finalizar"}
             </Button>
           </div>
         </form>
