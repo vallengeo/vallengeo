@@ -111,20 +111,9 @@ export function FormCadastroImovel({
 
       setValue(`informacaoImovel.endereco.logradouro`, logradouro);
       setValue(`informacaoImovel.endereco.bairro`, bairro);
-      setValue(`informacaoImovel.endereco.municipio.id`, municipio.id);
-      setValue(`informacaoImovel.endereco.municipio.nome`, municipio.nome);
-      setValue(
-        `informacaoImovel.endereco.municipio.estado.id`,
-        municipio.estado.id
-      );
-      setValue(
-        `informacaoImovel.endereco.municipio.estado.nome`,
-        municipio.estado.nome
-      );
-      setValue(
-        `informacaoImovel.endereco.municipio.estado.uf`,
-        municipio.estado.uf
-      );
+      setValue(`informacaoImovel.endereco.idMunicipio`, municipio.id);
+      setValue(`informacaoImovel.endereco.nomeMunicipio`, municipio.nome);
+      setValue(`informacaoImovel.endereco.siglaUf`, municipio.estado.uf);
     } catch (error: any) {
       const errorMessage = error.response?.data?.message || error.message;
 
@@ -329,13 +318,14 @@ export function FormCadastroImovel({
 
                 <FormField
                   control={form.control}
-                  name={`informacaoImovel.endereco.municipio.estado.nome`}
+                  name={`informacaoImovel.endereco.siglaUf`}
                   render={({ field }) => (
                     <FormItem className="w-full md:w-1/4">
                       <FormLabel>UF*</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
+                        disabled={editarInformacaoImovel}
                       >
                         <FormControl>
                           <SelectTrigger>
@@ -361,7 +351,7 @@ export function FormCadastroImovel({
               <div>
                 <FormField
                   control={form.control}
-                  name="informacaoImovel.endereco.municipio.nome"
+                  name="informacaoImovel.endereco.nomeMunicipio"
                   render={({ field }) => (
                     <FormItem className="w-full md:w-[35%]">
                       <FormLabel>Cidade*</FormLabel>

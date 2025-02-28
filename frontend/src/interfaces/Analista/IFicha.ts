@@ -84,6 +84,25 @@ export interface CaracterizacaoImovel {
   dataInclusaoFormatada: string;
 }
 
+interface Properties {
+  editable: boolean;
+  id: string;
+}
+
+interface Geometry {
+  type: "Polygon";
+  coordinates: number[][][];
+  properties: Properties;
+}
+
+interface GeoJson {
+  geometry: Geometry;
+}
+
+interface Georreferenciamento {
+  geoJson: GeoJson;
+}
+
 interface Documento {
   id: string;
   nome: string;
@@ -116,5 +135,6 @@ export default interface IFicha {
   informacaoImovel: InformacaoImovel;
   caracterizacaoImovel: CaracterizacaoImovel;
   documentosEnviados: DocumentoEnviado[];
+  georreferenciamento: Georreferenciamento;
   historicos: Historico[];
 }

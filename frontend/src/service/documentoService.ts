@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { cookies } from "@/lib/utils";
 import { ACCESS_TOKEN } from "@/constants/auth";
 import IUploadTemp from "@/interfaces/Documento/IUploadTemp";
-import ICadastroDocumento from "@/interfaces/Documento/ICadastroDocumento";
+import ICadastroDocumentos from "@/interfaces/Documento/ICadastroDocumentos";
 
 export const tipoDocumento = async () => {
   const cookieStore = await cookies();
@@ -75,7 +75,7 @@ export const uploadDocumentoTemporario = async (
   return response.data;
 };
 
-export const cadastrarDocumento = async (formData: ICadastroDocumento) => {
+export const cadastrarDocumentos = async (formData: ICadastroDocumentos) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
   const response = await api.post("documento/cadastro", formData, {
