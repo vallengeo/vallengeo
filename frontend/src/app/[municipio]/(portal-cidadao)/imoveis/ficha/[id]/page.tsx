@@ -115,8 +115,8 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
         </Header>
 
         <Link
-          href={`/${municipio}/imoveis/cadastro/pessoa-fisica/editar/${data.processo.id}`}
-          className="flex items-center gap-0.5 opacity-50 pointer-events-none"
+          href={`/${municipio}/imoveis/editar/${data.processo.id}/representantes`}
+          className="flex items-center gap-0.5"
         >
           <PenSquare size={20} />
           Editar
