@@ -108,9 +108,26 @@ class ImovelServiceTest extends AbstractIntegrationTest {
 
         assertNotNull(actual);
         assertInstanceOf(FichaImovelResponse.class, actual);
+        assertEquals(processoCadastrado.id(), actual.getProcesso().getId());
+        assertEquals(processoCadastrado.protocolo(), actual.getProcesso().getProtocolo());
+        assertEquals(processoCadastrado.imovel().getId(), actual.getId());
+        assertEquals(processoCadastrado.imovel().getGeometria(), actual.getGeometria());
+        assertEquals(processoCadastrado.imovel().getInscricaoImobiliaria(), actual.getInscricaoImobiliaria());
     }
 
     @Test @Order(4)
+    @DisplayName("Integration Test - Dado processoId Nao Cadastrado Quando fichaImovelImprimir Deve Lancar ValidatorException")
+    public void testDadoProcessoIdNaoCadastrado_QuandoFichaImovelImprimir_DeveLancarValidatorException() {
+        var actual = assertThrows(
+                ValidatorException.class,
+                () -> imovelService.editar(processoIdNaoCadastrado, imovelRequest));
+
+        assertNotNull(actual);
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatus());
+        assertEquals("Processo " + processoIdNaoCadastrado + NOT_FOUND, actual.getMessage());
+    }
+
+    @Test @Order(5)
     @DisplayName("Integration Test - Dado Processo Quando fichaImovelImprimir() Deve Retornar ByteArrayResource")
     void testDadoProcesso_QuandoFichaImovelImprimir_DeveRetornarByteArrayResource() {
         var actual = imovelService.fichaImovelImprimir(processoCadastrado.id(), httpServletRequest);
@@ -119,7 +136,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertInstanceOf(ByteArrayResource.class, actual);
     }
 
-    @Test @Order(5)
+    @Test @Order(6)
     @DisplayName("Integration Test - Dado Imoveis Cadastrados Quando buscarTodosCadastrados Deve Retornar Paginacao ProcessoListagemSimplificadoResponse")
     public void testDadoImoveisCadastrados_QuandoBuscarTodosCadastrados_DeveRetornarPaginacaoProcessoListagemSimplificadoResponse() {
         var actual = imovelService.buscarTodosCadastrados("", paginacaoInput, httpServletRequest);
@@ -139,7 +156,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertEquals(processoCadastrado.imovel().getInscricaoImobiliaria(), actualImovel.get().getInscricaoImobiliaria());
     }
 
-    @Test @Order(6)
+    @Test @Order(7)
     @DisplayName("Integration Test - Dado Imoveis Cadastrados Quando buscarDadosMapaImovel Deve Retornar Lista MapaImovelResponse")
     public void testDadoImoveisCadastrados_QuandoBuscarDadosMapaImovel_DeveRetornarListaMapaImovelResponse() {
         var actual = imovelService.buscarDadosMapaImovel(httpServletRequest);
@@ -157,7 +174,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertEquals(processoCadastrado.imovel().getInscricaoImobiliaria(), actualImovel.get().getInscricaoImobiliaria());
     }
 
-    @Test @Order(7)
+    @Test @Order(8)
     @DisplayName("Integration Test - Dado processoId Nao Cadastrado Quando editar Deve Lancar ValidatorException")
     public void testDadoProcessoIdNaoCadastrado_QuandoEditar_DeveLancarValidatorException() {
         var actual = assertThrows(
@@ -169,7 +186,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertEquals("Processo " + processoIdNaoCadastrado + NOT_FOUND, actual.getMessage());
     }
 
-    @Test @Order(8)
+    @Test @Order(9)
     @DisplayName("Integration Test - Dado Processo Sem Imovel Cadastrado Quando editar Deve Lancar ValidatorException")
     public void testDadoProcessoSemImovelCadastrado_QuandoEditar_DeveLancarValidatorException() {
         doReturn(Optional.empty()).when(imovelRepository).findByProcessoId(processoCadastrado.id());
@@ -183,7 +200,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertEquals("Imóvel vinculado ao processo " + processoCadastrado.id() + NOT_FOUND, actual.getMessage());
     }
 
-    @Test @Order(9)
+    @Test @Order(10)
     @DisplayName("Integration Test - Dado processoId E ProcessoImovelRequest Quando editar Deve Retornar ProcessoResponse")
     public void testDadoProcessoIdEProcessoImovelRequest_QuandoEditar_DeveRetornarProcessoResponse() {
         var caracterizacaoImovel = new CaracterizacaoImovelRequest(
@@ -207,7 +224,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         processoCadastrado.imovel().setInscricaoImobiliaria(actual.imovel().getInscricaoImobiliaria());
     }
 
-    @Test @Order(10)
+    @Test @Order(11)
     @DisplayName("Integration Test - Dado processoId Nao Cadastrado Quando buscaProtocolo Deve Lancar ValidatorException")
     public void testDadoProcessoIdNaoCadastrado_QuandoBuscaProtocolo_DeveLancarValidatorException() {
         var actual = assertThrows(
@@ -219,7 +236,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertEquals("Imóvel vinculado ao processo " + processoIdNaoCadastrado + NOT_FOUND, actual.getMessage());
     }
 
-    @Test @Order(11)
+    @Test @Order(12)
     @DisplayName("Integration Test - Dado processoId Quando buscaProtocolo Deve Retornar ProtocoloResponse")
     public void testDadoProcessoId_QuandoBuscaProtocolo_DeveRetornarProtocoloResponse() {
         var actual = imovelService.buscaProtocolo(processoCadastrado.id());
@@ -227,11 +244,12 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertInstanceOf(ProtocoloResponse.class, actual);
         assertEquals(processoCadastrado.id(), actual.getProcesso().getId());
+        assertEquals(processoCadastrado.protocolo(), actual.getProcesso().getProtocolo());
         assertEquals(processoCadastrado.imovel().getId(), actual.getId());
         assertEquals(processoCadastrado.imovel().getInscricaoImobiliaria(), actual.getInscricaoImobiliaria());
     }
 
-    @Test @Order(12)
+    @Test @Order(13)
     @DisplayName("Integration Test - Dado processoId Nao Cadastrado Quando fichaImovelAnalista Deve Lancar ValidatorException")
     public void testDadoProcessoIdNaoCadastrado_QuandoFichaImovelAnalista_DeveLancarValidatorException() {
         var actual = assertThrows(
@@ -243,7 +261,7 @@ class ImovelServiceTest extends AbstractIntegrationTest {
         assertEquals("Imóvel vinculado ao processo " + processoIdNaoCadastrado + NOT_FOUND, actual.getMessage());
     }
 
-    @Test @Order(13)
+    @Test @Order(14)
     @DisplayName("Integration Test - Dado processoId Quando fichaImovelAnalista Deve Retornar FichaImovelAnalistaResponse")
     public void testDadoProcessoId_QuandoFichaImovelAnalista_DeveRetornarFichaImovelAnalistaResponse() {
         var actual = imovelService.fichaImovelAnalista(processoCadastrado.id());
