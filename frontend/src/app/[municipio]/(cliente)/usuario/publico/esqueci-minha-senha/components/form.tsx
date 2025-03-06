@@ -14,31 +14,63 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  recuperarSenhaData,
-  recuperarSenhaSchema,
-} from "@/validation/usuario/recuperar-senha";
+  esqueciMinhaSenhaData,
+  esqueciMinhaSenhaSchema,
+} from "@/validation/usuario/esqueci-minha-senha";
 import IEsqueciMinhaSenha from "@/interfaces/Usuario/IEsqueciMinhaSenha";
 import { esqueciMinhaSenha } from "@/service/usuario";
 import { useRouter, usePathname } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
+import { Loader } from "@/components/loader";
 
 export function FormEsqueciMinhaSenha() {
-  const router = useRouter();
-  const pathname  = usePathname()
-  const idMunicipio = pathname.split('/')[1];
+  const { toast } = useToast();
 
-  const form = useForm<recuperarSenhaData>({
-    resolver: zodResolver(recuperarSenhaSchema),
+  const router = useRouter();
+  const pathname = usePathname();
+  const idMunicipio = pathname.split("/")[1];
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const form = useForm<esqueciMinhaSenhaData>({
+    resolver: zodResolver(esqueciMinhaSenhaSchema),
+    defaultValues: {
+      email: "",
+      modulo: "CIDADAO",
+    },
   });
 
-  const onSubmit: SubmitHandler<recuperarSenhaData> = (
+  const onSubmit: SubmitHandler<esqueciMinhaSenhaData> = (
     data: IEsqueciMinhaSenha
   ) => {
-    esqueciMinhaSenha({
-      ...data,
-      modulo: "",
-    }).then(() => {
-      router.push(`/${idMunicipio}/usuario/publico/recuperar-senha`);
-    });
+    setIsLoading(true);
+
+    esqueciMinhaSenha(data)
+      .then(() => {
+        toast({
+          title: "Código enviado!",
+          description:
+            "Use o código enviado ao seu e-mail para redefinir sua senha.",
+        });
+
+        router.push(`/${idMunicipio}/usuario/publico/recuperar-senha`);
+      })
+      .catch((error: any) => {
+        const errorTitle = error.response?.data?.messageTitle || error.title;
+        const errorMessage = error.response?.data?.message || error.message;
+
+        toast({
+          title: errorTitle,
+          description: errorMessage,
+          variant: "destructive",
+        });
+
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -68,8 +100,12 @@ export function FormEsqueciMinhaSenha() {
         <div className="flex items-center justify-between gap-2 max-[350px]:flex-col-reverse max-[350px]:justify-center">
           <Support />
 
-          <Button type="submit" variant="default" className="px-16 h-12">
-            Enviar
+          <Button
+            type="submit"
+            variant="default"
+            className={`${isLoading ? "pointer-events-none " : ""}w-44 h-12`}
+          >
+            {isLoading ? <Loader /> : "Enviar"}
           </Button>
         </div>
       </form>

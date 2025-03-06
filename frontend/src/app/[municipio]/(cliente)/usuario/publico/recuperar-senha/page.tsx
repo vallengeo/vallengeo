@@ -15,7 +15,7 @@ export default function RecuperarSenhaPage() {
         Enviamos um código para seu e-mail!
       </h1>
       <p className="my-6">
-        Seu código de redefinição de senha expirará em <b>{"{X}"}</b> segundos.
+        Seu código de redefinição de senha expirará em <b>10</b> minutos.
         Por favor, forneça-o no campo abaixo para proceder com a redefinição da
         sua senha de usuário.
       </p>
