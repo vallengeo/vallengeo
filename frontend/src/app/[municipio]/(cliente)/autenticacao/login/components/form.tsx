@@ -69,7 +69,9 @@ export function FormLogin({ municipio }: IFormLogin) {
           if (!ativo) {
             toast({
               variant: "destructive",
-              description: "Usuário desativado!",
+              title: "Acesso negado!",
+              description:
+                "Este usuário está desativado. Contate o suporte para mais informações.",
             });
           }
 
@@ -89,10 +91,13 @@ export function FormLogin({ municipio }: IFormLogin) {
         });
       })
       .catch((error) => {
+        const errorTitle = error.response?.data?.title || error.title;
+        const errorMessage = error.response?.data?.message || error.message;
+
         toast({
           variant: "destructive",
-          title: error.response.data.messageTitle,
-          description: error.response.data.message,
+          title: errorTitle,
+          description: errorMessage,
         });
         setIsLoading(false);
       });
