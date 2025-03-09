@@ -67,15 +67,14 @@ export function FormLogin({ municipio }: IFormLogin) {
           const { ativo, perfis } = response;
 
           if (!ativo) {
-            toast({
-              variant: "destructive",
+            throw {
               title: "Acesso negado!",
-              description:
+              message:
                 "Este usuário está desativado. Contate o suporte para mais informações.",
-            });
+            };
           }
 
-          let redirect = `/${municipio}/`; // default
+          let redirect = `/${municipio}/`; // default (cidadao)
 
           perfis.map((perfil) => {
             localStorage.setItem("animateSplayScreen", JSON.stringify(true));
@@ -99,6 +98,8 @@ export function FormLogin({ municipio }: IFormLogin) {
           title: errorTitle,
           description: errorMessage,
         });
+      })
+      .finally(() => {
         setIsLoading(false);
       });
   };
