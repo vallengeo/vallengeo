@@ -25,7 +25,7 @@ export function MenuMobile({ municipio }: IMenuMobile) {
   const logout = () => {
     actionLogout().then(() => {
       router.refresh();
-      router.push(`/${municipio}`)
+      router.push(`/${municipio}/autenticacao/login`)
     });
   };
 

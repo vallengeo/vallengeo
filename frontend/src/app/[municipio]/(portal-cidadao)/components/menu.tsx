@@ -21,7 +21,7 @@ export function Menu({ municipio }: IMenu) {
   const logout = () => {
     actionLogout().then(() => {
       router.refresh();
-      router.push(`/${municipio}`)
+      router.push(`/${municipio}/autenticacao/login`)
     });
   };
 
