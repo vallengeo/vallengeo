@@ -3,9 +3,9 @@ import {
   ACCESS_TOKEN,
   FORBIDDEN_STATUS_CODE,
   GRUPO_ID,
+  USER_ID,
   UNAUTHORIZED_STATUS_CODE
 } from '@/constants/auth';
-import { actionLogout } from './authService';
 import Cookies from 'js-cookie'
 
 const Api = axios.create({
@@ -50,7 +50,11 @@ Api.interceptors.response.use(
       (error.response.status === UNAUTHORIZED_STATUS_CODE ||
       error.response.status === FORBIDDEN_STATUS_CODE)
     ) {
-      actionLogout();
+      Cookies.remove(ACCESS_TOKEN);
+      Cookies.remove(GRUPO_ID);
+      Cookies.remove(USER_ID);
+
+      location.reload();
     }
     return Promise.reject(error);
   }

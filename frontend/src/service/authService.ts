@@ -1,6 +1,6 @@
 import api from "./api";
 import IUserLogin from "@/interfaces/IUserLogin";
-import { ACCESS_TOKEN, GRUPO_ID } from "@/constants/auth";
+import { ACCESS_TOKEN, GRUPO_ID, USER_ID } from "@/constants/auth";
 import { cookies } from "@/lib/utils";
 import Cookies from 'js-cookie'
 
@@ -12,6 +12,7 @@ export const actionLogout = async () => {
   await api.get("/autenticacao/logout");
   Cookies.remove(ACCESS_TOKEN);
   Cookies.remove(GRUPO_ID);
+  Cookies.remove(USER_ID);
   return null;
 };
 
