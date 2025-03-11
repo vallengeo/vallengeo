@@ -14,22 +14,29 @@ import com.vallengeo.portal.payload.request.usuario.RedefinirSenhaRequest;
 import com.vallengeo.portal.payload.response.UsuarioResponse;
 import com.vallengeo.portal.repository.TelaRepository;
 import com.vallengeo.portal.repository.UsuarioRepository;
+import com.vallengeo.utils.AuthTestUtils;
 import com.vallengeo.utils.UsuarioTestUtils;
+import net.bytebuddy.utility.RandomString;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
+import static com.vallengeo.core.util.Constants.NOT_FOUND;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Usuario Service Tests")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class UsuarioServiceTest extends AbstractIntegrationTest {
@@ -42,32 +49,40 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
     private UsuarioRepository usuarioRepository;
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthenticationManager authManager;
 
     @Value("${usuario.codigoAcesso.validade.minutos}")
     private Long validadeCodigoAcesso;
 
-    private static Usuario usuarioCadastrado;
-    private static CadastroRequest cadastroRequest;
-    private static CadastroSimplificadoRequest simplificadoRequest;
-    private static List<CadastroSimplificadoRequest.Grupo> grupos;
-    private static List<CadastroSimplificadoRequest.Perfil> perfis;
+    private UUID userIdNaoCadastrado;
+    private Usuario usuarioCadastrado;
+    private CadastroRequest cadastroRequest;
+    private CadastroSimplificadoRequest simplificadoRequest;
+    private List<CadastroSimplificadoRequest.Grupo> grupos;
+    private List<CadastroSimplificadoRequest.Perfil> perfis;
 
-
-    private static final String PREFEITURA = "PREFEITURA";
+    private final String PREFEITURA = "PREFEITURA";
 
     @BeforeAll
-    public static void setup() {
-        perfis = List.of(
-                new CadastroSimplificadoRequest.Perfil("aae3d727-2f2c-4539-a2a0-0ce34ecf5529")); // ANALISTA
+    public void setup() {
+        AuthTestUtils.setAuthentication(authManager, UsuarioTestUtils.DEFAULT_DEV_EMAIL, UsuarioTestUtils.DEFAULT_DEV_PASSWORD);
 
-        grupos = List.of(
-                new CadastroSimplificadoRequest.Grupo("4d3c1497-af40-4ddf-8b06-d8f40c8df139")); // CRUZEIRO
+        perfis = List.of(new CadastroSimplificadoRequest.Perfil("aae3d727-2f2c-4539-a2a0-0ce34ecf5529")); // ANALISTA
+        grupos = List.of(new CadastroSimplificadoRequest.Grupo(UsuarioTestUtils.GRUPO_ID.toString())); // CRUZEIRO
 
         simplificadoRequest = new CadastroSimplificadoRequest(
                 "cadastro.simplificado@gmail.com", perfis, grupos, PREFEITURA);
 
         cadastroRequest = new CadastroRequest(
                 "cadastro@gmail.com", perfis, grupos, new ArrayList<>(), PREFEITURA);
+
+        var emailUsuarioCadastrado = "usuario_cadastrado@gmail.com";
+        usuarioService.cadastro(new CadastroRequest(emailUsuarioCadastrado, perfis, grupos, new ArrayList<>(), PREFEITURA));
+        usuarioCadastrado = usuarioRepository.findByEmail(emailUsuarioCadastrado).orElse(null);
+        usuarioCadastrado.setCodigoAcesso(RandomString.make(6).toUpperCase());
+
+        userIdNaoCadastrado = UUID.randomUUID();
     }
 
     @Test @Order(1)
@@ -75,7 +90,9 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
     void testBuscaTodos() {
         var actual = usuarioService.buscaTodos();
 
-        assertEquals(4, actual.size());
+        assertNotNull(actual);
+        assertFalse(actual.isEmpty());
+        assertEquals(5, actual.size());
         assertInstanceOf(UsuarioResponse.class, actual.get(0));
     }
 
@@ -130,9 +147,12 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
     @Test @Order(5)
     @DisplayName("Integration Test - Dado Email Ja Cadastrado Quando cadastro() Deve Lancar DataIntegrityViolationException")
     void testDadoEmailJaCadastrado_QuandoCadastro_DeveLancarDataIntegrityViolationException() {
+        var emailJaCadastradoRequest = new CadastroRequest(
+                usuarioCadastrado.getEmail(), perfis, grupos, new ArrayList<>(), PREFEITURA);
+
         assertThrows(
                 DataIntegrityViolationException.class,
-                () -> usuarioService.cadastro(cadastroRequest));
+                () -> usuarioService.cadastro(emailJaCadastradoRequest));
     }
 
     @Test @Order(6)
@@ -161,8 +181,6 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
         assertNotNull(actual.get().getCodigoAcesso());
         assertNotNull(actual.get().getValidadeCodigo());
         assertEquals(request.email(), actual.get().getEmail());
-
-        usuarioCadastrado = actual.get();
     }
 
     @Test @Order(8)
@@ -224,5 +242,53 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
         assertNull(actual.get().getValidadeCodigo());
         assertNotEquals(usuarioCadastrado.getPassword(), actual.get().getPassword());
         assertTrue(passwordEncoder.matches(request.senha(), actual.get().getPassword()));
+    }
+
+    @Test @Order(12)
+    @DisplayName("Integration Test - Dado userId Nao Cadastrado Quando buscarPorId Deve Retornar Optional Empty")
+    public void testDadoUserIdNaoCadastrado_QuandoBuscarPorId_DeveRetornarOptionalEmpty() {
+        var actual = usuarioService.buscarPorId(userIdNaoCadastrado);
+
+        assertNotNull(actual);
+        assertInstanceOf(Optional.class, actual);
+        assertTrue(actual.isEmpty());
+    }
+
+    @Test @Order(13)
+    @DisplayName("Integration Test - Dado userId Quando buscarPorId Deve Retornar Optional UsuarioResponse")
+    public void testDadoUserId_QuandoBuscarPorId_DeveRetornarOptionalUsuarioResponse() {
+        var actual = usuarioService.buscarPorId(usuarioCadastrado.getId());
+
+        assertNotNull(actual);
+        assertTrue(actual.isPresent());
+        assertInstanceOf(UsuarioResponse.class, actual.get());
+        assertEquals(usuarioCadastrado.getId().toString(), actual.get().id());
+        assertEquals(usuarioCadastrado.getEmail(), actual.get().email());
+    }
+
+    @Test @Order(14)
+    @DisplayName("Integration Test - Dado userId Nao Cadastrado Quando removerUsuario Deve Lancar ValidatorException")
+    public void testDadoUserIdNaoCadastrado_QuandoRemoverUsuario_DeveLancarValidatorException() {
+        var actual = assertThrows(
+                ValidatorException.class,
+                () -> usuarioService.removerUsuario(userIdNaoCadastrado));
+
+        assertNotNull(actual);
+        assertEquals("Usuário com o identificador: " + userIdNaoCadastrado + NOT_FOUND, actual.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, actual.getStatus());
+    }
+
+    @Test @Order(15)
+    @DisplayName("Integration Test - Dado ID Usuario Cadastrado Quando removerUsuario Deve Desativar Usuario")
+    public void testDadoIDUsuarioCadastrado_QuandoRemoverUsuario_DeveDesativarUsuario() {
+        usuarioService.removerUsuario(usuarioCadastrado.getId());
+        var actual = usuarioRepository.findById(usuarioCadastrado.getId());
+
+        assertNotNull(actual);
+        assertTrue(actual.isPresent());
+        assertEquals(usuarioCadastrado.getId(), actual.get().getId());
+        assertEquals(usuarioCadastrado.getEmail(), actual.get().getEmail());
+        assertFalse(actual.get().getAtivo());
+        assertNotNull(actual.get().getDataExclusao());
     }
 }
