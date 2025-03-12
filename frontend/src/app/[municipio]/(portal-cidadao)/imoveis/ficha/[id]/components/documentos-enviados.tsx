@@ -39,7 +39,7 @@ export function DocumentosEnviados({ ficha }: DocumentosProps) {
   }, []);
 
   return (
-    <div className="bg-white border border-input rounded-3xl px-8 py-6 space-y-6">
+    <div className="bg-white border border-input rounded-3xl p-6 space-y-6">
       <h2 className="text-xl font-medium">Documentos enviados</h2>
 
       <div>

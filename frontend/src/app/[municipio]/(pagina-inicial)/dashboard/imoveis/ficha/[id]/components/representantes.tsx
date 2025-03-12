@@ -24,7 +24,7 @@ export function RepresentantesImovel({ ficha }: RepresentantesImovelProps) {
   };
 
   return (
-    <div className="bg-white border border-input rounded-3xl px-8 py-6 relative">
+    <div className="bg-white border border-input rounded-3xl p-6 relative">
       <h2 className="text-xl font-medium mb-6">Representante do imóvel</h2>
 
       {currentItems.map((representante) => (

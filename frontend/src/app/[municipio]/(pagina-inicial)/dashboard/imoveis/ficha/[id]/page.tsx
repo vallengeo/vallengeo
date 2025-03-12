@@ -19,11 +19,12 @@ import {
 } from "@/components/ui/breadcrumb";
 import IFicha from "@/interfaces/Analista/IFicha";
 import { notFound } from "next/navigation";
-import { HistoricoObservacoes } from "./components/historico-observacoes";
 import { Button } from "@/components/ui/button";
-import { ficha } from "@/service/analista/analistaService";
-
+import { ficha, protocolo } from "@/service/analista/analistaService";
 import type { Metadata, ResolvingMetadata } from "next";
+import { fichaDownload } from "@/service/imovelService";
+import IProtocolo from "@/interfaces/Analista/IProtocolo";
+import { ArquivarProcesso } from "../../../protocolos/visualizar/[id]/components/arquivar-processo";
 
 type Props = {
   params: Promise<{ id: string; municipio: string }>;
@@ -58,8 +59,25 @@ async function getData(processoId: string): Promise<IFicha | null> {
   }
 }
 
+async function getProcolo(processoId: string): Promise<IProtocolo> {
+  const response = await protocolo(processoId);
+  return response.data;
+}
+
+async function getFichaDownload(processoId: string): Promise<string | null> {
+  try {
+    const response = await fichaDownload(processoId);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao fazer download da ficha:", error);
+    return null;
+  }
+}
+
 export default async function FichaImovelPage({ params, searchParams }: Props) {
   const data = await getData((await params).id);
+  const protocolo = await getProcolo((await params).id);
+  const fichaDownload = await getFichaDownload((await params).id);
   const municipio = (await params).municipio;
 
   if (!data || !data.id) {
@@ -87,31 +105,22 @@ export default async function FichaImovelPage({ params, searchParams }: Props) {
         </Breadcrumb>
       </Header>
 
-      <DownloadFicha ficha={data} />
-      <VisaoGeral ficha={data} />
+      <DownloadFicha ficha={data} fichaDownload={fichaDownload} />
+      <VisaoGeral municipio={municipio} ficha={data} />
       <InformacoesImovel ficha={data} />
       <RepresentantesImovel ficha={data} />
       <InformacoesContato ficha={data} />
       <CaracterizacaoImovel ficha={data} />
       <Georeferenciamento />
-      <Observacoes />
       <DocumentosEnviados ficha={data} />
 
       <div className="flex flex-col md:flex-row gap-6">
-        <Historico />
-        <HistoricoObservacoes />
+        <Historico protocolo={protocolo} />
+        <Observacoes idProcesso={(await params).id} />
       </div>
 
-      <div className="flex items-center gap-6">
-        <Button variant="secondary" className="mr-auto" disabled>
-          Arquivar ficha
-        </Button>
-        <Button variant="secondary" disabled>
-          Reprovar
-        </Button>
-        <Button variant="default" disabled>
-          Aprovar
-        </Button>
+      <div className="text-right">
+        <ArquivarProcesso idProcesso={(await params).id} />
       </div>
     </div>
   );

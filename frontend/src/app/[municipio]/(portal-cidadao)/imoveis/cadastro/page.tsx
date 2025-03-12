@@ -37,7 +37,9 @@ export default function CadastroImoveisPage({
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbLink href={`/${params.municipio}/imoveis`}>Imóveis</BreadcrumbLink>
+              <BreadcrumbLink href={`/${params.municipio}/imoveis`}>
+                Imóveis
+              </BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
@@ -47,19 +49,19 @@ export default function CadastroImoveisPage({
         </Breadcrumb>
       </Header>
 
-      <main role="main">
+      <div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex items-start gap-6 border border-input rounded-2xl py-9 px-7 bg-white">
             <Building size={40} />
 
             <div className="flex-1 flex flex-col gap-8">
               <h3 className="text-xl md:text-2xl font-medium">
-                Cadastrar imóvel de Pessoa jurídica
+                Cadastrar imóvel de Pessoa Jurídica
               </h3>
 
               <Button asChild variant="default" className="w-10/12 ml-4">
                 <Link
-                  href={`/${params.municipio}/imoveis/cadastro/pessoa-juridica`}
+                  href={`/${params.municipio}/imoveis/cadastro/pessoa-juridica/representantes`}
                 >
                   Acessar
                 </Link>
@@ -77,7 +79,7 @@ export default function CadastroImoveisPage({
 
               <Button variant="default" asChild className="w-10/12 ml-4">
                 <Link
-                  href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica`}
+                  href={`/${params.municipio}/imoveis/cadastro/pessoa-fisica/representantes`}
                 >
                   Acessar
                 </Link>
@@ -85,7 +87,7 @@ export default function CadastroImoveisPage({
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

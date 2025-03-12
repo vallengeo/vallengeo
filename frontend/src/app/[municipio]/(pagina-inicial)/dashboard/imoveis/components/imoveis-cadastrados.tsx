@@ -6,7 +6,7 @@ interface ImoveisCadastradosProps {
   data: ConteudoItem[];
 }
 
-export async function ImoveisCadastrados({ data }: ImoveisCadastradosProps) {
+export function ImoveisCadastrados({ data }: ImoveisCadastradosProps) {
   return (
     <div className="w-full">
       <DataTable columns={columns} data={data} />

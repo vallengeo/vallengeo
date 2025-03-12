@@ -1,11 +1,11 @@
 import { redirect } from "next/navigation";
 
-export default function CadastroImovelPFPage({
+export default function CadastroImovelPage({
   params,
 }: {
   params: { municipio: string };
 }) {
-  redirect(
+  return redirect(
     `/${params.municipio}/imoveis/cadastro/pessoa-fisica/representantes`
   );
 }

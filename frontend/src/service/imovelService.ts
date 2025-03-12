@@ -40,7 +40,7 @@ export const editarImovel = async (
 ) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  const response = await api.post(`/imovel/editar/${processoId}`, formData, {
+  const response = await api.patch(`/imovel/editar/${processoId}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -50,7 +50,8 @@ export const editarImovel = async (
 };
 
 export const tipoUso = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return api.get("imovel/tipo-uso", {
     headers: {
@@ -69,7 +70,7 @@ export const cadastrados = async () => {
     },
     params: {
       pagina: 0,
-      "itens-por-pagina": 6,
+      "itens-por-pagina": 99,
     },
   });
 
@@ -88,7 +89,8 @@ export const ficha = async (processoId: string) => {
 };
 
 export const fichaDownload = async (processoId: string) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
   return api.get(`imovel/ficha/${processoId}/download`, {
     headers: {

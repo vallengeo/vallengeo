@@ -1,22 +1,36 @@
 import { z } from "zod";
+import { GeoJSONPolygonSchema } from "zod-geojson";
 
 const informacaoImovel = z.object({
   tipoUso: z.object({
-    id: z.string({ required_error: "Tipo de uso é obrigatório" }),
+    id: z
+      .string({ required_error: "Tipo de uso é obrigatório" })
+      .min(1, { message: "Tipo de uso é obrigatório" }),
   }),
   endereco: z.object({
     cep: z
-      .string({ required_error: "CEP é obrigatório" }),
+      .string({ required_error: "CEP é obrigatório" })
+      .min(1, { message: "CEP é obrigatório" }),
     logradouro: z
-      .string({ required_error: "Endereço é obrigatório" }),
-    numero: z
-      .string({ required_error: "Número é obrigatório" }),
-    complemento: z.string().optional(),
+      .string({ required_error: "Endereço é obrigatório" })
+      .min(1, { message: "Endereço é obrigatório" }),
     bairro: z
-      .string({ required_error: "Bairro é obrigatório" }),
+      .string({ required_error: "Bairro é obrigatório" })
+      .min(1, { message: "Bairro é obrigatório" }),
+    numero: z
+      .string({ required_error: "Número é obrigatório" })
+      .min(1, { message: "Número é obrigatório" }),
+    complemento: z.string().optional(),
     idMunicipio: z
       .number({ required_error: "ID do município é obrigatório" })
       .int({ message: "ID do município deve ser um número inteiro" }),
+    nomeMunicipio: z.string({
+      required_error: "Nome do município é obrigatório",
+    }),
+    siglaUf: z
+      .string({ required_error: "UF do estado é obrigatório" })
+      .length(2, { message: "UF deve ter exatamente 2 caracteres" })
+      .toUpperCase(),
   }),
 });
 
@@ -31,50 +45,37 @@ const caracterizacaoImovel = z.object({
     .string({ required_error: "Lote é obrigatório" })
     .min(1, { message: "Lote não pode estar vazio" }),
   unidade: z.string().optional(),
-  areaTerreno: z.string({ required_error: "Área do terreno é obrigatória" }),
-  testadaPrincipal: z.string({ required_error: "Testada é obrigatória" }),
-  fracaoIdeal: z.string().optional(),
+  areaTerreno: z
+    .number({ required_error: "Área do terreno é obrigatória" })
+    .min(1, { message: "Área do terreno é obrigatório" })
+    .or(z.string()),
+  testadaPrincipal: z
+    .number({ required_error: "Testada é obrigatória" })
+    .min(1, { message: "Testada é obrigatório" })
+    .or(z.string()),
+  fracaoIdeal: z.number().or(z.string()).optional(),
   dataInclusao: z.date(),
 });
 
-const geometriaSchema = z.object({
-  coordinates: z.array(
-    z.array(
-      z
-        .array(
-          z.number({
-            required_error: "As coordenadas devem ser números",
-          })
-        )
-        .min(4, {
-          message:
-            "Cada anel deve ter pelo menos 4 vértices para formar um polígono fechado",
-        })
-    )
-  ),
-  type: z.literal("Polygon", {
-    errorMap: () => ({ message: "O tipo de geometria deve ser 'Polygon'" }),
-  }),
+const geometrySchema = z.object({
+  type: z.literal("Polygon"),
+  coordinates: z.array(z.array(z.tuple([z.number(), z.number()]))).optional(),
 });
 
-const geoJsonSchema = z.object({
-  geometry: geometriaSchema,
-  type: z.literal("Feature", {
-    errorMap: () => ({ message: "O tipo de GeoJSON deve ser 'Feature'" }),
-  }),
-  properties: z.record(z.unknown(), {
-    required_error: "As propriedades devem ser um objeto",
-  }),
+const geoJson = z.object({
+  geometry: geometrySchema,
+  type: z.string(),
+  properties: z.object({}),
 });
 
 const georreferenciamento = z.object({
-  geoJson: geoJsonSchema,
+  geoJson: geoJson,
 });
 
 export const imovelFormSchema = z.object({
   informacaoImovel,
   caracterizacaoImovel,
-  // georreferenciamento,
+  georreferenciamento,
 });
 
 export type imovelFormData = z.infer<typeof imovelFormSchema>;

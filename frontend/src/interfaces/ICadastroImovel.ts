@@ -69,21 +69,25 @@ interface CaracterizacaoImovel {
   quadra: string;
   lote: string;
   unidade: string;
-  areaTerreno: number;
-  testadaPrincipal: number;
-  fracaoIdeal: number;
+  areaTerreno: number | string;
+  testadaPrincipal: number | string;
+  fracaoIdeal: number | string;
   dataInclusao: string;
 }
 
-interface Geometria {
-  coordinates: number[][][];
+interface Properties {
+  editable: boolean;
+  id: string;
+}
+
+interface Geometry {
   type: "Polygon";
+  coordinates: number[][][];
+  properties: Properties;
 }
 
 interface GeoJson {
-  geometry: Geometria;
-  type: "Feature";
-  properties: Record<string, unknown>;
+  geometry: Geometry;
 }
 
 interface Georreferenciamento {

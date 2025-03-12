@@ -7,103 +7,112 @@ import {
   createContext,
   useContext,
   useState,
-  useEffect,
 } from "react";
 import Cookies from "js-cookie";
 import { GRUPO_ID } from "@/constants/auth";
-import { dadosEmpresaSchema } from "@/validation/imovel/representante";
+import { dadosEmpresaSchema } from "@/validation/imovel/representante-pj";
 import { imovelFormSchema } from "@/validation/imovel/imovel";
 
 const idGrupo = Cookies.get(GRUPO_ID);
-
 const formCadastroPJSchema = dadosEmpresaSchema.merge(imovelFormSchema);
 
 export type formCadastroPJData = z.infer<typeof formCadastroPJSchema>;
 
 const initialFormData: formCadastroPJData = {
-  cnpj: "",
-  razaoSocial: "",
-  responsavel: {
-    cpf: "",
-    email: "",
-    endereco: {
-      cep: "12302-244",
-      logradouro: "Rua Francisco Vichi",
-      bairro: "Residencial Santa Paula",
-      numero: "107",
-      complemento: "",
-      municipio: {
-        id: 3524402,
-        nome: "Jacareí",
-        estado: {
-          id: 35,
-          nome: "São Paulo",
-          uf: "SP",
-        },
-      },
-    },
-    nome: "",
-    rg: "",
-    tipoPessoa: "FISICA",
-    telefone: ""
-  },
   idGrupo: String(idGrupo),
   representantes: [
     {
-      email: "stefanysophielopes@heinrich.com.br",
-      telefone: "(12) 3590-2293",
+      email: "",
+      telefone: "",
+      tipoPessoa: "FISICA",
       endereco: {
-        cep: "12302-244",
-        logradouro: "Rua Francisco Vichi",
-        bairro: "Residencial Santa Paula",
-        numero: "107",
+        cep: "",
+        logradouro: "",
+        bairro: "",
+        numero: "",
         complemento: "",
         municipio: {
-          id: 3524402,
-          nome: "Jacareí",
+          id: 0,
+          nome: "",
           estado: {
-            id: 35,
-            nome: "São Paulo",
-            uf: "SP",
+            id: 0,
+            nome: "",
+            uf: "",
           },
         },
       },
-      nome: "Stefany Sophie Lopes",
-      cpf: "73017117006",
-      rg: "298442619",
-      tipoPessoa: "FISICA",
+      razaoSocial: "",
+      cnpj: "",
+      responsavel: {
+        id: 0,
+        email: "",
+        telefone: "",
+        tipoPessoa: "JURIDICA",
+        endereco: {
+          cep: "",
+          logradouro: "",
+          bairro: "",
+          numero: "",
+          complemento: "",
+          municipio: {
+            id: 0,
+            nome: "",
+            estado: {
+              id: 0,
+              nome: "",
+              uf: "",
+            },
+          },
+        },
+        nome: "",
+        cpf: "",
+        rg: "",
+      },
       contato: {
-        nome: "Maria Julia Joana Gonçalves",
-        email: "maria.julia.goncalves@avantii.com.br",
-        telefone: "(11) 99907-6092",
+        nome: "",
+        email: "",
+        telefone: "",
         responsavelTecnico: false,
-        representanteLegal: false,
-        outro: true,
-        documento: "045.999.111-23",
+        representanteLegal: true,
+        outro: false,
+        documento: "",
       },
     },
   ],
   informacaoImovel: {
     tipoUso: {
-      id: "1",
+      id: "",
     },
     endereco: {
-      cep: "12711610",
-      logradouro: "Rua  DARIO ANTUNES DE OLIVEIRA",
-      bairro: "VILA LOYELO",
-      numero: "650",
-      idMunicipio: 3513405,
+      cep: "",
+      logradouro: "",
+      bairro: "",
+      numero: "",
+      complemento: "",
+      idMunicipio: 0,
+      nomeMunicipio: "",
+      siglaUf: "",
     },
   },
   caracterizacaoImovel: {
-    setor: "3",
-    quadra: "189",
-    lote: "0170",
-    unidade: "001",
-    areaTerreno: "268",
-    testadaPrincipal: "8",
-    fracaoIdeal: "0",
+    setor: "",
+    quadra: "",
+    lote: "",
+    unidade: "",
+    areaTerreno: "",
+    testadaPrincipal: "",
+    fracaoIdeal: "",
     dataInclusao: new Date(),
+  },
+  georreferenciamento: {
+    geoJson: {
+      geometry: {
+        type: "Polygon",
+        coordinates: [],
+      },
+      type: "Feature",
+      properties: {},
+    },
   },
 };
 

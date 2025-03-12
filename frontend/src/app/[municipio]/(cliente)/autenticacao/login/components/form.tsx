@@ -23,6 +23,9 @@ import { Loader } from "@/components/loader";
 import { login } from "@/service/authService";
 import IUserLogin from "@/interfaces/IUserLogin";
 import { useToast } from "@/components/ui/use-toast";
+import { getUsuario } from "@/service/usuario";
+import IUsuario from "@/interfaces/Usuario/IUsuario";
+import Cookies from "js-cookie";
 
 interface IFormLogin {
   municipio: string;
@@ -30,6 +33,7 @@ interface IFormLogin {
 
 export function FormLogin({ municipio }: IFormLogin) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
   const { toast } = useToast();
   const router = useRouter();
 
@@ -41,6 +45,11 @@ export function FormLogin({ municipio }: IFormLogin) {
     },
   });
 
+  async function handleUsuario(idUsuario: string): Promise<IUsuario> {
+    const response = await getUsuario(idUsuario);
+    return response.data;
+  }
+
   const onSubmit: SubmitHandler<loginFormData> = async (data) => {
     setIsLoading(true);
 
@@ -51,19 +60,40 @@ export function FormLogin({ municipio }: IFormLogin) {
     };
 
     await login(user)
-      .then(() => {
-        localStorage.setItem("animateSplayScreen", JSON.stringify(true));
+      .then(async (response) => {
+        const { idUsuario } = response.data;
 
-        router.refresh();
-        router.push(`/${municipio}/dashboard`);
+        await handleUsuario(idUsuario).then((response) => {
+          const { ativo, perfis } = response;
+
+          if (!ativo) {
+            toast({
+              variant: "destructive",
+              description: "Usuário desativado!",
+            });
+          }
+
+          let redirect = `/${municipio}/`; // default
+
+          perfis.map((perfil) => {
+            localStorage.setItem("animateSplayScreen", JSON.stringify(true));
+
+            if (perfil.codigo === "ADMINISTRADOR") {
+              redirect = `/${municipio}/dashboard`;
+            }
+          });
+
+          Cookies.set("userId", idUsuario);
+          router.refresh();
+          router.push(redirect);
+        });
       })
       .catch((error) => {
-        console.error(error);
         toast({
           variant: "destructive",
-          description: error.toString(),
+          title: error.response.data.messageTitle,
+          description: error.response.data.message,
         });
-
         setIsLoading(false);
       });
   };
@@ -127,7 +157,7 @@ export function FormLogin({ municipio }: IFormLogin) {
           <Button
             type="submit"
             variant="default"
-            className={`'h-12 w-full sm:w-44' ${
+            className={`h-12 w-full sm:w-44 ${
               isLoading ? "pointer-events-none" : ""
             }`}
           >

@@ -9,6 +9,7 @@ import L, { FeatureGroup } from 'leaflet';
 import { v4 as uuidv4 } from 'uuid'
 import { Endereco } from '@/interfaces/IEndereco';
 import { TipoUso } from '@/interfaces/ITipoUso';
+import { usePathname } from 'next/navigation';
 
 interface MapaImoveisProps {
     map: L.Map | null
@@ -16,6 +17,8 @@ interface MapaImoveisProps {
 }
 
 const MapaImoveis: React.FC<MapaImoveisProps> = ({ map, imoveisLayers }) => {
+    const pathname = usePathname();
+      const municipio = pathname.split("/")[1];
 
     const addNonGroupLayers = (sourceLayer: any, featureGroup: FeatureGroup) => {
         if (sourceLayer instanceof L.LayerGroup) {
@@ -61,7 +64,7 @@ const MapaImoveis: React.FC<MapaImoveisProps> = ({ map, imoveisLayers }) => {
                                             ${imovel.inscricaoImobiliaria}</div>
                                         <div class="text-xs text-nowrap">${montarEndereco(imovel.informacaoImovel.endereco)}</div>
                                         <div class="text-sm text-end pt-3 no-underline hover:underline" style="color:#6A68F0;">
-                                            <a href='/imoveis/ficha/${imovel.id}'>Mais informações</a>
+                                            <a href='/${municipio}/dashboard/imoveis/ficha/${imovel.idProcesso}'>Mais informações</a>
                                         </div>
                                     </div>
                         </div>`
