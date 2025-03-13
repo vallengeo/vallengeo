@@ -94,6 +94,14 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
         assertFalse(actual.isEmpty());
         assertEquals(5, actual.size());
         assertInstanceOf(UsuarioResponse.class, actual.get(0));
+
+        var actualUsuarioResponse = actual.stream().filter(
+                usuarioResponse -> usuarioResponse.id().equals(usuarioCadastrado.getId().toString())).findFirst();
+
+        assertNotNull(actualUsuarioResponse);
+        assertTrue(actualUsuarioResponse.isPresent());
+        assertEquals(usuarioCadastrado.getId().toString(), actualUsuarioResponse.get().id());
+        assertEquals(usuarioCadastrado.getEmail(), actualUsuarioResponse.get().email());
     }
 
     @Test @Order(2)
@@ -114,9 +122,12 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
     @Test @Order(3)
     @DisplayName("Integration Test - Dado Email Ja Cadastrado Quando cadastroSimplificado() Deve Lancar DataIntegrityViolationException")
     void testDadoEmailJaCadastrado_QuandoCadastroSimplificado_DeveLancarDataIntegrityViolationException() {
+        var emailJaCadastradoRequest = new CadastroSimplificadoRequest(
+                usuarioCadastrado.getEmail(), perfis, grupos, PREFEITURA);
+
         assertThrows(
                 DataIntegrityViolationException.class,
-                () -> usuarioService.cadastroSimplificado(simplificadoRequest));
+                () -> usuarioService.cadastroSimplificado(emailJaCadastradoRequest));
     }
 
     @Test @Order(4)
@@ -205,10 +216,7 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
                 () -> usuarioService.redefinirSenha(request));
 
         assertEquals(HttpStatus.NOT_FOUND, actual.getStatus());
-        assertEquals(
-                String.format("Usuário com o código de acesso %s não encontrado!", request.codigoAcesso()),
-                actual.getMessage()
-        );
+        assertEquals("Usuário com o código de acesso " + request.codigoAcesso() + NOT_FOUND, actual.getMessage());
     }
 
     @Test @Order(10)
@@ -238,6 +246,8 @@ class UsuarioServiceTest extends AbstractIntegrationTest {
         var actual = usuarioRepository.findByEmail(usuarioCadastrado.getEmail());
 
         assertTrue(actual.isPresent());
+        assertEquals(usuarioCadastrado.getId(), actual.get().getId());
+        assertEquals(usuarioCadastrado.getEmail(), actual.get().getEmail());
         assertNull(actual.get().getCodigoAcesso());
         assertNull(actual.get().getValidadeCodigo());
         assertNotEquals(usuarioCadastrado.getPassword(), actual.get().getPassword());
