@@ -20,8 +20,8 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no ubuntu@54.232.226.33 << 'EOF'
         cd /mnt/ebs/homolog/vallengeo
-        git fetch
-        git pull || exit 1
+        sudo git fetch
+        sudo git pull || exit 1
         cd backend
         sudo mvn clean package || exit 1
         sudo systemctl restart vallengeo.service
