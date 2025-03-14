@@ -32,17 +32,21 @@ export function RepresentantesImovel({ ficha }: RepresentantesImovelProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
             <div className="flex flex-col">
               <span className="font-medium text-sm">Nome Completo</span>
-              <span>{representante.nome}</span>
+              <span>
+                {representante?.responsavel?.nome ?? representante.nome}
+              </span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">CPF</span>
-              <span>{representante.cpf}</span>
+              <span>
+                {representante?.responsavel?.cpf ?? representante.cpf}
+              </span>
             </div>
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">RG</span>
-              <span>{representante.rg}</span>
+              <span>{representante?.responsavel?.rg ?? representante.rg}</span>
             </div>
 
             <div className="flex flex-col">

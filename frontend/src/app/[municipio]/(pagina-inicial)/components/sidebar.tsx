@@ -19,7 +19,7 @@ export function Sidebar({ municipio }: ISidebar) {
   const logout = () => {
     actionLogout().then(() => {
       router.refresh();
-      router.push(`/${municipio}`);
+      router.push(`/${municipio}/autenticacao/login`);
     });
   };
 

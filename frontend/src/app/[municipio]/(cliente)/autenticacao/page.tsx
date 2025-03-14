@@ -37,11 +37,11 @@ export default function AutenticacaoPage({
             <Link href={`/${params.municipio}`}>Acessar sem login</Link>
           </Button>
 
-          <Button asChild variant="secondary" className="h-12 font-medium">
+          {/* <Button asChild variant="secondary" className="h-12 font-medium">
             <Link href={`/${params.municipio}/autenticacao/cadastrar/email`}>
               Cadastrar
             </Link>
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>

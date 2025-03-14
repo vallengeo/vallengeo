@@ -5,13 +5,8 @@ const publicRoutes = [
   { path: "", whenAuthenticated: "next" },
   { path: "/autenticacao", whenAuthenticated: "redirect" },
   { path: "/autenticacao/login", whenAuthenticated: "redirect" },
-  { path: "/autenticacao/cadastrar", whenAuthenticated: "redirect" },
-  { path: "/autenticacao/cadastrar/email", whenAuthenticated: "redirect" },
-  { path: "/usuario", whenAuthenticated: "redirect" },
-  { path: "/usuario/publico", whenAuthenticated: "redirect" },
   { path: "/usuario/publico/esqueci-minha-senha", whenAuthenticated: "redirect" },
-  { path: "/recuperar-senha", whenAuthenticated: "redirect" },
-  { path: "/recuperar-senha/redefinir", whenAuthenticated: "redirect" },
+  { path: "/usuario/publico/recuperar-senha", whenAuthenticated: "next" },
 ] as const;
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = "/autenticacao/login";

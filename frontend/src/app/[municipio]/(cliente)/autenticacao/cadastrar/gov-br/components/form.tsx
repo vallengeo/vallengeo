@@ -20,8 +20,6 @@ export function CadastrarComGovbr({ municipio }: ICadastrarComGovbr) {
       email: "",
       cpf: "",
       telefone: "",
-      senha: "",
-      confirmar_senha: ""
     }
   });
 
@@ -96,42 +94,6 @@ export function CadastrarComGovbr({ municipio }: ICadastrarComGovbr) {
                   <Input
                     type="tel"
                     maxLength={15}
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="senha"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Senha*</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="off"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="confirmar_senha"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirmar senha*</FormLabel>
-                <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="off"
                     {...field}
                   />
                 </FormControl>

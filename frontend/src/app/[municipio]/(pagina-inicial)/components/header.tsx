@@ -31,7 +31,8 @@ export function Header({ title, children, linkBack }: HeaderProps) {
 
   const logout = () => {
     actionLogout().then(() => {
-      router.push(`/${idMunicipio}`);
+      router.refresh();
+      router.push(`/${idMunicipio}/autenticacao/login`);
     });
   };
 

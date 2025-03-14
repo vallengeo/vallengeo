@@ -17,6 +17,7 @@ interface Permissoes {
 
 export default interface ICadastroUsuario {
   email: string;
+  ativo: boolean;
   perfis: Perfis[];
   grupos: Grupos[];
   telas: Telas[];

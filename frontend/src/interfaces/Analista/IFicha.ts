@@ -24,6 +24,25 @@ export interface Representante {
   nome?: string;
   cpf?: string;
   rg?: string;
+  responsavel?: Responsavel;
+}
+
+interface Responsavel {
+  cpf: string;
+  rg: string;
+  nome: string;
+  telefone: string;
+  email: string;
+  endereco: EnderecoResponsavel;
+  tipoPessoa: string;
+}
+
+interface EnderecoResponsavel {
+  logradouro: string;
+  bairro: string;
+  idMunicipio: number;
+  cep: string;
+  numero: string;
 }
 
 export interface Endereco {
