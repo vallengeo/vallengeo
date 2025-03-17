@@ -24,7 +24,7 @@ import { login } from "@/service/authService";
 import IUserLogin from "@/interfaces/IUserLogin";
 import { useToast } from "@/components/ui/use-toast";
 import { getUsuario } from "@/service/usuario";
-import IUsuario from "@/interfaces/Usuario/IUsuario";
+import IUsuario, { Perfis } from "@/interfaces/Usuario/IUsuario";
 import Cookies from "js-cookie";
 
 interface IFormLogin {
@@ -39,6 +39,7 @@ export function FormLogin({ municipio }: IFormLogin) {
 
   const form = useForm<loginFormData>({
     resolver: zodResolver(loginFormSchema),
+    criteriaMode: "all",
     defaultValues: {
       email: "",
       password: "",
@@ -51,51 +52,68 @@ export function FormLogin({ municipio }: IFormLogin) {
   }
 
   const onSubmit: SubmitHandler<loginFormData> = async (data) => {
-    setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-    const user: IUserLogin = {
-      email: data.email,
-      senha: data.password,
-      idMunicipio: 3513405,
-    };
+      const user: IUserLogin = {
+        email: data.email,
+        senha: data.password,
+        idMunicipio: 3513405,
+      };
 
-    await login(user)
-      .then(async (response) => {
-        const { idUsuario } = response.data;
+      const response = await login(user);
+      const { idUsuario } = response.data;
 
-        await handleUsuario(idUsuario).then((response) => {
-          const { ativo, perfis } = response;
+      const usuarioData = await handleUsuario(idUsuario);
+      verificarAtivo(usuarioData);
 
-          if (!ativo) {
-            toast({
-              variant: "destructive",
-              description: "Usuário desativado!",
-            });
-          }
+      const redirect = definirRota(usuarioData.perfis);
 
-          let redirect = `/${municipio}/`; // default
+      Cookies.set("userId", idUsuario);
+      localStorage.setItem("animateSplayScreen", JSON.stringify(true));
 
-          perfis.map((perfil) => {
-            localStorage.setItem("animateSplayScreen", JSON.stringify(true));
+      router.refresh();
+      router.push(redirect);
+    } catch (error) {
+      tratarErro(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-            if (perfil.codigo === "ADMINISTRADOR") {
-              redirect = `/${municipio}/dashboard`;
-            }
-          });
+  const verificarAtivo = (usuarioData: IUsuario) => {
+    if (!usuarioData.ativo) {
+      throw {
+        messageTitle: "Acesso negado!",
+        message:
+          "Este usuário está desativado. Contate o suporte para mais informações.",
+      };
+    }
+  };
 
-          Cookies.set("userId", idUsuario);
-          router.refresh();
-          router.push(redirect);
-        });
-      })
-      .catch((error) => {
-        toast({
-          variant: "destructive",
-          title: error.response.data.messageTitle,
-          description: error.response.data.message,
-        });
-        setIsLoading(false);
-      });
+  const definirRota = (perfis: Perfis[]) => {
+    let redirect = `/${municipio}/`;
+
+    if (perfis.some((perfil) => perfil.codigo === "ADMINISTRADOR")) {
+      redirect = `/${municipio}/dashboard`;
+    }
+
+    return redirect;
+  };
+
+  const tratarErro = (error: any) => {
+    const errorTitle =
+      error.response?.data?.messageTitle || error.messageTitle || "Erro desconhecido";
+    const errorMessage =
+      error.response?.data?.message ||
+      error.message ||
+      "Ocorreu um erro inesperado.";
+
+    toast({
+      variant: "destructive",
+      title: errorTitle,
+      description: errorMessage,
+    });
   };
 
   return (

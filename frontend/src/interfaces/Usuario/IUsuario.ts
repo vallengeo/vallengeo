@@ -7,7 +7,7 @@ export default interface IUsuario {
   telas: Telas[];
 }
 
-interface Perfis {
+export interface Perfis {
   codigo: string;
 }
 
