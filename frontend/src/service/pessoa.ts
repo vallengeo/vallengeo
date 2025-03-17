@@ -2,25 +2,32 @@ import api from "./api";
 import Cookies from "js-cookie";
 import { ACCESS_TOKEN } from "@/constants/auth";
 import ICadastroPessoa from "@/interfaces/Pessoa/ICadastroPessoa";
+import { cookies } from "@/lib/utils";
 
-export const buscarPessoaPorId = async (id: number) => {
-  const token = Cookies.get(ACCESS_TOKEN);
+export const buscarPessoaPorId = async (id: string) => {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
-  return await api.get(`pessoa/${id}`, {
+  const response = await api.get(`pessoa/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  return response.data;
 };
 
 export const listarPessoas = async () => {
-  const token = Cookies.get(ACCESS_TOKEN);
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ACCESS_TOKEN).value;
 
-  return await api.get("pessoa", {
+  const response = await api.get("pessoa", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  return response.data;
 };
 
 export const buscarPorDocumento = async (documento: string) => {

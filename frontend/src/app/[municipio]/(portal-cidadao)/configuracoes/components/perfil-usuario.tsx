@@ -7,145 +7,153 @@ import { Button } from "@/components/ui/button";
 import { PenSquare } from "lucide-react";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FormRedefinirSenha } from "@/components/profile/form";
+import { useState } from "react";
+import { esqueciMinhaSenha, getUsuario } from "@/service/usuario";
+import Cookies from "js-cookie";
+import { USER_ID } from "@/constants/auth";
+import { useToast } from "@/components/ui/use-toast";
+import { actionLogout } from "@/service/authService";
+import IPessoa from "@/interfaces/Pessoa/IPessoa";
+import { Pessoas } from "./pessoas";
 
-export function PerfilUsuario() {
+interface PerfilUsuarioProps {
+  pessoa: IPessoa | null;
+  listarPessoas: IPessoa[] | null;
+}
+
+export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
+  const { toast } = useToast();
+
   const pathname = usePathname();
   const idMunicipio = pathname.split("/")[1];
+
+  const [open, setOpen] = useState(false);
+
+  async function handleSolicitarRecuperacao() {
+    try {
+      const userId = Cookies.get(USER_ID);
+
+      if (!userId) {
+        toast({
+          title: "Erro ao redefinir senha",
+          description:
+            "Usuário não identificado. Faça login novamente e tente outra vez.",
+          variant: "destructive",
+        });
+
+        await actionLogout();
+        return;
+      }
+
+      const response = await getUsuario(userId);
+      if (!response || !response.email) {
+        throw new Error("Não foi possível recuperar o e-mail do usuário.");
+      }
+
+      await esqueciMinhaSenha({
+        email: response.email,
+        modulo: "CIDADAO",
+      });
+
+      setOpen(true);
+    } catch (error: any) {
+      console.error("Erro ao solicitar recuperação de senha:", error);
+
+      toast({
+        title: "Erro ao solicitar recuperação",
+        description:
+          error.message || "Ocorreu um problema. Tente novamente mais tarde.",
+        variant: "destructive",
+      });
+    }
+  }
 
   return (
     <div className="bg-white border border-input rounded-2xl p-6 relative">
       <div className="space-y-6">
-        <div className="flex items-start justify-between flex-wrap">
-          <div className="flex items-center gap-3">
-            <Avatar />
+        {pessoa && (
+          <div className="flex items-start justify-between flex-col md:flex-row gap-6">
+            <div className="flex items-center gap-3">
+              <Avatar
+                nome={pessoa.nome || pessoa.responsavel?.nome}
+                className="text-5xl"
+              />
 
-            <div className="flex flex-col">
-              <span className="text-3xl">Davi Luan Manuel da Cruz</span>
-              <span className="text-2xl font-light">Cidadão</span>
+              <div className="flex flex-col">
+                <span className="text-2xl md:text-3xl">
+                  {pessoa.nome || pessoa.responsavel?.nome}
+                </span>
+                <span className="text-xl md:text-2xl font-light">Cidadão</span>
 
-              <div className="flex items-center gap-6">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button
-                      variant="link"
-                      className="text-link p-0 underline hover:no-underline"
-                    >
-                      Redefinir senha
-                    </Button>
-                  </DialogTrigger>
+                <div className="flex items-center gap-6">
+                  <Button
+                    onClick={handleSolicitarRecuperacao}
+                    variant="link"
+                    className="text-link p-0 underline hover:no-underline"
+                  >
+                    Redefinir senha
+                  </Button>
 
-                  <DialogContent className="max-w-[580px]">
-                    <DialogHeader>
-                      <DialogTitle>Redefinir a senha</DialogTitle>
-                    </DialogHeader>
+                  <Dialog open={open} onOpenChange={setOpen}>
+                    <DialogContent className="max-w-[580px]">
+                      <DialogHeader>
+                        <DialogTitle>Redefinir a senha</DialogTitle>
+                      </DialogHeader>
 
-                    <div className="py-4 px-6 space-y-7">
-                      <div className="flex items-center gap-3">
-                        <Avatar />
+                      <div className="py-4 px-6 space-y-7">
+                        <div className="flex items-start gap-3">
+                          <Avatar className="text-5xl" />
 
-                        <div className="flex flex-col">
-                          <span className="text-3xl">
-                            Davi Luan Manuel da Cruz
-                          </span>
-                          <span className="text-2xl font-light">Cidadão</span>
+                          <div className="flex flex-col pt-4">
+                            <span className="text-3xl">João Silva</span>
+                            <span className="text-2xl font-light">Cidadão</span>
+                          </div>
                         </div>
+
+                        <FormRedefinirSenha />
                       </div>
+                    </DialogContent>
+                  </Dialog>
 
-                      <FormRedefinirSenha />
-                    </div>
-                  </DialogContent>
-                </Dialog>
-
-                {/* <Button
-                  variant="link"
-                  className="text-link p-0 underline hover:no-underline"
-                >
-                  Upload foto
-                </Button> */}
+                  {/* Fará parte da v2 */}
+                  {/* <Button
+                    variant="link"
+                    className="text-link p-0 underline hover:no-underline"
+                  >
+                    Upload foto
+                  </Button> */}
+                </div>
               </div>
             </div>
+
+            <Link
+              href={`/${idMunicipio}/configuracoes/editar/${pessoa.id}`}
+              className="text-lg inline-flex items-center gap-2"
+            >
+              <PenSquare size={20} />
+              Editar
+            </Link>
           </div>
+        )}
 
-          <Link
-            href={`/${idMunicipio}/configuracoes/editar/1`}
-            className="text-lg inline-flex items-center gap-2"
-          >
-            <PenSquare size={20} />
-            Editar
-          </Link>
-        </div>
+        {listarPessoas ? (
+          <Pessoas listarPessoas={listarPessoas} />
+        ) : (
+          <div className="text-center flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Cadastrar perfil</h2>
 
-        <div className="space-y-10">
-          <h2 className="font-medium text-xl">Perfil de usuário</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8">
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Nome Completo</span>
-              <span>Davi Luan Manuel da Cruz</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">CPF</span>
-              <span>393.178.226-30</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">RG</span>
-              <span>30.390.965-1</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">E-mail</span>
-              <span>daviluandacruz@zf-lensysteme.com</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">CEP</span>
-              <span>25635-201</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Endereço</span>
-              <span>Rua Alfredo Schilick</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Número</span>
-              <span>582</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Complemento</span>
-              <span>-</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Bairro</span>
-              <span>Chácara Flora</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Cidade</span>
-              <span>Petrópolis</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Estado</span>
-              <span>Rio de janeiro</span>
-            </div>
-
-            <div className="flex flex-col">
-              <span className="font-medium text-sm">Telefone</span>
-              <span>(24) 2758-1193</span>
-            </div>
+            <Button asChild>
+              <Link href={`/${idMunicipio}/configuracoes/pessoa/cadastrar`}>
+                cadastrar
+              </Link>
+            </Button>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

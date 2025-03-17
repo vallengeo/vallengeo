@@ -21,7 +21,7 @@ export function Menu({ municipio }: IMenu) {
   const logout = () => {
     actionLogout().then(() => {
       router.refresh();
-      router.push(`/${municipio}/autenticacao/login`)
+      router.push(`/${municipio}/autenticacao/login`);
     });
   };
 
@@ -54,12 +54,12 @@ export function Menu({ municipio }: IMenu) {
               Configurações
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem className="text-base justify-center mt-4">
+          <DropdownMenuItem className="text-base justify-center mt-2">
             <Button
               onClick={logout}
               variant="no-style"
               size="no-style"
-              className="w-full"
+              className="w-full text-base"
             >
               Sair
             </Button>

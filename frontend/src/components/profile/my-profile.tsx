@@ -14,11 +14,11 @@ export function MyProfile({
 }: MyProfileProps) {
   return (
     <div className="space-y-8">
-      <div className="flex flex-col lg:flex-row items-center gap-4">
-        <Avatar width={140} height={135} className="flex-shrink-0" />
+      <div className="flex flex-col lg:flex-row items-start gap-4">
+        <Avatar className="flex-shrink-0 text-5xl" />
 
-        <div className="flex items-center lg:items-start flex-col gap-1 flex-1">
-          <span className="text-2xl md:text-3xl">Davi Luan Manuel da Cruz</span>
+        <div className="flex items-center lg:items-start flex-col gap-1 flex-1 pt-4">
+          <span className="text-2xl md:text-3xl">João Silva</span>
           <span className="text-xl md:text-2xl">Cidadão</span>
 
           {showAddress && (
@@ -56,7 +56,7 @@ export function MyProfile({
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-7">
           <div className="flex flex-col text-sm">
             <span className="font-medium">Nome completo</span>
-            <span>Davi Luan Manuel da Cruz</span>
+            <span>João Silva</span>
           </div>
 
           <div className="flex flex-col text-sm">

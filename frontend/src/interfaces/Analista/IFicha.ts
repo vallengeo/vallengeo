@@ -20,7 +20,7 @@ export interface Representante {
   telefone: string;
   endereco: Endereco;
   contato: Contato;
-  tipoPessoa: string;
+  tipoPessoa: "FISICA" | "JURIDICA";
   nome?: string;
   cpf?: string;
   rg?: string;
@@ -34,7 +34,7 @@ interface Responsavel {
   telefone: string;
   email: string;
   endereco: EnderecoResponsavel;
-  tipoPessoa: string;
+  tipoPessoa: "FISICA" | "JURIDICA";
 }
 
 interface EnderecoResponsavel {
@@ -84,7 +84,7 @@ interface InformacaoImovel {
 }
 
 interface TipoUso {
-  id: number;
+  id: string;
   nome: string;
 }
 
@@ -96,7 +96,7 @@ export interface CaracterizacaoImovel {
   areaTerreno: number;
   testadaPrincipal: number;
   fracaoIdeal: number;
-  dataInclusao: string;
+  dataInclusao: Date;
   testadaPrincipalFormatada: string;
   fracaoIdealFormatada: string;
   areaTerrenoFormatada: string;
@@ -108,18 +108,10 @@ interface Properties {
   id: string;
 }
 
-interface Geometry {
+interface Geometria {
   type: "Polygon";
-  coordinates: number[][][];
+  coordinates?: number[][][];
   properties: Properties;
-}
-
-interface GeoJson {
-  geometry: Geometry;
-}
-
-interface Georreferenciamento {
-  geoJson: GeoJson;
 }
 
 interface Documento {
@@ -153,7 +145,7 @@ export default interface IFicha {
   representantes: Representante[];
   informacaoImovel: InformacaoImovel;
   caracterizacaoImovel: CaracterizacaoImovel;
+  geometria: Geometria;
   documentosEnviados: DocumentoEnviado[];
-  georreferenciamento: Georreferenciamento;
   historicos: Historico[];
 }

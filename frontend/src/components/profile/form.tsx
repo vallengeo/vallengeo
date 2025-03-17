@@ -12,92 +12,145 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-// import {
-//   resetPasswordData,
-//   resetPasswordSchema,
-// } from "@/validation/usuario/resetar-senha";
+import {
+  recuperarSenhaSchema,
+  recuperarSenhaData,
+} from "@/validation/usuario/recuperar-senha";
+import { useToast } from "../ui/use-toast";
+import { useState } from "react";
+import { recuperarSenha } from "@/service/usuario";
+import { Loader } from "../loader";
 
 export function FormRedefinirSenha() {
-  // const form = useForm<resetPasswordData>({
-  //   resolver: zodResolver(resetPasswordSchema),
-  // });
+  const { toast } = useToast();
 
-  // const onSubmit: SubmitHandler<resetPasswordData> = (data) => {
-  //   console.log(data);
-  // };
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  return "";
+  const form = useForm<recuperarSenhaData>({
+    resolver: zodResolver(recuperarSenhaSchema),
+    defaultValues: {
+      codigoAcesso: "",
+      senha: "",
+      confirmar_senha: "",
+    },
+  });
 
-  // return (
-  //   <Form {...form}>
-  //     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
-  //       <div className="flex flex-col mb-2">
-  //         <FormField
-  //           control={form.control}
-  //           name="password"
-  //           render={({ field }) => (
-  //             <FormItem>
-  //               <FormLabel htmlFor="password" className="font-semibold">
-  //                 Nova senha
-  //               </FormLabel>
-  //               <FormControl>
-  //                 <Input
-  //                   id="password"
-  //                   type="password"
-  //                   placeholder="********"
-  //                   className="max-w-none bg-input border-0"
-  //                   {...field}
-  //                 />
-  //               </FormControl>
-  //               <FormMessage />
-  //             </FormItem>
-  //           )}
-  //         />
-  //       </div>
+  const onSubmit: SubmitHandler<recuperarSenhaData> = (data) => {
+    setIsLoading(true);
 
-  //       <div className="flex flex-col">
-  //         <FormField
-  //           control={form.control}
-  //           name="confirm_password"
-  //           render={({ field }) => (
-  //             <FormItem>
-  //               <FormLabel htmlFor="confirm_password" className="font-semibold">
-  //                 Repetir senha
-  //               </FormLabel>
-  //               <FormControl>
-  //                 <Input
-  //                   id="confirm_password"
-  //                   type="password"
-  //                   placeholder="********"
-  //                   className="max-w-none bg-input border-0"
-  //                   {...field}
-  //                 />
-  //               </FormControl>
-  //               <FormMessage />
-  //             </FormItem>
-  //           )}
-  //         />
-  //       </div>
+    recuperarSenha(data)
+      .then(() => {
+        toast({
+          description: "Senha alterada com sucesso!",
+        });
 
-  //       <div className="flex items-center justify-end mt-6 gap-4">
-  //         <Button
-  //           type="button"
-  //           variant="secondary"
-  //           onClick={() => {
-  //             form.reset({
-  //               password: "",
-  //               confirm_password: "",
-  //             });
-  //           }}
-  //         >
-  //           Limpar
-  //         </Button>
+        form.reset();
+      })
+      .catch((error: any) => {
+        const errorTitle = error.response?.data?.messageTitle || error.title;
+        const errorMessage = error.response?.data?.message || error.message;
 
-  //         <Button type="submit" variant="default">
-  //           Salvar
-  //         </Button>
-  //       </div>
-  //     </form>
-  //   </Form>
-  // );
+        toast({
+          title: errorTitle,
+          description: errorMessage,
+          variant: "destructive",
+        });
+
+        console.error(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <div className="space-y-2.5">
+          <FormField
+            control={form.control}
+            name="codigoAcesso"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel className="font-semibold">Código</FormLabel>
+                <FormControl>
+                  <Input
+                    type="text"
+                    maxLength={6}
+                    autoComplete="off"
+                    className="max-w-none bg-input border-0"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="senha"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel className="font-semibold">Nova senha</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="********"
+                    autoComplete="off"
+                    className="max-w-none bg-input border-0"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="confirmar_senha"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel className="font-semibold">Repetir senha</FormLabel>
+                <FormControl>
+                  <Input
+                    type="password"
+                    placeholder="********"
+                    autoComplete="off"
+                    className="max-w-none bg-input border-0"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex items-center justify-end gap-4">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              form.reset({
+                senha: "",
+                confirmar_senha: "",
+              });
+            }}
+          >
+            Limpar
+          </Button>
+
+          <Button
+            type="submit"
+            variant="default"
+            className={`${isLoading ? "pointer-events-none" : ""} w-36 h-10`}
+          >
+            {isLoading ? <Loader /> : "Salvar"}
+          </Button>
+        </div>
+      </form>
+    </Form>
+  );
 }
