@@ -41,7 +41,7 @@ export const editarImovel = async (
 ) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  const response = await api.patch(`/imovel/editar/${processoId}`, formData, {
+  const response = await api.put(`/imovel/editar/${processoId}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },

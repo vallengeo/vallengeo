@@ -158,7 +158,7 @@ export function FormCadastroPFProvider({ children }: IFormCadastroPFProvider) {
                   email: rep.contato?.email || "",
                   telefone: rep.contato?.telefone || "",
                   responsavelTecnico: rep.contato?.responsavelTecnico || false,
-                  representanteLegal: rep.contato?.representanteLegal || true,
+                  representanteLegal: rep.contato?.representanteLegal || false,
                   outro: rep.contato?.outro || false,
                   documento: rep.contato?.documento || "",
                 },
