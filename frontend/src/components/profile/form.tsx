@@ -31,7 +31,7 @@ export function FormRedefinirSenha() {
     defaultValues: {
       codigoAcesso: "",
       senha: "",
-      confirmar_senha: "",
+      confirmacaoSenha: "",
     },
   });
 
@@ -109,7 +109,7 @@ export function FormRedefinirSenha() {
 
           <FormField
             control={form.control}
-            name="confirmar_senha"
+            name="confirmacaoSenha"
             render={({ field }) => (
               <FormItem className="space-y-2">
                 <FormLabel className="font-semibold">Repetir senha</FormLabel>
@@ -135,7 +135,7 @@ export function FormRedefinirSenha() {
             onClick={() => {
               form.reset({
                 senha: "",
-                confirmar_senha: "",
+                confirmacaoSenha: "",
               });
             }}
           >

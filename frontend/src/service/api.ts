@@ -7,6 +7,7 @@ import {
   UNAUTHORIZED_STATUS_CODE,
 } from "@/constants/auth";
 import Cookies from "js-cookie";
+import { actionLogout } from "./authService";
 
 const Api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/`,
@@ -54,10 +55,7 @@ Api.interceptors.response.use(
     ) {
       if (!isLoggingOut) {
         isLoggingOut = true;
-
-        Cookies.remove(ACCESS_TOKEN);
-        Cookies.remove(GRUPO_ID);
-        Cookies.remove(USER_ID);
+        await actionLogout();
       }
     }
     return Promise.reject(error);

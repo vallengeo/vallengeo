@@ -39,7 +39,7 @@ export function FormRecuperarSenha() {
     defaultValues: {
       codigoAcesso: "",
       senha: "",
-      confirmar_senha: "",
+      confirmacaoSenha: "",
     },
   });
 
@@ -124,7 +124,7 @@ export function FormRecuperarSenha() {
 
           <FormField
             control={form.control}
-            name="confirmar_senha"
+            name="confirmacaoSenha"
             render={({ field }) => (
               <FormItem>
                 <FormLabel htmlFor="confirmar_senha">Confirmar senha</FormLabel>

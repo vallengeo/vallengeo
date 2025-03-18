@@ -102,7 +102,7 @@ export function Pessoas({ listarPessoas }: PessoasProps) {
           totalPages={totalPages}
           currentPage={currentPage}
           paginate={paginate}
-          className="absolute m-0 right-6 bottom-0 justify-normal w-fit"
+          className="absolute m-0 right-0 bottom-0 justify-normal w-fit"
         />
       )}
     </div>

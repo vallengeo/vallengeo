@@ -33,8 +33,15 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
   const idMunicipio = pathname.split("/")[1];
 
   const [open, setOpen] = useState(false);
+  const [modalConfirmation, setModalConfirmation] = useState(false);
+
+  function handleOpenModal() {
+    setModalConfirmation(true);
+  }
 
   async function handleSolicitarRecuperacao() {
+    setModalConfirmation(false);
+
     try {
       const userId = Cookies.get(USER_ID);
 
@@ -92,12 +99,44 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
 
                 <div className="flex items-center gap-6">
                   <Button
-                    onClick={handleSolicitarRecuperacao}
+                    onClick={handleOpenModal}
                     variant="link"
                     className="text-link p-0 underline hover:no-underline"
                   >
                     Redefinir senha
                   </Button>
+
+                  <Dialog
+                    open={modalConfirmation}
+                    onOpenChange={setModalConfirmation}
+                  >
+                    <DialogContent className="max-w-[380px] max-md:h-auto rounded-3xl">
+                      <DialogHeader>
+                        <DialogTitle className="text-xl">
+                          Confirmação
+                        </DialogTitle>
+                      </DialogHeader>
+
+                      <div className="space-y-6 px-6 pb-6">
+                        <p className="text-sm">
+                          Tem certeza de que deseja prosseguir com a redefinição
+                          da sua senha?
+                        </p>
+
+                        <div className="flex items-center justify-end gap-6">
+                          <Button
+                            variant={`secondary`}
+                            onClick={() =>
+                              setModalConfirmation(false)
+                            }
+                          >
+                            Não
+                          </Button>
+                          <Button variant={`default`} onClick={handleSolicitarRecuperacao}>Sim</Button>
+                        </div>
+                      </div>
+                    </DialogContent>
+                  </Dialog>
 
                   <Dialog open={open} onOpenChange={setOpen}>
                     <DialogContent className="max-w-[580px]">
@@ -110,7 +149,9 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
                           <Avatar className="text-5xl" />
 
                           <div className="flex flex-col pt-4">
-                            <span className="text-3xl">João Silva</span>
+                            <span className="text-3xl">
+                              {pessoa.nome || pessoa.responsavel?.nome}
+                            </span>
                             <span className="text-2xl font-light">Cidadão</span>
                           </div>
                         </div>
