@@ -8,7 +8,8 @@ public record UsuarioResponse(
         Boolean ativo,
         List<Perfil> perfis,
         List<Grupo> grupos,
-        List<Tela> telas
+        List<Tela> telas,
+        PessoaResponse pessoa
 ) {
 
     public record Perfil(String codigo) {

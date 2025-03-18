@@ -13,23 +13,25 @@ import com.vallengeo.portal.payload.request.usuario.RedefinirSenhaRequest;
 import com.vallengeo.portal.payload.response.UsuarioResponse;
 import com.vallengeo.portal.repository.UsuarioPerfilTelaPermissaoRepository;
 import com.vallengeo.portal.repository.UsuarioRepository;
+import com.vallengeo.portal.service.mapper.PessoaMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.vallengeo.core.helpers.DateHelpers.convertDateToLocalDateTime;
-import static com.vallengeo.core.util.Constants.INVALID_PASSWORD;
-import static com.vallengeo.core.util.Constants.NOT_FOUND;
+import static com.vallengeo.core.util.Constants.*;
 
 @Slf4j
 @Service
@@ -48,7 +50,7 @@ public class UsuarioService {
     }
 
     public Optional<UsuarioResponse> buscarPorId(UUID id) {
-       return usuarioRepository.findById(id).map(this::montaUsuarioResponse);
+        return usuarioRepository.findById(id).map(this::montaUsuarioResponse);
     }
 
     public void cadastroSimplificado(CadastroSimplificadoRequest input) {
@@ -78,6 +80,26 @@ public class UsuarioService {
     }
 
     @Transactional
+    public void vincularPessoa(@NotNull(message = CAMPO_OBRIGATORIO) Pessoa pessoa) {
+        try {
+            Optional<Usuario> usuario = usuarioRepository.findByEmail(pessoa.getEmail());
+            if (usuario.isPresent()) {
+                if (pessoa instanceof PessoaFisica) {
+                    Usuario temp = usuario.get();
+                    temp.setPessoa(pessoa);
+                    usuarioRepository.save(temp);
+                } else {
+                    log.warn("Pessoa jurídica com email " + pessoa.getEmail() + " não elegível ao vínculo com usuário!");
+                }
+            } else {
+                log.warn("Usuário do email " + pessoa.getEmail() + NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            log.error("Falha ao vincular pessoa id: {" + pessoa.getId().toString() + "} email: {" + pessoa.getEmail() + "}", ex.getMessage());
+        }
+    }
+
+    @Transactional
     public void esqueciMinhaSenha(EsqueciMinhaSenhaRequest request) {
         Usuario usuario = usuarioRepository.findByEmail(request.email()).orElseThrow(() -> new ValidatorException("Usuário do email " + request.email() + NOT_FOUND, HttpStatus.NOT_FOUND));
         usuarioRepository.save(this.sendEmailRedefinirSenha(usuario, request.modulo()));
@@ -85,13 +107,17 @@ public class UsuarioService {
 
     @Transactional
     public void redefinirSenha(RedefinirSenhaRequest request) {
-        if (validarSenha(request.senha())) {
-            log.info("Reset user password for reset key {}", request.codigoAcesso());
-            Optional<Usuario> usuarioOptional = usuarioRepository.findByCodigoAcesso(request.codigoAcesso());
+        if (Boolean.FALSE.equals(request.isSenhasIguais())) {
+            throw new InvalidPasswordException(PASSWORD_DIVERGENT);
+        } else if (Boolean.FALSE.equals(validarSenha(request.getSenha()))) {
+            throw new InvalidPasswordException(INVALID_PASSWORD);
+        } else {
+            log.info("Reset user password for reset key {}", request.getCodigoAcesso());
+            Optional<Usuario> usuarioOptional = usuarioRepository.findByCodigoAcesso(request.getCodigoAcesso());
 
             usuarioOptional.ifPresentOrElse(usuario -> {
                         if (usuario.getValidadeCodigo().isAfter(LocalDateTime.now().minusMinutes(validadeCodigoAcesso))) {
-                            usuario.setSenhaHash(new BCryptPasswordEncoder().encode(request.senha()));
+                            usuario.setSenhaHash(new BCryptPasswordEncoder().encode(request.getSenha()));
                             usuario.setCodigoAcesso(null);
                             usuario.setValidadeCodigo(null);
                             usuario.setAtivo(Boolean.TRUE);
@@ -101,12 +127,10 @@ public class UsuarioService {
                         }
                     },
                     () -> {
-                        throw new ValidatorException("Usuário com o código de acesso " + request.codigoAcesso() + NOT_FOUND, HttpStatus.NOT_FOUND);
+                        throw new ValidatorException("Usuário com o código de acesso " + request.getCodigoAcesso() + NOT_FOUND, HttpStatus.NOT_FOUND);
                     }
             );
 
-        } else {
-            throw new InvalidPasswordException(INVALID_PASSWORD);
         }
     }
 
@@ -120,7 +144,7 @@ public class UsuarioService {
         usuarioRepository.save(usuario);
     }
 
-    private UsuarioResponse montaUsuarioResponse(Usuario usuario){
+    private UsuarioResponse montaUsuarioResponse(Usuario usuario) {
         List<UsuarioResponse.Perfil> perfis = usuario.getPerfis().stream()
                 .map(perfil -> new UsuarioResponse.Perfil(perfil.getCodigo()))
                 .distinct().toList();
@@ -145,7 +169,8 @@ public class UsuarioService {
                 usuario.getAtivo(),
                 perfis,
                 grupos,
-                telas
+                telas,
+                PessoaMapper.INSTANCE.toResponse(usuario.getPessoa())
         );
     }
 
@@ -189,6 +214,8 @@ public class UsuarioService {
     }
 
     private Usuario sendEmailRedefinirSenha(Usuario usuario, String modulo) {
+        usuario.setAtivo(Boolean.FALSE);
+        usuario.setSenhaHash(null);
         setCodigoAcesso(usuario);
         emailService.enviaEmailRedefinirSenha(usuario, modulo);
         return usuario;

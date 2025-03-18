@@ -32,12 +32,15 @@ public class PessoaService {
     private final PessoaJuridicaRepository pessoaJuridicaRepository;
 
     private final EnderecoService enderecoService;
+    private final UsuarioService usuarioService;
 
     @Transactional
     public PessoaResponse cadastrar(PessoaRequest request) {
         Pessoa pessoa = PessoaMapper.INSTANCE.requestToEntity(request);
         validaNovaPessoa(pessoa);
-        return PessoaMapper.INSTANCE.toResponse(salvar(pessoa));
+        Pessoa novaPessoa = salvar(pessoa);
+        usuarioService.vincularPessoa(novaPessoa);
+        return PessoaMapper.INSTANCE.toResponse(novaPessoa);
     }
 
     @Transactional

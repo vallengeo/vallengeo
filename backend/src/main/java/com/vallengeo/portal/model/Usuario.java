@@ -54,7 +54,7 @@ public class Usuario implements UserDetails, Serializable {
     private UUID idUsuarioExclusao;
 
     @ManyToOne
-    @JoinColumn(name = "id_pessoa", referencedColumnName = "id", updatable = false, insertable = false)
+    @JoinColumn(name = "id_pessoa", referencedColumnName = "id")
     private Pessoa pessoa;
     @ManyToMany
     @JoinTable(schema = Schemas.PORTAL_SEGURANCA, name = "usuario_perfil",
