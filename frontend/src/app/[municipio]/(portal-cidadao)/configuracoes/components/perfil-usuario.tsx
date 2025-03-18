@@ -132,7 +132,7 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
             </div>
 
             <Link
-              href={`/${idMunicipio}/configuracoes/editar/${pessoa.id}`}
+              href={`/${idMunicipio}/configuracoes/cadastrar/${pessoa.id}`}
               className="text-lg inline-flex items-center gap-2"
             >
               <PenSquare size={20} />
