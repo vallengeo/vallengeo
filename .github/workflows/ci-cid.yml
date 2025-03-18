@@ -14,7 +14,7 @@ jobs:
     - name: Configurar acesso SSH
       uses: webfactory/ssh-agent@v0.9.0
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ssh-private-key: ${{ secrets.TIGS_SECRET_TEST }}
 
     - name: Acessar a instância Backend
       run: |
