@@ -18,10 +18,10 @@ jobs:
 
     - name: Acessar a instância Backend
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@54.232.226.333 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@54.232.226.33 << 'EOF'
         cd /mnt/ebs/homolog/vallengeo
-        git fetch
-        git pull || exit 1
+        sudo git fetch
+        sudo git pull || exit 1
         cd backend
         sudo mvn clean package || exit 1
         sudo systemctl restart vallengeo.service
@@ -39,7 +39,7 @@ jobs:
 
     - name: Acessar a instância Frontend
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@56.124.38.234 << 'EOF'
+        ssh -o StrictHostKeyChecking=no ubuntu@56.124.38.233 << 'EOF'
         cd /mnt/ebs/vallengeo
         sudo git fetch
         sudo git pull || exit 1
