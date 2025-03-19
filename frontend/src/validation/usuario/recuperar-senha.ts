@@ -12,13 +12,13 @@ const recuperarSenhaSchema = z
         /^(?=.*\d)(?=.*[a-zA-Z]).{6,}$/,
         "A senha deve conter pelo menos uma letra, um número e ter no mínimo 6 caracteres."
       ),
-    confirmar_senha: z
+    confirmacaoSenha: z
       .string({ required_error: "Senha é obrigatória" })
       .nonempty("Senha é obrigatória"),
   })
-  .refine(({ senha, confirmar_senha }) => senha === confirmar_senha, {
+  .refine(({ senha, confirmacaoSenha }) => senha === confirmacaoSenha, {
     message: "A senha não corresponde",
-    path: ["confirmar_senha"],
+    path: ["confirmacaoSenha"],
   });
 
 type recuperarSenhaData = z.infer<typeof recuperarSenhaSchema>;

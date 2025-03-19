@@ -1,6 +1,5 @@
 import { Header } from "@/components/header";
 import { Metadata } from "next";
-import { FormEditarConfiguracoes } from "./components/form";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -11,10 +10,10 @@ import {
 } from "@/components/ui/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Editar perfil | VallenGeo",
+  title: "Cadastrar pessoa | VallenGeo",
 };
 
-export default function ConfiguracoesEditarPage({
+export default function CadastrarPessoaPage({
   params,
 }: {
   params: { municipio: string };
@@ -37,15 +36,13 @@ export default function ConfiguracoesEditarPage({
             </BreadcrumbItem>
             <BreadcrumbSeparator>/</BreadcrumbSeparator>
             <BreadcrumbItem>
-              <BreadcrumbPage>Editar perfil</BreadcrumbPage>
+              <BreadcrumbPage>Cadastrar pessoa</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
       </Header>
 
-      <div className="space-y-6 mb-4">
-        <FormEditarConfiguracoes />
-      </div>
-    </div>
-  );
+
+  </div>
+  )
 }

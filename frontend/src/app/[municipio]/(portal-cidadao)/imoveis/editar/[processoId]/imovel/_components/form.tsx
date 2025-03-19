@@ -79,87 +79,7 @@ export function FormCadastroImovel({
   const {
     setValue,
     formState: { isValid },
-    trigger,
   } = form;
-
-  useEffect(() => {
-    if (ficha?.informacaoImovel) {
-      setValue(
-        "informacaoImovel.tipoUso.id",
-        ficha.informacaoImovel.tipoUso.id.toString()
-      );
-      setValue(
-        "informacaoImovel.endereco.cep",
-        ficha.informacaoImovel.endereco.cep
-      );
-      setValue(
-        "informacaoImovel.endereco.logradouro",
-        ficha.informacaoImovel.endereco.logradouro
-      );
-      setValue(
-        "informacaoImovel.endereco.numero",
-        ficha.informacaoImovel.endereco.numero
-      );
-      setValue(
-        "informacaoImovel.endereco.complemento",
-        ficha.informacaoImovel.endereco.complemento || ""
-      );
-      setValue(
-        "informacaoImovel.endereco.bairro",
-        ficha.informacaoImovel.endereco.bairro
-      );
-      setValue(
-        "informacaoImovel.endereco.idMunicipio",
-        ficha.informacaoImovel.endereco.municipio.id
-      );
-      setValue(
-        "informacaoImovel.endereco.nomeMunicipio",
-        ficha.informacaoImovel.endereco.municipio.nome
-      );
-      setValue(
-        "informacaoImovel.endereco.siglaUf",
-        ficha.informacaoImovel.endereco.municipio.estado.uf
-      );
-    }
-
-    if (ficha?.caracterizacaoImovel) {
-      setValue(
-        "caracterizacaoImovel.areaTerreno",
-        ficha.caracterizacaoImovel.areaTerreno
-      );
-      setValue(
-        "caracterizacaoImovel.dataInclusao",
-        new Date(ficha.caracterizacaoImovel.dataInclusao)
-      );
-      setValue(
-        "caracterizacaoImovel.fracaoIdeal",
-        ficha.caracterizacaoImovel.fracaoIdeal
-      );
-      setValue("caracterizacaoImovel.lote", ficha.caracterizacaoImovel.lote);
-      setValue(
-        "caracterizacaoImovel.quadra",
-        ficha.caracterizacaoImovel.quadra
-      );
-      setValue("caracterizacaoImovel.setor", ficha.caracterizacaoImovel.setor);
-      setValue(
-        "caracterizacaoImovel.testadaPrincipal",
-        ficha.caracterizacaoImovel.testadaPrincipal
-      );
-      setValue(
-        "caracterizacaoImovel.unidade",
-        ficha.caracterizacaoImovel.unidade
-      );
-    }
-
-    if (ficha?.georreferenciamento) {
-      setValue(
-        "georreferenciamento.geoJson.geometry",
-        ficha.georreferenciamento.geoJson.geometry as any
-      );
-    }
-
-    trigger();
-  }, [ficha, setValue, trigger]);
 
   const onSubmit: SubmitHandler<imovelFormData> = async (data) => {
     setFormData((prev: any) => ({ ...prev, ...data }));
@@ -216,7 +136,7 @@ export function FormCadastroImovel({
   return (
     <Form {...form}>
       <motion.div
-        initial={{ y: -50, opacity: 0 }} //
+        initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{
           duration: 0.5,

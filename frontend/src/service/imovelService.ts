@@ -3,6 +3,7 @@ import Cookies from "js-cookie";
 import { ACCESS_TOKEN } from "@/constants/auth";
 import { cookies } from "@/lib/utils";
 import ICadastroImovel from "@/interfaces/ICadastroImovel";
+import IFicha from "@/interfaces/Analista/IFicha";
 
 export const uploadShapeFile = async (file: File[]) => {
   const formData = new FormData();
@@ -40,7 +41,7 @@ export const editarImovel = async (
 ) => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  const response = await api.patch(`/imovel/editar/${processoId}`, formData, {
+  const response = await api.put(`/imovel/editar/${processoId}`, formData, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -80,6 +81,16 @@ export const cadastrados = async () => {
 export const ficha = async (processoId: string) => {
   const cookieStore = await cookies();
   const token = cookieStore.get(ACCESS_TOKEN).value;
+
+  return api.get(`/imovel/ficha/${processoId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
+export const fichaEdit = async (processoId: string) => {
+  const token = Cookies.get(ACCESS_TOKEN);
 
   return api.get(`/imovel/ficha/${processoId}`, {
     headers: {

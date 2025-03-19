@@ -7,7 +7,7 @@ import {
   UNAUTHORIZED_STATUS_CODE,
 } from "@/constants/auth";
 import Cookies from "js-cookie";
-import { useRouter, usePathname } from "next/navigation";
+import { actionLogout } from "./authService";
 
 const Api = axios.create({
   baseURL: `${process.env.NEXT_PUBLIC_API_URL}/api/v1/`,
@@ -55,17 +55,7 @@ Api.interceptors.response.use(
     ) {
       if (!isLoggingOut) {
         isLoggingOut = true;
-
-        const router = useRouter();
-        const pathname = usePathname();
-        const idMunicipio = pathname.split("/")[1];
-
-        Cookies.remove(ACCESS_TOKEN);
-        Cookies.remove(GRUPO_ID);
-        Cookies.remove(USER_ID);
-
-        router.refresh();
-        router.push(`/${idMunicipio}/autenticacao/login`);
+        await actionLogout();
       }
     }
     return Promise.reject(error);

@@ -70,7 +70,7 @@ export function MenuMobile({ municipio }: IMenuMobile) {
                 onClick={logout}
                 variant="no-style"
                 size="no-style"
-                className="inline-flex items-center justify-start gap-4 font-medium"
+                className="inline-flex items-center justify-start gap-4 font-medium text-base"
               >
                 <LogOut size={20} />
                 Sair
