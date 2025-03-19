@@ -4,6 +4,7 @@ import { ACCESS_TOKEN } from "@/constants/auth";
 import ICadastroUsuario from "@/interfaces/Usuario/ICadastroUsuario";
 import IRecuperarSenha from "@/interfaces/Usuario/IRecuperarSenha";
 import IEsqueciMinhaSenha from "@/interfaces/Usuario/IEsqueciMinhaSenha";
+import IUsuario from "@/interfaces/Usuario/IUsuario";
 
 export const listarUsuarios = async () => {
   const token = Cookies.get(ACCESS_TOKEN);
@@ -15,14 +16,16 @@ export const listarUsuarios = async () => {
   });
 };
 
-export const getUsuario = async (id: string) => {
+export const getUsuario = async (id: string): Promise<IUsuario> => {
   const token = Cookies.get(ACCESS_TOKEN);
 
-  return await api.get(`usuario/${id}`, {
+  const response = await api.get(`usuario/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
+
+  return response.data;
 };
 
 export const removerUsuario = async (id: string) => {

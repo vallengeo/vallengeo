@@ -48,7 +48,7 @@ export function FormLogin({ municipio }: IFormLogin) {
 
   async function handleUsuario(idUsuario: string): Promise<IUsuario> {
     const response = await getUsuario(idUsuario);
-    return response.data;
+    return response;
   }
 
   const onSubmit: SubmitHandler<loginFormData> = async (data) => {
