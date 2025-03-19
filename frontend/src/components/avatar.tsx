@@ -11,7 +11,7 @@ interface AvatarProps {
 }
 
 export function Avatar({
-  nome = "João Silva",
+  nome = "Vallen Geo",
   width = 140,
   height = 135,
   className,
@@ -23,7 +23,7 @@ export function Avatar({
     <>
       <span
         className={cn(
-          "flex items-center justify-center bg-primary text-foreground font-bold rounded-md max-w-[110px] max-h-[105px] md:max-w-[140px] md:max-h-[135px]",
+          "flex items-center justify-center bg-primary text-foreground font-bold rounded-md max-w-[110px] max-h-[105px] md:max-w-[140px] md:max-h-[135px] flex-shrink-0",
           className
         )}
         style={{ width: width, height: height }}

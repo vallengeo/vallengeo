@@ -4,10 +4,7 @@ import { ACCESS_TOKEN } from "@/constants/auth";
 import ICadastroPessoa from "@/interfaces/Pessoa/ICadastroPessoa";
 import { cookies } from "@/lib/utils";
 
-export const buscarPessoaPorId = async (id: string) => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(ACCESS_TOKEN).value;
-
+export const buscarPessoaPorId = async (id: string, token: string) => {
   const response = await api.get(`pessoa/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
