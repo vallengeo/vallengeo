@@ -29,7 +29,7 @@ export function Pessoas({ listarPessoas }: PessoasProps) {
 
       {currentItems.map((pessoa) => (
         <div key={pessoa.id}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-8 pb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8 pb-6">
             <div className="flex flex-col">
               <span className="font-medium text-sm">Nome Completo</span>
               <span>

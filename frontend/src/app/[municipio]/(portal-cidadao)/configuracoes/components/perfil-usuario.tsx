@@ -110,7 +110,7 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
                     open={modalConfirmation}
                     onOpenChange={setModalConfirmation}
                   >
-                    <DialogContent className="max-w-[380px] max-md:h-auto rounded-3xl">
+                    <DialogContent className="max-w-[380px] w-[calc(100%_-_2rem)] max-md:h-auto rounded-3xl">
                       <DialogHeader>
                         <DialogTitle className="text-xl">
                           Confirmação

@@ -44,7 +44,6 @@ export default async function CidadaoConfiguracoesPage({
 }) {
   const listarPessoas = await getPessoas();
   const pessoa = await getPessoa("bc517475-2c86-48b2-bd98-1e3e8626d039");
-  // const pessoa = null;
 
   return (
     <div className="container space-y-6 py-6">
