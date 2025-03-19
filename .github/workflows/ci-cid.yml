@@ -21,6 +21,7 @@ jobs:
         ssh -o StrictHostKeyChecking=no ubuntu@54.232.226.33 << 'EOF'
         cd /mnt/ebs/homolog/vallengeo
         sudo git fetch
+        git checkout launch.py
         sudo git pull || exit 1
         cd backend
         sudo mvn clean package || exit 1
