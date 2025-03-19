@@ -28,7 +28,7 @@ export function Menu({ municipio }: IMenu) {
   return (
     <nav
       aria-label="Menu de navegação desktop"
-      className="hidden sm:flex items-center gap-x-8"
+      className="hidden md:flex items-center gap-x-8"
     >
       <Link
         href={`/${municipio}/imoveis`}

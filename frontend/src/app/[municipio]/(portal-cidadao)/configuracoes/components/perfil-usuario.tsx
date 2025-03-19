@@ -92,10 +92,10 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
               />
 
               <div className="flex flex-col">
-                <span className="text-2xl md:text-3xl">
+                <span className="text-xl sm:text-2xl md:text-3xl line-clamp-1">
                   {pessoa.nome || pessoa.responsavel?.nome}
                 </span>
-                <span className="text-xl md:text-2xl font-light">Cidadão</span>
+                <span className="text-lg sm:text-xl md:text-2xl font-light">Cidadão</span>
 
                 <div className="flex items-center gap-6">
                   <Button
@@ -174,7 +174,7 @@ export function PerfilUsuario({ pessoa, listarPessoas }: PerfilUsuarioProps) {
 
             <Link
               href={`/${idMunicipio}/configuracoes/cadastrar/${pessoa.id}`}
-              className="text-lg inline-flex items-center gap-2"
+              className="text-lg inline-flex items-center gap-2 md:mt-3.5"
             >
               <PenSquare size={20} />
               Editar

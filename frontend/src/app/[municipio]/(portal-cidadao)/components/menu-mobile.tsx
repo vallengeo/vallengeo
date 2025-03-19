@@ -30,7 +30,7 @@ export function MenuMobile({ municipio }: IMenuMobile) {
   };
 
   return (
-    <nav aria-label="Menu de navegação mobile" className="sm:hidden">
+    <nav aria-label="Menu de navegação mobile" className="md:hidden">
       <Sheet>
         <SheetTrigger>
           <Menu className="text-white" />
