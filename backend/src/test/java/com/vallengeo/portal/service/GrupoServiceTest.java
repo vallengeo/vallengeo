@@ -93,7 +93,5 @@ class GrupoServiceTest extends AbstractIntegrationTest {
         assertNotNull(actual);
         assertFalse(actual.isEmpty());
         assertInstanceOf(ModuloResponse.class, actual.get(0));
-
-        System.out.println(actual);
     }
 }
